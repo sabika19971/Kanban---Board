@@ -49,11 +49,15 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
     /// </summary>
     public class GradingService
     {
-        
+        private UserService _userService;
+        private BoardService _boardService;
+        private TaskService _taskService;
 
         public GradingService()
         {
-            throw new NotImplementedException();
+           this._userService = new UserService();
+            this._boardService = new BoardService();    
+            this._taskService = new TaskService();
         }
 
 
@@ -65,7 +69,14 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Register(string email, string password)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _userService.Register(email, password);
+            }
+            catch(Exception ex) {
+                return ex.Message;
+            }
+           
         }
 
 
@@ -111,6 +122,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with the column's limit, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        // inside the BoardFacade
         public string GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
             throw new NotImplementedException();
@@ -124,6 +136,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with the column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        // inside BoardFacade
         public string GetColumnName(string email, string boardName, int columnOrdinal)
         {
             throw new NotImplementedException();
@@ -154,6 +167,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="taskId">The task to be updated identified task ID</param>
         /// <param name="dueDate">The new due date of the column</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        // inside TaskFacade
         public string UpdateTaskDueDate(string email, string boardName, int columnOrdinal, int taskId, DateTime dueDate)
         {
             throw new NotImplementedException();
@@ -211,6 +225,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with a list of the column's tasks, unless an error occurs (see <see cref="GradingService"/>)</returns>
+       // inside BoardFacade
         public string GetColumn(string email, string boardName, int columnOrdinal)
         {
             throw new NotImplementedException();

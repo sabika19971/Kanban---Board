@@ -8,5 +8,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 {
     internal class UserFacade
     {
+
+
     }
 }

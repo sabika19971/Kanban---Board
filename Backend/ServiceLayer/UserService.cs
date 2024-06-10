@@ -10,7 +10,14 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
     
     internal class UserService
     {
+
+        
         private UserFacade Uf;
+
+        public UserService()
+        {
+            this.Uf=new UserFacade();
+        }
         /// <summary>
         /// This method registers a new user to the system.
         /// </summary>
@@ -19,7 +26,14 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Register(string email, string password)
         {
-            throw new NotImplementedException();
+            try
+            {
+               
+            }
+            catch
+            {
+
+            }
         }
 
         /// <summary>
