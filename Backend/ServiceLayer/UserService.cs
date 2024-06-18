@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.BusinessLayer; // get an access to the classes inside BusinessLayer Folder.
 
+
 namespace IntroSE.Kanban.Backend.ServiceLayer
 {
     
@@ -28,11 +29,20 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         {
             try
             {
-               
+                UserBl userBl= Uf.Register(email, password);
+                UserSL usl = new UserSL(userBl);
+                string response = JsonConvert.SerializeObject(new Response(usl,null));
+                return response; 
             }
-            catch
+            catch (Exception ex) {
             {
-
+                    string response = JsonConvert.SerializeObject(new Response(null, ex.Message));
+                    /* can't register because of : 
+                     * email already exist
+                     * invalid email
+                     * invalid password
+                     * */
+                    return response;
             }
         }
 
@@ -44,8 +54,21 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with the user's email, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Login(string email, string password)
         {
-            throw new NotImplementedException();
-        }
+                try
+                {
+                    UserBl userBl = Uf.Login(email, password);
+                    UserSL usl = new UserSL(userBl);
+                    string response = JsonConvert.SerializeObject(new Response(usl, null));
+                    return response;
+                }
+                catch (Exception ex)
+                {
+
+                    string response = JsonConvert.SerializeObject(new Response(null, "wrong username or password"));
+                    return response;
+
+                }
+            }
 
         /// <summary>
         /// This method logs out a logged in user. 
