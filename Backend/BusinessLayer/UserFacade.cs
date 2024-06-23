@@ -10,15 +10,19 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
     {
 
-        private Dictionary<string, UserBl> userDictionary;
-        BoardFacade boardFacade;
+        internal Dictionary<string, UserBl> userDictionary;
+         internal  BoardFacade boardFacade;
+        internal Autentication aut;
 
-        public UserFacade(BoardFacade board)
+        public UserFacade(BoardFacade board , Autentication aut)
         {
 
             this.userDictionary = new Dictionary<string, UserBl>();
             this.boardFacade = board ;
+            this.aut = aut;
         }
+
+       
         /// <summary>
         /// This method registers a new user to the system.
         /// </summary>
@@ -36,9 +40,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             try
             {
                 Console.WriteLine("trying to create new user ");
-                UserBl userBl = new UserBl(email, password);
+                UserBl userBl = new UserBl(email, password, aut);
                 userDictionary.Add(email, userBl);
                 boardFacade.resetBoards(email);
+                userBl.Login(password);
                 return userBl;
             }
             catch (Exception ex)

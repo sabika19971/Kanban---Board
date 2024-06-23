@@ -77,7 +77,17 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         internal void limitColumn(int columnOrdinal, int limit)
         {
-            this.columns[columnOrdinal].MaxTasks = limit;
+            try
+            {
+                
+                this.columns[columnOrdinal].MaxTasks = limit;
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine (ex.ToString ());
+                throw ex;
+            }
+           
         }
     }
 }

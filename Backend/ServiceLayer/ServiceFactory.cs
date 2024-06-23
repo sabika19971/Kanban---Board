@@ -13,6 +13,7 @@ internal class ServiceFactory
     private UserFacade uf;
     private BoardFacade bf;
     private TaskFacade tf;
+    private Autentication aut;
 
     private UserService US;
     private BoardService BS;
@@ -21,10 +22,10 @@ internal class ServiceFactory
 
     public ServiceFactory() { 
 
-       
-        bf = new BoardFacade();
-        uf = new UserFacade(bf);
-        tf = new TaskFacade();
+        aut = new Autentication();
+        bf = new BoardFacade(aut);
+        uf = new UserFacade(bf,aut);
+        tf = new TaskFacade(aut,bf,uf);
 
         US = new UserService(uf);
         BS = new BoardService(bf);

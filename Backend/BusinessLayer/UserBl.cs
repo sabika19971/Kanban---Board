@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
-    public class UserBl
+    internal class UserBl
     {
 
         private Autentication aut;
@@ -45,19 +45,18 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
-        public UserBl(string email, string password)
+        public UserBl(string email, string password, Autentication aut)
         {
             try
             {
-                aut = new Autentication(); // Initialize aut first
-                Email = email;             // Use property setter to validate
+                this.aut = aut;
+                Email = email;
                 Password = password;
             }
-            catch (Exception ex) {
-                throw ex;
-            }
-           
+            catch (Exception ex) { throw ex; }
             
+                
+              
         }
 
         internal void Login(string password)

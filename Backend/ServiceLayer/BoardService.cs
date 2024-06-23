@@ -53,12 +53,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             try
             {
                 BoardBl boardbl = bf.DeleteBoard(email,name);
-                BoardSL boardsl = new BoardSL(boardbl);
+                //BoardSL boardsl = new BoardSL(boardbl);
                 string response = JsonSerializer.Serialize(new Response(null, null));
                 return response;
             }
             catch (Exception ex)
             {
+                    Console.WriteLine(ex.Message);
                     string response = JsonSerializer.Serialize(new Response(null, ex.Message));
                     return response;
             }
@@ -82,6 +83,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             }
             catch (Exception ex) 
             {
+                
                     string response = JsonSerializer.Serialize(new Response(null, ex.Message));
                     return response;            
             }
@@ -121,17 +123,20 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             int columnlimit = bf.GetColumnLimit(email, boardName, columnOrdinal);
             if(columnlimit == -1) 
             {
+                    
                 string response = JsonSerializer.Serialize(new Response("column have no limit" , null));
                     return response;
             }
             else
                 {
+                   
                 string response = JsonSerializer.Serialize(new Response(columnlimit , null));
                  return response;
                }
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                  string response = JsonSerializer.Serialize(new Response(null , ex.Message));
                 return response;
             }

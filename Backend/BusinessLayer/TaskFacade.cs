@@ -12,16 +12,16 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         
         private Autentication aut;
         private BoardFacade boardFacade;
+        private UserFacade uf;
 
-
-        public TaskFacade() {
-
-
-           
-            aut = new Autentication();
-            boardFacade = new BoardFacade();
+        public TaskFacade(Autentication aut, BoardFacade boardFacade, UserFacade userFacade) {
+           this.aut = aut;
+            this.boardFacade = boardFacade;
+            this.uf = userFacade;
 
         }
+
+       
 
         internal TaskBl UpdateTaskDescription(string email, string boardName, int columnOrdinal, int taskId, string description)
         {

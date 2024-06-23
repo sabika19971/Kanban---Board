@@ -42,12 +42,14 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
             set
             {
-                if (value > 0 || value < currTask)
+                
+                if (value > 0 || value > currTask)
                 {
                     maxTasks = value;
                 }
                 else
                 {
+                   
                     throw new Exception("cant set max tasks to be negative num or your limit of ");
                 }
                

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
-    public class UserSL
+    internal class UserSL
     {
         private string email;
         

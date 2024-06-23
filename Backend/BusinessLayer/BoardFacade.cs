@@ -12,10 +12,12 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private Dictionary<string, List<BoardBl>> boards;
         private Autentication aut;
 
-        public BoardFacade()
+        
+
+        public BoardFacade(Autentication aut)
         {
             boards = new Dictionary<string, List<BoardBl>>();
-            aut = new Autentication();
+            this.aut = aut;
         }
 
         public void resetBoards ( string email)
@@ -44,7 +46,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         public BoardBl CreateBoard(string email, string name)
         {
             Console.WriteLine(boards.Count);
-            if(boards.ContainsKey(email)) 
+            if(boards.ContainsKey(email) && aut.isOnline(email)) 
                 {
                     if(boards[email].Find(board => board.Name.Equals(name))==null) 
                          {
@@ -60,7 +62,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 }
             else
             {
-                throw new Exception("user email is not register to the system");
+                throw new Exception("user email is not register to the system or is not logged in ");
             }
 
         }
@@ -112,9 +114,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             if (boards.ContainsKey(email))
             {
+                
                 BoardBl boardColumToLimit = boards[email].Find(board => board.Name == boardName);
                 if(boardColumToLimit != null) 
                 {
+                    
                     boardColumToLimit.limitColumn(columnOrdinal, limit);
                     return true;
                 }

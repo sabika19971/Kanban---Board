@@ -30,12 +30,24 @@ namespace ConsoleApp2
             string creat_board_for_user = g.CreateBoard("sabika@gmail.com", "MyToDo list");*/
 
             string Register_user0 = g.Register("sabika@gmail.com", "E123456e");
-           
             string create_board_user0 = g.CreateBoard("sabika@gmail.com", "my board");
-            string login_user0 = g.Login("sabika@gmail.com", "E123456e");
-            string logout_user0 = g.Logout("sabika@gmail.com");
+            string create_board_user12 = g.CreateBoard("sabika@gmail.com", "my board");
+            string delete_board = g.DeleteBoard("sabika@gmail.com", "my boardaksdg");
+            string GET_COLUMN_LIMIT_NO_limit = g.GetColumnLimit("sabika@gmail.com", "my board", 0);
+            string column_so_limit = g.LimitColumn("sabika@gmail.com", "my board", 0, 18);
+            string column_to_limit_culumnerorr = g.LimitColumn("sabika@gmail.com", "my board", 123, 18);
+            string column_so_limit_negative_value = g.LimitColumn("sabika@gmail.com", "my board", 0, -6655);
+            string GET_COLUMN_LIMIT = g.GetColumnLimit("sabika@gmail.com", "my board", 0);
+            string GET_COLUMN_LIMIT_NO_board = g.GetColumnLimit("sabika@gmail.com", "my boaasdasdrd", 0);
+            string add_task_to_board = g.AddTask("sabika@gmail.com", "my board", "titlebakhs", "kasjdh", new DateTime());
 
-           // string create_board_user1_exist = g.CreateBoard("sabika@gmail.com", "my board");
+            /*string create_board_user0 = g.CreateBoard("sabika@gmail.com", "my board");
+            string login_user0 = g.Login("sabika@gmail.com", "E123456e");
+            string create_board_user12 = g.CreateBoard("sabika@gmail.com", "my board");
+            string delete_board = g.DeleteBoard("sabika@gmail.com", "my board");*/
+
+
+            // string create_board_user1_exist = g.CreateBoard("sabika@gmail.com", "my board");
 
 
 
