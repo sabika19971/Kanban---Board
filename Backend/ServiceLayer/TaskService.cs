@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.BusinessLayer; // get an access to the classes inside BusinessLayer Folder.
 namespace IntroSE.Kanban.Backend.ServiceLayer
@@ -9,6 +10,11 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
     internal class TaskService
     {
         private TaskFacade taskFacade;
+
+        public TaskService( TaskFacade taskFacade)
+        {
+            this.taskFacade = taskFacade;
+        }
 
         /// <summary>
         /// This method adds a new task.
@@ -21,7 +27,20 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string AddTask(string email, string boardName, string title, string description, DateTime dueDate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                TaskBl taskBL= taskFacade.AddTask(email, boardName, title, description, dueDate);
+                TaskSL taskSL = new TaskSL(taskBL);
+
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex) {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+
+            }
+
         }
 
 
@@ -36,7 +55,19 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string UpdateTaskDescription(string email, string boardName, int columnOrdinal, int taskId, string description)
         {
-            throw new NotImplementedException();
+            try
+            {
+                
+                TaskBl taskBl = taskFacade.UpdateTaskDescription(email,boardName, columnOrdinal, taskId, description);
+                TaskSL taskAfterEdit = new TaskSL(taskBl);
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+            }
         }
 
         /// <summary>
@@ -50,7 +81,18 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string UpdateTaskTitle(string email, string boardName, int columnOrdinal, int taskId, string title)
         {
-            throw new NotImplementedException();
+            try
+            {
+                TaskBl taskBl = taskFacade.UpdateTaskTitle(email, boardName, columnOrdinal, taskId, title);
+                TaskSL taskAfterEdit = new TaskSL(taskBl);
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+            }
         }
 
         /// <summary>
@@ -63,7 +105,18 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string AdvanceTask(string email, string boardName, int columnOrdinal, int taskId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                TaskBl taskBl = taskFacade.AdvanceTask(email, boardName, columnOrdinal, taskId);
+                TaskSL taskAfterEdit = new TaskSL(taskBl);
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+            }
         }
 
         /// <summary>
@@ -78,7 +131,18 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         // inside TaskFacade
         public string UpdateTaskDueDate(string email, string boardName, int columnOrdinal, int taskId, DateTime dueDate)
         {
-            throw new NotImplementedException();
+            try
+            {
+                TaskBl taskBl = taskFacade.UpdateTaskDueDate(email, boardName, columnOrdinal, taskId , dueDate);
+                TaskSL taskAfterEdit = new TaskSL(taskBl);
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+            }
         }
 
 

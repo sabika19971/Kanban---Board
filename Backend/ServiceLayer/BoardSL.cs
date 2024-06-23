@@ -4,48 +4,29 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IntroSE.Kanban.Backend.ServiceLayer; 
+using IntroSE.Kanban.Backend.BusinessLayer; 
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
 
-    public class Board
+    public class BoardSL
     {
         private string name;
-        private List<Column> columns;
+        private ColumnSL[] columns;
 
-        public Board(string name)
+
+        public BoardSL(BoardBl boardbl)
         {
-            this.name = name;
-            columns = new List<Column>();
-            // Initialize default columns
-            columns.Add(new Column("backlog"));
-            columns.Add(new Column("in progress"));
-            columns.Add(new Column("done"));
+            Console.WriteLine("Imhere");
+            name = boardbl.Name;
+            columns[0] = new ColumnSL(boardbl.getColumns(0));
+            columns[1] = new ColumnSL(boardbl.getColumns(1));
+            columns[2] = new ColumnSL(boardbl.getColumns(2));
         }
 
-        public string Name
-        {
-            get { return name; }
-        }
 
-        public List<Column> Columns
-        {
-            get { return columns; }
-        }
-
-        public bool AddColumn(Column column)
-        {
-            // isn't implemented yet
-        }
-
-        public bool RemoveColumn(string columnName)
-        {
-            // isn't implemented yet
-        }
-
-        public Column GetColumn(string columnName)
-        {
-            // isn't implemented yet
-        }
     }
+
+
 }

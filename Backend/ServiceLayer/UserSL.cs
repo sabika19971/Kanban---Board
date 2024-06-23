@@ -6,17 +6,21 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
-    public class User
+    public class UserSL
     {
         private string email;
-        private string password;
-        private List<Board> boards;
+        
 
-        public User(string email, string password)
+        public UserSL(string email)
         {
             this.email = email;
-            this.password = password;
-            boards = new List<Board>();
+            
+        }
+
+        public UserSL (UserBl userBl)
+        {
+            this.email = userBl.Email;
+           
         }
 
         public string Email
@@ -24,29 +28,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             get { return email; }
         }
 
-        public string Password
-        {
-            get { return password; }
-        }
-
-        public List<Board> Boards
-        {
-            get { return boards; }
-        }
-
-        public bool AddBoard(Board board)
-        {
-            // isn't implemented yet
-        }
-
-        public bool RemoveBoard(string boardName)
-        {
-            // isn't implemented yet
-        }
-
-        public Board GetBoard(string boardName)
-        {
-            // isn't implemented yet
-        }
+       
     }
 }

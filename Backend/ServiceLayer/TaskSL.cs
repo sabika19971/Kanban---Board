@@ -8,47 +8,31 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 {
     using System;
 
-    public class Task
+    public class TaskSL
     {
         private string id;
         private DateTime creationTime;
         private DateTime dueDate;
+        private string boardName;
         private string title;
         private string description;
+        private int columnOrdinal;
 
-        public Task(string id, DateTime dueDate, string title, string description)
+       
+
+        public TaskSL (TaskBl taskBl)
         {
-            this.id = id;
-            creationTime = DateTime.Now;
-            this.dueDate = dueDate;
-            this.title = title;
-            this.description = description;
+            this.id = taskBl.Id;
+            this.creationTime = taskBl.CreationTime; 
+            this.dueDate= taskBl.DueDate;
+            this.boardName = taskBl.BoardName;
+            this.title = taskBl.Title;  
+            this.description = taskBl.Description;
+            this.columnOrdinal = taskBl.ColumnOrdinal;
+
         }
 
-        public string Id
-        {
-            get { return id; }
-        }
-
-        public DateTime CreationTime
-        {
-            get { return creationTime; }
-        }
-
-        public DateTime DueDate
-        {
-            get { return dueDate; }
-        }
-
-        public string Title
-        {
-            get { return title; }
-        }
-
-        public string Description
-        {
-            get { return description; }
-        }
+        
     }
 
 }

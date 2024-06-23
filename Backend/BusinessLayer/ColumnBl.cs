@@ -10,40 +10,86 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     using System.Collections.Generic;
     using System.Linq;
 
-    public class Column
+    public class ColumnBl
     {
-        private string name;
-        private List<Task> tasks;
+        private int id;
+        private List<TaskBl> tasks;
+        private int maxTasks;
+        private int currTask;
 
-        public Column(string name)
+        public ColumnBl(int id)
         {
-            this.name = name;
-            tasks = new List<Task>();
+            this.id = id;
+            this.tasks = new List<TaskBl>();
+            currTask = 0;
+            maxTasks = -1;
         }
 
-        public string Name
+        public int Id
         {
-            get { return name; }
+            get { return id; }
         }
 
-        public List<Task> Tasks
+        public List<TaskBl> Tasks
         {
             get { return tasks; }
         }
 
-        public bool AddTask(Task task)
+        public int MaxTasks
         {
-            // isn't implemented yet
+
+            get { return maxTasks; }
+
+            set
+            {
+                if (value > 0 || value < currTask)
+                {
+                    maxTasks = value;
+                }
+                else
+                {
+                    throw new Exception("cant set max tasks to be negative num or your limit of ");
+                }
+               
+            }
+        }
+        
+        public void AddTask(TaskBl task)
+        {
+            if (maxTasks != -1)
+            {
+                if(currTask+1<= maxTasks)
+                {
+                    currTask++;
+                    tasks.Add(task);
+                }
+                else
+                {
+                    throw new Exception("you have reached the limit of tasks in the column");
+                }
+            }
         }
 
-        public Task GetTaskById(string taskId)
+        internal bool canAdd(TaskBl taskBl)
         {
-            // isn't implemented yet
+            if (tasks.Contains(taskBl))
+            {
+                    return false;
+            }
+            return true;
         }
 
-        public bool MoveTask(string taskId, Column targetColumn)
+        internal void RemoveTask(TaskBl taskToAdvance)
         {
-            // isn't implemented yet
+            if (currTask > 0)
+            {
+                tasks.Remove(taskToAdvance);
+                currTask =currTask-1;
+            }
+            else
+            {
+                throw new Exception("there is no task to remove");
+            }
         }
     }
 

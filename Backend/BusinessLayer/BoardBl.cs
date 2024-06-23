@@ -2,50 +2,82 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
 
-    public class Board
+    public class BoardBl
     {
         private string name;
-        private List<Column> columns;
-
-        public Board(string name)
+        private ColumnBl [] columns = new ColumnBl[3];
+        
+        public BoardBl(string name)
         {
             this.name = name;
-            columns = new List<Column>();
-            // Initialize default columns
-            columns.Add(new Column("backlog"));
-            columns.Add(new Column("in progress"));
-            columns.Add(new Column("done"));
+            columns[0]= new ColumnBl(0);
+            columns[1] = new ColumnBl(1);
+            columns[2] = new ColumnBl(2);
         }
 
         public string Name
         {
             get { return name; }
+            set 
+            { 
+                if(value == null || value.Equals(""))
+                {
+                    throw new ArgumentException("cant add empty board name");
+                }
+                name = value; 
+            }
         }
 
-        public List<Column> Columns
+        public ColumnBl getColumns (int i)
         {
-            get { return columns; }
+            if (indexIsValid(i))
+            {
+                return columns[i];
+            }
+            return null;
         }
 
-        public bool AddColumn(Column column)
+       
+
+        private bool indexIsValid(int i)
         {
-            // isn't implemented yet
+            if (i <0 || i >2)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public bool RemoveColumn(string columnName)
+        public bool validTaskId (TaskBl taskBl)
         {
-            // isn't implemented yet
+            if (columns[0].canAdd(taskBl) & columns[1].canAdd(taskBl) & columns[2].canAdd(taskBl))
+            {
+                return true;
+            }
+            return false;
         }
 
-        public Column GetColumn(string columnName)
+        internal void AddTask(TaskBl taskToAdd)
         {
-            // isn't implemented yet
+            columns[0].AddTask(taskToAdd);
+        }
+
+        internal void AdvanceTask(TaskBl taskToAdvance)
+        {
+            columns[taskToAdvance.ColumnOrdinal].AddTask(taskToAdvance);
+            columns[taskToAdvance.ColumnOrdinal-1].RemoveTask(taskToAdvance);
+        }
+
+        internal void limitColumn(int columnOrdinal, int limit)
+        {
+            this.columns[columnOrdinal].MaxTasks = limit;
         }
     }
 }

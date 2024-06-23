@@ -1,4 +1,8 @@
 ﻿using System;
+using IntroSE.Kanban.Backend.ServiceLayer;
+using IntroSE.Kanban.Backend.BusinessLayer;
+
+
 
 
 namespace IntroSE.Kanban.Backend.ServiceLayer
@@ -49,15 +53,11 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
     /// </summary>
     public class GradingService
     {
-        private UserService _userService;
-        private BoardService _boardService;
-        private TaskService _taskService;
+        private ServiceFactory SF;
 
         public GradingService()
         {
-           this._userService = new UserService();
-            this._boardService = new BoardService();    
-            this._taskService = new TaskService();
+           SF = new ServiceFactory();
         }
 
 
@@ -68,15 +68,8 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="password">The user password.</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Register(string email, string password)
-        {
-            try
-            {
-                _userService.Register(email, password);
-            }
-            catch(Exception ex) {
-                return ex.Message;
-            }
-           
+        {   
+            return SF.UserService.Register(email, password);
         }
 
 
@@ -88,7 +81,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with the user's email, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Login(string email, string password)
         {
-            throw new NotImplementedException();
+            return SF.UserService.Login(email, password);
         }
 
 
@@ -99,7 +92,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Logout(string email)
         {
-            throw new NotImplementedException();
+           return SF.UserService.Logout(email);
         }
 
         /// <summary>
@@ -112,7 +105,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string LimitColumn(string email, string boardName, int columnOrdinal, int limit)
         {
-            throw new NotImplementedException();
+            return SF.BoardService.LimitColumn(email, boardName, columnOrdinal, limit);
         }
 
         /// <summary>
@@ -125,7 +118,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         // inside the BoardFacade
         public string GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
-            throw new NotImplementedException();
+            return SF.BoardService.GetColumnLimit( email, boardName, columnOrdinal);
         }
 
 
@@ -138,8 +131,8 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with the column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
         // inside BoardFacade
         public string GetColumnName(string email, string boardName, int columnOrdinal)
-        {
-            throw new NotImplementedException();
+        {   
+            return SF.BoardService.GetColumnName( email, boardName, columnOrdinal);
         }
 
 
@@ -154,7 +147,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string AddTask(string email, string boardName, string title, string description, DateTime dueDate)
         {
-            throw new NotImplementedException();
+            return SF.TaskService.AddTask(email, boardName, title, description, dueDate);
         }
 
 
@@ -170,7 +163,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         // inside TaskFacade
         public string UpdateTaskDueDate(string email, string boardName, int columnOrdinal, int taskId, DateTime dueDate)
         {
-            throw new NotImplementedException();
+            return SF.TaskService.UpdateTaskDueDate(email, boardName, columnOrdinal, taskId, dueDate);
         }
 
 
@@ -185,7 +178,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string UpdateTaskTitle(string email, string boardName, int columnOrdinal, int taskId, string title)
         {
-            throw new NotImplementedException();
+            return SF.TaskService.UpdateTaskTitle(email, boardName, columnOrdinal, taskId, title);
         }
 
 
@@ -200,7 +193,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string UpdateTaskDescription(string email, string boardName, int columnOrdinal, int taskId, string description)
         {
-            throw new NotImplementedException();
+            return SF.TaskService.UpdateTaskDescription(email, boardName, columnOrdinal, taskId, description);
         }
 
 
@@ -214,7 +207,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string AdvanceTask(string email, string boardName, int columnOrdinal, int taskId)
         {
-            throw new NotImplementedException();
+            return SF.TaskService.AdvanceTask(email, boardName, columnOrdinal, taskId);
         }
 
 
@@ -228,7 +221,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
        // inside BoardFacade
         public string GetColumn(string email, string boardName, int columnOrdinal)
         {
-            throw new NotImplementedException();
+            return SF.BoardService.GetColumn( email, boardName, columnOrdinal);
         }
 
 
@@ -240,7 +233,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string CreateBoard(string email, string name)
         {
-            throw new NotImplementedException();
+            return SF.BoardService.CreateBoard( email, name);
         }
 
 
@@ -252,7 +245,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string DeleteBoard(string email, string name)
         {
-            throw new NotImplementedException();
+            return SF.BoardService.DeleteBoard( email, name);
         }
 
 
@@ -263,7 +256,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with a list of the in-progress tasks of the user, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string InProgressTasks(string email)
         {
-            throw new NotImplementedException();
+            return SF.BoardService.InProgressTasks( email);
         }
     }
 }

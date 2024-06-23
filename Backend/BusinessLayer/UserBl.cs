@@ -8,63 +8,71 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 {
     public class UserBl
     {
-        
+
         private Autentication aut;
-        public UserBl(string email,string password)
-        {
-            this.aut = new Autentication();
-        }
-        private string email;
+        private string userEmail;
+        private string userPassword;
 
         public string Email
         {
-            get { return email; }
+            get { return userEmail; }
             set
             {
-                if (aut.isValidEmail(email))
-
+                if (aut.isValidEmail(value))
                 {
-                    this.email = value;
+                    userEmail = value;
                 }
                 else
                 {
-                    throw new ArgumentException("email is not legal");
+                    throw new ArgumentException("Email is not legal");
                 }
-
             }
         }
-        private string password;
 
         public string Password
         {
-            get { return password; }
+           
             set
             {
-                if (aut.isValidPassword(password))
+                if (aut.isValidPassword(value))
                 {
-                    password = value;
-
+                    userPassword = value;
                 }
                 else
                 {
-                    throw new ArgumentException("password is not legal");
+                    throw new ArgumentException("Password is not legal");
                 }
             }
+        }
+
+        public UserBl(string email, string password)
+        {
+            try
+            {
+                aut = new Autentication(); // Initialize aut first
+                Email = email;             // Use property setter to validate
+                Password = password;
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+           
+            
         }
 
         internal void Login(string password)
         {
-            if(this.password == password)
+            if (userPassword == password)
             {
                 aut.SetOnline(this);
             }
             else
             {
-                throw new ArgumentException("incorrect password"); 
+                throw new ArgumentException("Incorrect password");
             }
         }
 
-        internal void Logout(string email)
+        internal void Logout()
         {
             aut.Logout(this);
         }

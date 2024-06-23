@@ -10,41 +10,24 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     using System.Collections.Generic;
     using System.Linq;
 
-    public class Column
+    public class ColumnSL
     {
-        private string name;
+        private int id;
         private List<Task> tasks;
 
-        public Column(string name)
+        public ColumnSL(int id)
         {
-            this.name = name;
+            this.id = id;
             tasks = new List<Task>();
         }
-
-        public string Name
-        {
-            get { return name; }
+        public ColumnSL(ColumnBl columnBl) {
+            this.id = columnBl.Id;
+            tasks = new List<Task>();
+        
         }
 
-        public List<Task> Tasks
-        {
-            get { return tasks; }
-        }
 
-        public bool AddTask(Task task)
-        {
-            // isn't implemented yet
-        }
-
-        public Task GetTaskById(string taskId)
-        {
-            // isn't implemented yet
-        }
-
-        public bool MoveTask(string taskId, Column targetColumn)
-        {
-            // isn't implemented yet
-        }
+        
     }
 
 }
