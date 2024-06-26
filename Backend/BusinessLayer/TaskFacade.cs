@@ -8,195 +8,155 @@ using System.Threading.Tasks;
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
     internal class TaskFacade
-    {
-        
+    {      
         private Autentication aut;
         private BoardFacade boardFacade;
         private UserFacade uf;
 
         public TaskFacade(Autentication aut, BoardFacade boardFacade, UserFacade userFacade) {
-           this.aut = aut;
+            this.aut = aut;
             this.boardFacade = boardFacade;
             this.uf = userFacade;
 
         }
 
-       
-
         internal TaskBl UpdateTaskDescription(string email, string boardName, int columnOrdinal, int taskId, string description)
         {
-            if ((columnOrdinal < 0 || columnOrdinal >= 2))
+            if (columnOrdinal < 0 || columnOrdinal >= 2)
             {
                 throw new Exception("cant edit done task");
             }
-
+            if ( !aut.isOnline(email) )
+            {
+                throw new Exception("user is not logged in");
+            }
             List<BoardBl> boards = boardFacade.boardList(email);
-            if (boards.Any())
+            if ( !boards.Any() )
             {
                 throw new Exception("user have no boards");
             }
             BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
-            if (boardTaskIsEdit != null)
-            {
-                TaskBl taskToEdit = boardTaskIsEdit.getColumns(columnOrdinal).Tasks.Find(task => task.Id.Equals(taskId));
-                if (taskToEdit != null)
-                {
-                    taskToEdit.Description = description;
-                    return taskToEdit;
-                }
-                else
-                {
-                    throw new Exception("task does not exist ");
-                }   
-                
-            }
-            else
+            if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
             }
-
+            TaskBl taskToEdit = boardTaskIsEdit.getColumns(columnOrdinal).Tasks().Find(task => task.Id.Equals(taskId));
+            if (taskToEdit == null)
+            {
+                throw new Exception("task does not exist ");
+            }
+            taskToEdit.Description = description;
+            return taskToEdit;                     
         }
 
         internal TaskBl AddTask(string email, string boardName, string title, string description, DateTime dueDate) // to ask about the id generator.
         {
 
-            if (aut.isOnline(email))
-            {
-
-                List<BoardBl> boards = boardFacade.boardList(email);
-                if(boards.Any())
-                {
-                    throw new Exception("user have no boards");
-                }
-                BoardBl boardBeAdded = boards.Find(board => board.Name.Equals(boardName));
-                if (boardBeAdded != null)
-                {
-                    TaskBl taskToAdd = new TaskBl(dueDate, title, description, boardName);
-                   while (boardBeAdded.validTaskId(taskToAdd))
-                    {
-                        taskToAdd = new TaskBl(dueDate, title, description, boardName);
-                    }
-
-                    boardBeAdded.AddTask(taskToAdd);
-                    return taskToAdd;
-                }
-                else
-                {
-                    throw new Exception("no board in this name, you must create a board first");
-                }
-                
-            }
-            else
+            if ( !aut.isOnline(email) )
             {
                 throw new Exception("user must be logged in in order to add task");
             }
-
-
+            List<BoardBl> boards = boardFacade.boardList(email);
+            if( !boards.Any() )
+            {
+                throw new Exception("user have no boards");
+            }
+            BoardBl boardToBeAdded = boards.Find(board => board.Name.Equals(boardName));
+            if (boardToBeAdded == null)
+            {
+                throw new Exception("no board with this name, a board must be created first");
+            }
+            TaskBl taskToAdd = new TaskBl(dueDate, title, description, boardName, boardToBeAdded.getNumOfAllTasks()+1);
+            boardToBeAdded.AddTask(taskToAdd);
+            return taskToAdd;                                     
         }
-
-
 
         internal TaskBl UpdateTaskTitle(string email, string boardName, int columnOrdinal, int taskId, string title)
         {
-            if ((columnOrdinal<0||columnOrdinal>=2))
+            if (columnOrdinal<0 || columnOrdinal>=2)
             {
                 throw new Exception("cant edit done task");
             }
-
-
+            if ( !aut.isOnline(email) )
+            {
+                throw new Exception("user is not logged in");
+            }
             List<BoardBl> boards = boardFacade.boardList(email);
-            if (boards.Any())
+            if ( !boards.Any() )
             {
                 throw new Exception("user have no boards");
             }
             BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
-            if (boardTaskIsEdit != null)
-            {
-                TaskBl taskToEdit = boardTaskIsEdit.getColumns(columnOrdinal).Tasks.Find(task => task.Id.Equals(taskId));
-                if (taskToEdit != null)
-                {
-                    taskToEdit.Title = title;
-                    return taskToEdit;
-                }
-                else
-                {
-                    throw new Exception("task does not exist ");
-                }
-
-            }
-            else
+            if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
             }
+            TaskBl taskToEdit = boardTaskIsEdit.getColumns(columnOrdinal).Tasks().Find(task => task.Id.Equals(taskId));
+            if (taskToEdit == null)
+            {
+                throw new Exception("task does not exist ");
+            }
+            taskToEdit.Title = title;
+            return taskToEdit;           
         }
 
-       internal TaskBl AdvanceTask(string email, string boardName, int columnOrdinal, int taskId) // do i get here the current column? 
+        internal TaskBl AdvanceTask(string email, string boardName, int columnOrdinal, int taskId) 
         {
             if (columnOrdinal < 0 || columnOrdinal >= 2)
             {
-                throw new Exception("cant advance done task or ilegal columnOrdinal ");
+                throw new Exception("cant advance done task or ilegal columnOrdinal");
             }
-
+            if ( !aut.isOnline(email) )
+            {
+                throw new Exception("user is not logged in ");
+            }
             List<BoardBl> boards = boardFacade.boardList(email);
-            if (boards.Any())
+            if ( !boards.Any() )
             {
                 throw new ArgumentException("user dont have any boards");
             }
             BoardBl boardTaskBeAdvance = boards.Find(board => board.Name.Equals(boardName));
-            if (boardTaskBeAdvance != null)
-            {
-                TaskBl taskToAdvance = boardTaskBeAdvance.getColumns(columnOrdinal).Tasks.Find(task => task.Id.Equals(taskId));
-                if (taskToAdvance != null)
-                {
-                    taskToAdvance.ColumnOrdinal = columnOrdinal + 1;
-                    boardTaskBeAdvance.AdvanceTask(taskToAdvance);
-                    return taskToAdvance;
-                }
-                else
-                {
-                    throw new Exception("no such task");
-                }
-            }
-            else
+            if (boardTaskBeAdvance == null)
             {
                 throw new Exception($" board '{boardName} does not exist'");
             }
-                
-          
+            TaskBl taskToAdvance = boardTaskBeAdvance.getColumns(columnOrdinal).Tasks().Find(task => task.Id.Equals(taskId));
+            if (taskToAdvance == null)
+            {
+                throw new Exception("no such task");
+            }
+            taskToAdvance.ColumnOrdinal = columnOrdinal + 1;
+            boardTaskBeAdvance.AdvanceTask(taskToAdvance);
+            return taskToAdvance;                                               
         }
 
         internal TaskBl UpdateTaskDueDate(string email, string boardName, int columnOrdinal, int taskId, DateTime dueDate)
         {
-            if ((columnOrdinal < 0 || columnOrdinal >= 2))
+            if (columnOrdinal < 0 || columnOrdinal >= 2)
             {
                 throw new Exception("cant edit done task");
             }
-
-
+            if ( !aut.isOnline(email) )
+            {
+                throw new Exception("user is not logged in");
+            }
             List<BoardBl> boards = boardFacade.boardList(email);
-            if (boards.Any())
+            if ( !boards.Any() )
             {
                 throw new Exception("user have no boards");
             }
             BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
-            if (boardTaskIsEdit != null)
-            {
-                TaskBl taskToEdit = boardTaskIsEdit.getColumns(columnOrdinal).Tasks.Find(task => task.Id.Equals(taskId));
-                if (taskToEdit != null)
-                {
-                    taskToEdit.DueDate = dueDate;
-                    return taskToEdit;
-                }
-                else
-                {
-                    throw new Exception("task does not exist ");
-                }
-
-            }
-            else
+            if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
             }
+            TaskBl taskToEdit = boardTaskIsEdit.getColumns(columnOrdinal).Tasks().Find(task => task.Id.Equals(taskId));
+            if (taskToEdit == null)
+            {
+                throw new Exception("task does not exist ");
+            }
+            taskToEdit.DueDate = dueDate;
+            return taskToEdit;                 
         }
     }
 }

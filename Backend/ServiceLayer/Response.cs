@@ -7,30 +7,19 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.ServiceLayer
 {
-
     public class Response
     {
-        private object responseValue;
-        private string errorMessage { get; set; }
+        public object ReturnValue { get; }
+        public string ErrorMessage { get; }
 
         public Response()
         {
 
         }
-        public Response(object responseValue, string errorMassage)
+        public Response(object returnValue, string errorMassage)
         {
-            this.responseValue = responseValue;
-            errorMessage = errorMassage;
-        }
-
-        public Object getResponseValue()
-        {
-            return this.responseValue;
-        }
-
-        public string getErrorMessage() { return this.errorMessage; }
-
-
-       
+            ReturnValue = returnValue;
+            ErrorMessage = errorMassage;
+        }     
     }
 }

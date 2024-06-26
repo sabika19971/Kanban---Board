@@ -11,7 +11,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     {
         private HashSet<string> users;
 
-        public Autentication() { 
+        internal Autentication() { 
             users = new HashSet<string>();
         }
 
@@ -22,29 +22,24 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 return true;
             }
             return false;
-               
-
         }
 
         internal  bool isValidEmail(string email) 
         {
-            
-            string pat = @"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}";
+            if (email == null) { return false; }
+            string pat = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
             Regex reg = new Regex(pat);
-            Console.WriteLine("checking the email  " + email + reg.IsMatch(email) );
             return reg.IsMatch(email);
         }
 
         internal bool isValidPassword(string password)
         {
+            if (password == null) { return false; }
 
             string pat = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}$";
             Regex reg = new Regex(pat);
-            Console.WriteLine("checking the password  " + password+"  " + reg.IsMatch(password));
             return reg.IsMatch(password);
         }
-
-       
 
         internal void Logout(UserBl userBl)
         {
@@ -52,14 +47,14 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 users.Remove(userBl.Email);
             }
-            else {
+            else 
+            {
                 throw new ArgumentException("user is not logedIn");
             }
         }
 
         internal void SetOnline(UserBl userBl)
         {
-
             this.users.Add(userBl.Email);
         }
 

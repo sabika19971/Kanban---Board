@@ -6,28 +6,19 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
-    internal class UserSL
-    {
-        private string email;
-        
 
+    public class UserSL
+    {
+        public string Email{ get; }
+        
         public UserSL(string email)
         {
-            this.email = email;
-            
+            this.Email = email;          
         }
 
-        public UserSL (UserBl userBl)
+        internal UserSL (UserBl userBl)
         {
-            this.email = userBl.Email;
-           
+            this.Email = userBl.Email;         
         }
-
-        public string Email
-        {
-            get { return email; }
-        }
-
-       
     }
 }

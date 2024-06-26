@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.BusinessLayer; // get an access to the classes inside BusinessLayer Folder.
 namespace IntroSE.Kanban.Backend.ServiceLayer
 {
-    internal class TaskService
+    public class TaskService
     {
         private TaskFacade taskFacade;
 
-        public TaskService( TaskFacade taskFacade)
+        internal TaskService( TaskFacade taskFacade)
         {
             this.taskFacade = taskFacade;
         }
@@ -31,16 +31,14 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             {
                 TaskBl taskBL= taskFacade.AddTask(email, boardName, title, description, dueDate);
                 TaskSL taskSL = new TaskSL(taskBL);
-
                 string response = JsonSerializer.Serialize(new Response(null, null));
                 return response;
             }
-            catch (Exception ex) {
+            catch (Exception ex) 
+            {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
                 return response;
-
             }
-
         }
 
 
@@ -56,8 +54,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         public string UpdateTaskDescription(string email, string boardName, int columnOrdinal, int taskId, string description)
         {
             try
-            {
-                
+            {              
                 TaskBl taskBl = taskFacade.UpdateTaskDescription(email,boardName, columnOrdinal, taskId, description);
                 TaskSL taskAfterEdit = new TaskSL(taskBl);
                 string response = JsonSerializer.Serialize(new Response(null, null));
@@ -144,7 +141,5 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 return response;
             }
         }
-
-
     }
 }

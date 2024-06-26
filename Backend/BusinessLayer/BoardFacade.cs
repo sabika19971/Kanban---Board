@@ -12,20 +12,17 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private Dictionary<string, List<BoardBl>> boards;
         private Autentication aut;
 
-        
-
         public BoardFacade(Autentication aut)
         {
             boards = new Dictionary<string, List<BoardBl>>();
             this.aut = aut;
         }
-
-        public void resetBoards ( string email)
-        {
-            Console.WriteLine("im in reset Boards");
-            boards.Add(email, new List<BoardBl>());
-            Console.WriteLine(boards.Count);
+        
+        public void resetBoards (string email)
+        {          
+            boards.Add(email, new List<BoardBl>());           
         }
+
         public List<BoardBl> boardList(string email)
         {
             if (boards.ContainsKey(email))
@@ -34,9 +31,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             return null;
         }
-
-        
-
+       
         /// <summary>
         /// This method creates a board for the given user.
         /// </summary>
@@ -45,26 +40,21 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns>A BoardBl, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public BoardBl CreateBoard(string email, string name)
         {
-            Console.WriteLine(boards.Count);
-            if(boards.ContainsKey(email) && aut.isOnline(email)) 
-                {
-                    if(boards[email].Find(board => board.Name.Equals(name))==null) 
-                         {
-                            BoardBl boardToAdd = new BoardBl(name);
-                            boards[email].Add(boardToAdd);
-                            return boardToAdd;
-                         }
-                     else
-                        {
-                            throw new Exception("board name already exist");
-                        }
-                
-                }
-            else
+            if(email == null || name == null)
             {
-                throw new Exception("user email is not register to the system or is not logged in ");
+                throw new Exception("Cannot create board with null arguments");
             }
-
+            if ( !(boards.ContainsKey(email) && aut.isOnline(email)) )
+            {
+                throw new Exception("user email is not registered to the system or is not logged in ");
+            }
+            if (boards[email].Find(board => board.Name.Equals(name)) != null) 
+            {
+                throw new Exception("board name already exist, cant create two baords with the same name");    
+            }
+            BoardBl boardToAdd = new BoardBl(name);
+            boards[email].Add(boardToAdd);
+            return boardToAdd;                     
         }
 
         /// <summary>
@@ -75,26 +65,17 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public BoardBl DeleteBoard(string email, string name)
         {
-            if (boards.ContainsKey(email))
-            {
-                BoardBl boardToDelete = boards[email].Find(board => board.Name.Equals(name));
-                if(boardToDelete != null)
-                {
-                    
-                    boards[email].Remove(boardToDelete);
-                    return null;
-                }
-                else
-                {
-                    throw new Exception("there is no such a board");
-                }
-
-            }
-            else
+            if (!(boards.ContainsKey(email)))
             {
                 throw new Exception("cant delete board from a user that does not exist in the system");
             }
-
+            BoardBl boardToDelete = boards[email].Find(board => board.Name.Equals(name));
+            if (boardToDelete == null)
+            {
+                throw new Exception("there is no such a board");
+            }
+            boards[email].Remove(boardToDelete);
+            return null;          
         }
 
         /// <summary>
@@ -110,30 +91,19 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             if (columnOrdinal < 0 || columnOrdinal >= 2)
             {
                 throw new Exception("cant limit column that does not exist");
-
             }
-            if (boards.ContainsKey(email))
+            if ( !(boards.ContainsKey(email)) )
             {
-                
-                BoardBl boardColumToLimit = boards[email].Find(board => board.Name == boardName);
-                if(boardColumToLimit != null) 
-                {
-                    
-                    boardColumToLimit.limitColumn(columnOrdinal, limit);
-                    return true;
-                }
-                else
-                {
-                    throw new Exception("no such board");
-                }
+                throw new Exception("cant limit column for a user that does not exist in the system");
             }
-            else
+            BoardBl boardColumToLimit = boards[email].Find(board => board.Name == boardName);
+            if (boardColumToLimit == null)
             {
-                throw new Exception("cant limit column for a user that doesnot exist in the system");
+                throw new Exception("no such board");
             }
+            boardColumToLimit.limitColumn(columnOrdinal, limit);
+            return true;                              
         }
-
-        
 
         /// <summary>
         /// This method returns all in-progress tasks of a user.
@@ -143,14 +113,18 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         public List<TaskBl> InProgressTasks(string email)
         {
             List<TaskBl> result = new List<TaskBl>();
-            if (!boards.ContainsKey(email))
+            if ( !boards.ContainsKey(email) )
             {
                 throw new InvalidOperationException("cant show tasks for a user that is not registered in the system");
             }
-            List<BoardBl> boardsToCollectTasks = boards[email];
+            if ( !aut.isOnline(email) )
+            {
+                throw new Exception("user is not logged in");
+            }
+            List<BoardBl> boardsToCollectTasks = boards[email]; 
             foreach (var boardToCollect in boardsToCollectTasks)
             {
-                foreach (var task in boardToCollect.getColumns(1).Tasks)
+                foreach (var task in boardToCollect.getColumns(1).Tasks())
                 {
                     result.Add(task);
                 }
@@ -165,31 +139,27 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with the column's limit, unless an error occurs (see <see cref="GradingService"/>)</returns>
         // inside the BoardFacade
+
         public int GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
-            if (columnOrdinal < 0 || columnOrdinal >= 2)
+            if ( !aut.isOnline(email) ) 
+            { 
+                throw new Exception("user must be logged in"); 
+            }
+            if (columnOrdinal < 0 || columnOrdinal > 2)
             {
                 throw new Exception("cant limit column that does not exist");
             }
-            if (boards.ContainsKey(email))
-            {
-                BoardBl boardColumGetLimit = boards[email].Find(board => board.Name == boardName);
-                if (boardColumGetLimit != null)
-                {
-                    return boardColumGetLimit.getColumns(columnOrdinal).MaxTasks;
-                   
-                    
-                }
-                else
-                {
-                    throw new Exception("no such board");
-                }
-            }
-            else
+            if ( !boards.ContainsKey(email) )
             {
                 throw new Exception("cant get limit column for a user that doesnot exist in the system");
             }
-
+            BoardBl boardColumGetLimit = boards[email].Find(board => board.Name == boardName);
+            if (boardColumGetLimit == null)
+            {
+                throw new Exception("no such board");
+            }
+            return boardColumGetLimit.getColumns(columnOrdinal).MaxTasks;                                                         
         }
 
 
@@ -201,9 +171,31 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with the column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
         // inside BoardFacade
+
         public string GetColumnName(string email, string boardName, int columnOrdinal)
         {
-            throw new NotImplementedException();
+            if (!aut.isOnline(email)) 
+            { 
+                throw new Exception("user must be logged in"); 
+            }
+            if (columnOrdinal < 0 || columnOrdinal > 2)
+            {
+                throw new Exception("cant get columnName that does not exist");
+            }
+            string nameS="";
+            if (!boards.ContainsKey(email))
+            {
+                throw new Exception("No Such User");
+            }
+            BoardBl wantedboard = boards[email].Find(board => board.Name.Equals(boardName));
+            if (wantedboard == null) 
+            {
+                throw new Exception("no such board with this name");
+            }
+            if (columnOrdinal == 0) { nameS = "backlog"; }
+            if (columnOrdinal == 1) { nameS = "in progress"; }
+            if (columnOrdinal == 2) { nameS = "done"; }        
+            return nameS;           
         }
 
         /// <summary>
@@ -213,33 +205,29 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with a list of the column's tasks, unless an error occurs (see <see cref="GradingService"/>)</returns>
-       // inside BoardFacade
+        // inside BoardFacade
+
         public List<TaskBl> GetColumn(string email, string boardName, int columnOrdinal)
         {
-            if (columnOrdinal < 0 || columnOrdinal >= 2)
+            if (columnOrdinal < 0 || columnOrdinal > 2)
             {
-                throw new Exception("cant limit column that does not exist");
+                throw new Exception("cant get column that does not exist");
             }
-            List<TaskBl> result = new List<TaskBl>();
+            if (!aut.isOnline(email))
+            {
+                throw new Exception("user must be logged in");
+            }
             if (!boards.ContainsKey(email))
             {
                 throw new InvalidOperationException("cant show tasks for a user that is not registered in the system");
             }
             BoardBl boardToCollectTasks = boards[email].Find(board => board.Name == boardName);
-            if (boardToCollectTasks != null)
-            {
-                foreach (var taskToCollect in boardToCollectTasks.getColumns(columnOrdinal).Tasks)
-                {
-                    result.Add(taskToCollect);
-                }
-            }
-            else
+            if (boardToCollectTasks == null)
             {
                 throw new Exception("board does not exist");
-            }
-
+            }          
+            List<TaskBl> result = new List<TaskBl>(boardToCollectTasks.getColumns(columnOrdinal).Tasks());           
             return result;
-
         }
     }
 }

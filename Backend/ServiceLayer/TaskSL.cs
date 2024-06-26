@@ -6,33 +6,26 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
-    using System;
 
     public class TaskSL
     {
-        private string id;
-        private DateTime creationTime;
-        private DateTime dueDate;
-        private string boardName;
-        private string title;
-        private string description;
-        private int columnOrdinal;
+        public int Id { get; }
+        public DateTime CreationTime { get; }
+        public DateTime DueDate { get; }
+        public string BoardName { get; }
+        public string Title { get; }
+        public string Description { get; }
+        public int ColumnOrdinal { get; }
 
-       
-
-        public TaskSL (TaskBl taskBl)
+        internal TaskSL (TaskBl taskBl)
         {
-            this.id = taskBl.Id;
-            this.creationTime = taskBl.CreationTime; 
-            this.dueDate= taskBl.DueDate;
-            this.boardName = taskBl.BoardName;
-            this.title = taskBl.Title;  
-            this.description = taskBl.Description;
-            this.columnOrdinal = taskBl.ColumnOrdinal;
-
-        }
-
-        
+            this.Id = taskBl.Id;
+            this.CreationTime = taskBl.CreationTime; 
+            this.DueDate= taskBl.DueDate;
+            this.BoardName = taskBl.BoardName;
+            this.Title = taskBl.Title;  
+            this.Description = taskBl.Description;
+            this.ColumnOrdinal = taskBl.ColumnOrdinal;
+        }      
     }
-
 }

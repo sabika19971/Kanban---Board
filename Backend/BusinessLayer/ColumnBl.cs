@@ -10,14 +10,14 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     using System.Collections.Generic;
     using System.Linq;
 
-    public class ColumnBl
+    internal class ColumnBl
     {
         private int id;
         private List<TaskBl> tasks;
         private int maxTasks;
         private int currTask;
 
-        public ColumnBl(int id)
+        internal ColumnBl(int id)
         {
             this.id = id;
             this.tasks = new List<TaskBl>();
@@ -25,50 +25,55 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             maxTasks = -1;
         }
 
-        public int Id
+        internal int Id
         {
             get { return id; }
         }
 
-        public List<TaskBl> Tasks
+        internal int CurrTask
         {
-            get { return tasks; }
+            get { return currTask; }
         }
 
-        public int MaxTasks
+        internal List<TaskBl> Tasks()
+        {  
+            return tasks; 
+        }
+
+        internal int MaxTasks
         {
-
             get { return maxTasks; }
-
             set
             {
-                
-                if (value > 0 || value > currTask)
+                if (value >= currTask)
                 {
                     maxTasks = value;
                 }
                 else
-                {
-                   
-                    throw new Exception("cant set max tasks to be negative num or your limit of ");
-                }
-               
+                {                   
+                    throw new Exception("cant set max tasks to less then the amount of tasks that already exist");
+                }            
             }
         }
-        
-        public void AddTask(TaskBl task)
+
+        internal void AddTask(TaskBl task)
         {
             if (maxTasks != -1)
             {
-                if(currTask+1<= maxTasks)
+                if(currTask + 1 <= maxTasks)
                 {
                     currTask++;
                     tasks.Add(task);
-                }
+                }            
                 else
                 {
                     throw new Exception("you have reached the limit of tasks in the column");
                 }
+            }
+            else
+            {
+                currTask++;
+                tasks.Add(task);
             }
         }
 
@@ -76,22 +81,33 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             if (tasks.Contains(taskBl))
             {
-                    return false;
+                return false;
             }
             return true;
         }
 
         internal void RemoveTask(TaskBl taskToAdvance)
         {
-            if (currTask > 0)
+            if (tasks.Contains(taskToAdvance))
             {
                 tasks.Remove(taskToAdvance);
-                currTask =currTask-1;
+                currTask = currTask - 1;
             }
             else
             {
                 throw new Exception("there is no task to remove");
             }
+        }
+
+        public override string ToString()
+        {
+            string s = "";
+            foreach (var task in tasks)
+            {
+                s = s + task.Id + ",";
+
+            }
+            return s;
         }
     }
 

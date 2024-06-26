@@ -10,10 +10,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     using System.Diagnostics.SymbolStore;
     using System.Reflection;
 
-    public class TaskBl
+    internal class TaskBl
     {
         
-        private string id;
+        private int id;
         private DateTime creationTime;
         private DateTime dueDate;
         private string boardName;
@@ -21,29 +21,25 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string description;
         private int columnOrdinal;
 
-        public TaskBl(DateTime dueDate, string title, string description, string boardName)
+        internal TaskBl(DateTime dueDate, string title, string description, string boardName, int id)
         {
-            this.id = idGenerator();
+            this.id = id;
             this.dueDate = dueDate;
             this.creationTime = DateTime.Now;
-            this.Title = title;         // Use property setter to validate
-            this.Description = description; // Use property setter to validate
+            this.Title = title;         
+            this.Description = description;
             this.boardName = boardName;
             this.columnOrdinal = 0;
         }
 
-        private string idGenerator()
-        {
-            return Guid.NewGuid().ToString();
-        }
-
-        public string Title
+        internal string Title
         {
             get { return title; }
             set
             {
                 if (IsValidTitle(value))
                 {
+
                     if (legalColumnForEdit(columnOrdinal))
                     {
                         title = value;
@@ -61,22 +57,21 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
-        public string Description
+        internal string Description
         {
             get { return description; }
             set
             {
                 if (IsValidDescription(value))
-                {
-                    if (legalColumnForEdit(this.columnOrdinal))
+                {                   
+                    if (legalColumnForEdit(columnOrdinal))
                     {
                         description = value;
                     }
                     else
                     {
                         throw new Exception("cant edit a done task");
-                    }
-                    
+                    }                  
                 }
                 else
                 {
@@ -85,23 +80,24 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
-        public DateTime DueDate
+
+        internal DateTime DueDate
         {
             get { return dueDate; }
             set { dueDate = value; }
         }
 
-        public DateTime CreationTime
+        internal DateTime CreationTime
         {
             get { return creationTime; }
         }
 
-        public int ColumnOrdinal
+        internal int ColumnOrdinal
         {
             get { return columnOrdinal; }
             set
             {
-                if (value > 2 || value<0)
+                if (value > 2 || value < 0)
                 {
                     throw new Exception("cant progres a done task.");
                 }
@@ -112,44 +108,33 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
 
         }
-        public string Id
+        internal int Id
         {
             get { return id; }
         }
 
-        public string BoardName
+        internal string BoardName
         {
             get { return boardName; }
         }
 
-        public override bool Equals(object obj)
-        {
-           if((obj is TaskBl))
-            {
-                TaskBl taskBl = (TaskBl)obj;
-                if(taskBl.Id == Id)
-                {
-                    return true;
-                }
-                
-                
-            }
-           return false;
-        }
-
         private bool IsValidDescription(string description)
         {
-            return !(description == null || description.Length > 300 || description == "");
+            return !(String.IsNullOrWhiteSpace(description) || description.Length > 300);
         }
+
         private bool legalColumnForEdit(int columnOrdinal)
         {
-
-            return columnOrdinal != 2;
+            if(columnOrdinal == 0 || columnOrdinal == 1)
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool IsValidTitle(string title)
         {
-            return !(title == null || title.Length > 50 || title.Equals(""));
+            return !(String.IsNullOrWhiteSpace(title) || title.Length > 50);
         }
     }
 

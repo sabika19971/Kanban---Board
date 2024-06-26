@@ -8,12 +8,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 {
     internal class UserBl
     {
-
         private Autentication aut;
         private string userEmail;
         private string userPassword;
 
-        public string Email
+        internal string Email
         {
             get { return userEmail; }
             set
@@ -23,15 +22,14 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                     userEmail = value;
                 }
                 else
-                {
+                {                   
                     throw new ArgumentException("Email is not legal");
                 }
             }
         }
 
-        public string Password
-        {
-           
+        internal string Password
+        {         
             set
             {
                 if (aut.isValidPassword(value))
@@ -45,18 +43,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
-        public UserBl(string email, string password, Autentication aut)
-        {
-            try
-            {
-                this.aut = aut;
-                Email = email;
-                Password = password;
-            }
-            catch (Exception ex) { throw ex; }
-            
-                
-              
+        internal UserBl(string email, string password, Autentication aut)
+        {     
+            this.aut = aut;
+            Email = email;
+            Password = password;         
         }
 
         internal void Login(string password)

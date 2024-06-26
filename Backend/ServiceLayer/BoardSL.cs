@@ -12,21 +12,33 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
     public class BoardSL
     {
-        private string name;
+        public string Name{ get; }
         private ColumnSL[] columns;
 
-
-        public BoardSL(BoardBl boardbl)
+        internal BoardSL(BoardBl boardbl)
         {
-            Console.WriteLine("Imhere");
-            name = boardbl.Name;
+            Name = boardbl.Name;
             columns[0] = new ColumnSL(boardbl.getColumns(0));
             columns[1] = new ColumnSL(boardbl.getColumns(1));
             columns[2] = new ColumnSL(boardbl.getColumns(2));
         }
 
+        public ColumnSL getColumns(int i)
+        {
+            if (indexIsValid(i))
+            {
+                return columns[i];
+            }
+            return null;
+        }
 
+        private bool indexIsValid(int i)
+        {
+            if (i < 0 || i > 2)
+            {
+                return false;
+            }
+            return true;
+        }
     }
-
-
 }

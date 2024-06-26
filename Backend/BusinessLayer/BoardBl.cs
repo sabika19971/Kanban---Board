@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
-
-    public class BoardBl
+    internal class BoardBl
     {
         private string name;
         private ColumnBl [] columns = new ColumnBl[3];
+        private int sumTask = 0;
         
-        public BoardBl(string name)
+        internal BoardBl(string name)
         {
             this.name = name;
             columns[0]= new ColumnBl(0);
             columns[1] = new ColumnBl(1);
-            columns[2] = new ColumnBl(2);
+            columns[2] = new ColumnBl(2);           
         }
 
-        public string Name
+        internal string Name
         {
             get { return name; }
             set 
-            { 
-                if(value == null || value.Equals(""))
+            {
+                if (String.IsNullOrWhiteSpace(value))
                 {
                     throw new ArgumentException("cant add empty board name");
                 }
@@ -35,7 +35,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
-        public ColumnBl getColumns (int i)
+        internal ColumnBl getColumns (int i)
         {
             if (indexIsValid(i))
             {
@@ -43,8 +43,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             return null;
         }
-
-       
 
         private bool indexIsValid(int i)
         {
@@ -55,7 +53,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             return true;
         }
 
-        public bool validTaskId (TaskBl taskBl)
+        internal bool validTaskId (TaskBl taskBl)
         {
             if (columns[0].canAdd(taskBl) & columns[1].canAdd(taskBl) & columns[2].canAdd(taskBl))
             {
@@ -67,6 +65,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal void AddTask(TaskBl taskToAdd)
         {
             columns[0].AddTask(taskToAdd);
+            sumTask++;
         }
 
         internal void AdvanceTask(TaskBl taskToAdvance)
@@ -76,18 +75,13 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         }
 
         internal void limitColumn(int columnOrdinal, int limit)
+        {                       
+            this.columns[columnOrdinal].MaxTasks = limit;                    
+        }
+
+        internal int getNumOfAllTasks()
         {
-            try
-            {
-                
-                this.columns[columnOrdinal].MaxTasks = limit;
-            }
-            catch(Exception ex) 
-            {
-                Console.WriteLine (ex.ToString ());
-                throw ex;
-            }
-           
+            return sumTask;
         }
     }
 }
