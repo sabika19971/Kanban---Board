@@ -1,6 +1,10 @@
 ﻿using System;
 using IntroSE.Kanban.Backend.ServiceLayer;
 using IntroSE.Kanban.Backend.BusinessLayer;
+using log4net;
+using log4net.Config;
+using System.IO;
+using System.Reflection;
 
 
 
@@ -54,10 +58,12 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
     public class GradingService
     {
         private ServiceFactory SF;
-
+          
         public GradingService()
         {
-           SF = new ServiceFactory();
+            //var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            //XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
+            SF = new ServiceFactory();
         }
 
 

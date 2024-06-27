@@ -5,15 +5,21 @@ using System.Text.Json;
 using Microsoft.VisualBasic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
+using log4net;
+using log4net.Config;
 
 namespace ConsoleApp2
 {
 
     internal class Program
     {
-        static void Main (string[] args)
+
+      
+               static void Main (string[] args)
         {
             GradingService g = new GradingService();
+         
 
             //UserService us = new UserService(new UserFacade()); 
             /*string notValidePassword=g.Register("sabika@gmail.com", "E123456");
@@ -54,6 +60,8 @@ namespace ConsoleApp2
             string getColumn = g.GetColumn("kfirmiz@gmail.com", "TODO", 0);
             string advanceTask = g.AdvanceTask("kfirmiz@gmail.com", "TODO", 0, 2);
             string getColumn1 = g.GetColumn("kfirmiz@gmail.com", "TODO", 0);
+            //string getColumn2 = g.GetColumn("kfirmiz@gmail.co", "TODO", 0);
+
             //Console.WriteLine(getColumn);
 
             //Console.WriteLine(String.IsNullOrWhiteSpace("   "));
