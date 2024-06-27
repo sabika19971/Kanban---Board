@@ -4,15 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using IntroSE.Kanban.Backend.BusinessLayer; // get an access to the classes inside BusinessLayer Folder.
+using IntroSE.Kanban.Backend.BusinessLayer;
+using log4net; 
+
+
 namespace IntroSE.Kanban.Backend.ServiceLayer
 {
     public class TaskService
     {
         private TaskFacade taskFacade;
-
-        internal TaskService( TaskFacade taskFacade)
+        private ILog log;
+        internal TaskService( TaskFacade taskFacade, ILog log)
         {
+            this.log = log;
             this.taskFacade = taskFacade;
         }
 
@@ -32,11 +36,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 TaskBl taskBL= taskFacade.AddTask(email, boardName, title, description, dueDate);
                 TaskSL taskSL = new TaskSL(taskBL);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " added a task");
                 return response;
             }
             catch (Exception ex) 
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to add a task");
                 return response;
             }
         }
@@ -58,11 +64,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 TaskBl taskBl = taskFacade.UpdateTaskDescription(email,boardName, columnOrdinal, taskId, description);
                 TaskSL taskAfterEdit = new TaskSL(taskBl);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " updated a task description");
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to update a task description");
                 return response;
             }
         }
@@ -83,11 +91,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 TaskBl taskBl = taskFacade.UpdateTaskTitle(email, boardName, columnOrdinal, taskId, title);
                 TaskSL taskAfterEdit = new TaskSL(taskBl);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " updated a task title");
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to update a task title");
                 return response;
             }
         }
@@ -107,11 +117,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 TaskBl taskBl = taskFacade.AdvanceTask(email, boardName, columnOrdinal, taskId);
                 TaskSL taskAfterEdit = new TaskSL(taskBl);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " advanced a task");
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to advance a task");
                 return response;
             }
         }
@@ -125,7 +137,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="taskId">The task to be updated identified task ID</param>
         /// <param name="dueDate">The new due date of the column</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        // inside TaskFacade
+       
         public string UpdateTaskDueDate(string email, string boardName, int columnOrdinal, int taskId, DateTime dueDate)
         {
             try
@@ -133,11 +145,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 TaskBl taskBl = taskFacade.UpdateTaskDueDate(email, boardName, columnOrdinal, taskId , dueDate);
                 TaskSL taskAfterEdit = new TaskSL(taskBl);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " updated a task due date");
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to update a task due date");
                 return response;
             }
         }
