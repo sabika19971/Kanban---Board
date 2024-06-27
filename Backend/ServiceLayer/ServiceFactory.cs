@@ -8,7 +8,7 @@ using IntroSE.Kanban.Backend.ServiceLayer;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer;
 
-internal class ServiceFactory
+public class ServiceFactory
 {
     private UserFacade uf;
     private BoardFacade bf;
