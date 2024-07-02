@@ -38,6 +38,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">Email of the user, must be logged in</param>
         /// <param name="name">The name of the new board</param>
         /// <returns>A BoardBl, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        
         public BoardBl CreateBoard(string email, string name)
         {
             if(email == null || name == null)
@@ -46,7 +47,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             if ( !(boards.ContainsKey(email) && aut.isOnline(email)) )
             {
-                throw new Exception("user email is not registered to the system or is not logged in ");
+                throw new Exception("user email is not registered to the system or is not logged in");
             }
             if (boards[email].Find(board => board.Name.Equals(name)) != null) 
             {
@@ -62,7 +63,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// </summary>
         /// <param name="email">Email of the user. Must be logged in and an owner of the board.</param>
         /// <param name="name">The name of the board</param>
-        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        /// <returns> null, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public BoardBl DeleteBoard(string email, string name)
         {
             if (!(boards.ContainsKey(email)))
@@ -85,7 +86,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <param name="limit">The new limit value. A value of -1 indicates no limit.</param>
-        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        /// <returns> true, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        
         public bool LimitColumn(string email, string boardName, int columnOrdinal, int limit)
         {
             if (columnOrdinal < 0 || columnOrdinal >= 2)
@@ -109,7 +111,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// This method returns all in-progress tasks of a user.
         /// </summary>
         /// <param name="email">Email of the user. Must be logged in</param>
-        /// <returns>A response with a list of the in-progress tasks of the user, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        /// <returns> A list of taskBl of the user, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public List<TaskBl> InProgressTasks(string email)
         {
             List<TaskBl> result = new List<TaskBl>();
@@ -137,8 +139,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">The email address of the user, must be logged in</param>
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
-        /// <returns>A response with the column's limit, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        // inside the BoardFacade
+        /// <returns> int columLimit, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
         public int GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
@@ -169,8 +170,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">The email address of the user, must be logged in</param>
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
-        /// <returns>A response with the column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        // inside BoardFacade
+        /// <returns> string column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
         public string GetColumnName(string email, string boardName, int columnOrdinal)
         {
@@ -204,8 +204,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">Email of the user, must be logged in</param>
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
-        /// <returns>A response with a list of the column's tasks, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        // inside BoardFacade
+        /// <returns> list of taskBl, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
         public List<TaskBl> GetColumn(string email, string boardName, int columnOrdinal)
         {
