@@ -14,13 +14,15 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     {
         public string Name{ get; }
         private ColumnSL[] columns;
+        private int id; // 
 
-        internal BoardSL(BoardBl boardbl)
+        internal BoardSL(BoardBl boardbl, int id)
         {
             Name = boardbl.Name;
             columns[0] = new ColumnSL(boardbl.getColumns(0));
             columns[1] = new ColumnSL(boardbl.getColumns(1));
             columns[2] = new ColumnSL(boardbl.getColumns(2));
+            this.id = id; // 
         }
 
         public ColumnSL getColumns(int i)
@@ -32,6 +34,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             return null;
         }
 
+        public int Id {  get ; } 
         private bool indexIsValid(int i)
         {
             if (i < 0 || i > 2)

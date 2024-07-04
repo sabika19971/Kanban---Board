@@ -16,6 +16,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         public string Title { get; }
         public string Description { get; }
         public int ColumnOrdinal { get; }
+        public string Assignee {  get; }
 
         internal TaskSL (TaskBl taskBl)
         {
@@ -26,6 +27,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.Title = taskBl.Title;  
             this.Description = taskBl.Description;
             this.ColumnOrdinal = taskBl.ColumnOrdinal;
+            this.Assignee = taskBl.Assignee;
         }      
     }
 }

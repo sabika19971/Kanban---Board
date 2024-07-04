@@ -109,6 +109,17 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             return s;
         }
+
+        internal void leaveBoard(string email)
+        {
+            foreach (var task in tasks)
+            {
+                if(task.Assignee == email)
+                {
+                    task.Assignee = null;
+                }
+            }
+        }
     }
 
 }

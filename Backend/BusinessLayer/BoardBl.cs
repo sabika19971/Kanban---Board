@@ -13,15 +13,30 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string name;
         private ColumnBl [] columns = new ColumnBl[3];
         private int sumTask = 0;
+        private int id; // האם אני מביא את ה אי י מהטבלה בדאטה בייס
+        private List<string> members;
+        private string owner;
         
-        internal BoardBl(string name)
+
+
+        internal BoardBl(string name ,string email)
         {
             this.name = name;
             columns[0]= new ColumnBl(0);
             columns[1] = new ColumnBl(1);
-            columns[2] = new ColumnBl(2);           
+            columns[2] = new ColumnBl(2);  
+            this.id = id;// according to the answer in for the field
+            this.members = new List<string>();
+
+            this.owner = email;
+
         }
 
+       internal List<string> Members
+        {
+            get { return members; }
+        }
+        internal int Id { get; }
         internal string Name
         {
             get { return name; }
@@ -52,7 +67,19 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             return true;
         }
-
+        internal string Owner
+        {
+            get { return owner; }
+            set { if (isMember(value)){
+                    owner = value;
+                }
+                else
+                {
+                    throw new Exception(value + " " + " is not a member of this board");
+                }
+                
+            }
+        }
         internal bool validTaskId (TaskBl taskBl)
         {
             if (columns[0].canAdd(taskBl) & columns[1].canAdd(taskBl) & columns[2].canAdd(taskBl))
@@ -82,6 +109,27 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal int getNumOfAllTasks()
         {
             return sumTask;
+        }
+
+        internal bool JoinBoard(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void leaveBoard(string email)
+        {
+            if (!isMember(email))
+            {
+                throw new Exception("only a member of the board can leave the borad");
+            }
+           this.getColumns(0).leaveBoard(email);
+           this.getColumns(1).leaveBoard(email);
+            members.Remove(email);
+        }
+
+        internal bool isMember(string email)
+        {
+            return members.Contains(email);
         }
     }
 }
