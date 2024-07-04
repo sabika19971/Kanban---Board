@@ -20,6 +20,16 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         }
 
+        /// <summary>
+        /// This method updates the description of a task.
+        /// </summary>
+        /// <param name="email">Email of user. Must be logged in</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
+        /// <param name="taskId">The task to be updated identified task ID</param>
+        /// <param name="description">New description for the task</param>
+        /// <returns> TaskBl updatedTask, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        
         internal TaskBl UpdateTaskDescription(string email, string boardName, int columnOrdinal, int taskId, string description)
         {
             if (columnOrdinal < 0 || columnOrdinal >= 2)
@@ -53,6 +63,16 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             return taskToEdit;                     
         }
 
+        /// <summary>
+        /// This method adds a new task.
+        /// </summary>
+        /// <param name="email">Email of the user. The user must be logged in.</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <param name="title">Title of the new task</param>
+        /// <param name="description">Description of the new task</param>
+        /// <param name="dueDate">The due date if the new task</param>
+        /// <returns> taskBl added task, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        
         internal TaskBl AddTask(string email, string boardName, string title, string description, DateTime dueDate) // to ask about the id generator.
         {
 
@@ -72,14 +92,22 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             if (!boardToBeAdded.isMember(email))
             {
-                throw new Exception("only members of the board can add task");
+                throw new Exception("must be a member in the board to add a task");
             }
-
-
-            TaskBl taskToAdd = new TaskBl(dueDate, title, description, boardName, boardToBeAdded.getNumOfAllTasks()+1);
+            TaskBl taskToAdd = new TaskBl(dueDate, title, description, boardToBeAdded.getNumOfAllTasks()+1);
             boardToBeAdded.AddTask(taskToAdd);
             return taskToAdd;                                     
         }
+
+        /// <summary>
+        /// This method updates task title.
+        /// </summary>
+        /// <param name="email">Email of user. Must be logged in</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
+        /// <param name="taskId">The task to be updated identified task ID</param>
+        /// <param name="title">New title for the task</param>
+        /// <returns> TaskBl updatedTask, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
         internal TaskBl UpdateTaskTitle(string email, string boardName, int columnOrdinal, int taskId, string title)
         {
@@ -114,6 +142,15 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             return taskToEdit;           
         }
 
+        /// <summary>
+        /// This method advances a task to the next column
+        /// </summary>
+        /// <param name="email">Email of user. Must be logged in</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
+        /// <param name="taskId">The task to be updated identified task ID</param>
+        /// <returns> taskBl advancedTask, unless an error occurs (see <see cref="GradingService"/>)</returns>
+    
         internal TaskBl AdvanceTask(string email, string boardName, int columnOrdinal, int taskId) 
         {
             if (columnOrdinal < 0 || columnOrdinal >= 2)
@@ -150,6 +187,16 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             boardTaskBeAdvance.AdvanceTask(taskToAdvance);
             return taskToAdvance;                                               
         }
+
+        /// <summary>
+        /// This method updates the due date of a task
+        /// </summary>
+        /// <param name="email">Email of the user. Must be logged in</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
+        /// <param name="taskId">The task to be updated identified task ID</param>
+        /// <param name="dueDate">The new due date of the column</param>
+        /// <returns> TaskBl updatedTask, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
         internal TaskBl UpdateTaskDueDate(string email, string boardName, int columnOrdinal, int taskId, DateTime dueDate)
         {

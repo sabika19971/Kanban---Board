@@ -7,16 +7,20 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using EllipticCurve.Utils;
 using IntroSE.Kanban.Backend.BusinessLayer; // get an access to the classes inside BusinessLayer Folder.
-using IntroSE.Kanban.Backend.ServiceLayer; 
+using IntroSE.Kanban.Backend.ServiceLayer;
+using log4net;
+using log4net.Config;
 
 namespace IntroSE.Kanban.Backend.ServiceLayer
 {
     public class BoardService
     {
         private BoardFacade bf;
+        private ILog log;
 
-        internal BoardService(BoardFacade boardfacade) 
+        internal BoardService(BoardFacade boardfacade, ILog log) 
         {
+            this.log = log;
             this.bf = boardfacade;
         }
 
@@ -33,11 +37,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             {              
                 BoardBl boardbl = bf.CreateBoard(email,name);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " has created a board");
                 return response;
             }
             catch (Exception ex) 
             {                
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to create a board" );
                 return response;
             }
         }
@@ -55,12 +61,14 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             {
                 BoardBl boardbl = bf.DeleteBoard(email,name);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " has deleted a board a board");
                 return response;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to delete a board");
                 return response;
             }
         }
@@ -80,11 +88,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             { 
                 bool boardbl = bf.LimitColumn(email, boardName, columnOrdinal, limit);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " has limited a column");
                 return response;
             }
             catch (Exception ex) 
             {                
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to limit a column");
                 return response;            
             }
         }
@@ -106,12 +116,14 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                     inProgressTasksSL.Add(tasksl);
                 }
                 string response = JsonSerializer.Serialize(new Response(inProgressTasksSL, null));
+                log.Info(email + " got in progress tasks");
                 return response;
             }
             catch (Exception ex)
             {
-            string response = JsonSerializer.Serialize(new Response(null, ex.Message));
-            return response;
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to get inprogress tasks");
+                return response;
             }
         }
 
@@ -130,17 +142,25 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             { 
                 int columnlimit = bf.GetColumnLimit(email, boardName, columnOrdinal);                                        
                 string response = JsonSerializer.Serialize(new Response(((object)columnlimit),null));
+                log.Info(email + " got column limit");
                 return response;           
             }
             catch (Exception ex)
             {              
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to get colum limit");
                 return response;
             }
         }
 
 
-
+        /// <summary>
+        /// This method gets the name of a specific column
+        /// </summary>
+        /// <param name="email">The email address of the user, must be logged in</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
+        /// <returns>A response with the column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
         public string GetColumnName(string email, string boardName, int columnOrdinal)
         {
@@ -148,11 +168,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             {
                 string columnname = bf.GetColumnName(email, boardName, columnOrdinal);
                 string response = JsonSerializer.Serialize(new Response(columnname, null));
+                log.Info(email + " got column name");
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to get colum name");
                 return response;
             }
         }
@@ -178,11 +200,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                     tasksSL.Add(tasksl);
                 }                               
                 string response = JsonSerializer.Serialize(new Response(tasksSL, null));
+                log.Info(email + " got column");
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to get column");
                 return response;
             }            
         }

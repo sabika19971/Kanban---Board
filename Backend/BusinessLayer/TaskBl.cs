@@ -17,20 +17,18 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private int id;
         private DateTime creationTime;
         private DateTime dueDate;
-        private string boardName;
         private string title;
         private string description;
         private int columnOrdinal;
         private string assignee;
 
-        internal TaskBl(DateTime dueDate, string title, string description, string boardName, int id)
+        internal TaskBl(DateTime dueDate, string title, string description, int id)
         {
             this.id = id;
             this.dueDate = dueDate;
             this.creationTime = DateTime.Now;
             this.Title = title;         
             this.Description = description;
-            this.boardName = boardName;
             this.columnOrdinal = 0;
             this.assignee = null;
         }
@@ -119,11 +117,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal int Id
         {
             get { return id; }
-        }
-
-        internal string BoardName
-        {
-            get { return boardName; }
         }
 
         private bool IsValidDescription(string description)

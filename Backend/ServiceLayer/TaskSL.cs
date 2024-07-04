@@ -12,7 +12,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         public int Id { get; }
         public DateTime CreationTime { get; }
         public DateTime DueDate { get; }
-        public string BoardName { get; }
         public string Title { get; }
         public string Description { get; }
         public int ColumnOrdinal { get; }
@@ -23,7 +22,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.Id = taskBl.Id;
             this.CreationTime = taskBl.CreationTime; 
             this.DueDate= taskBl.DueDate;
-            this.BoardName = taskBl.BoardName;
             this.Title = taskBl.Title;  
             this.Description = taskBl.Description;
             this.ColumnOrdinal = taskBl.ColumnOrdinal;

@@ -24,7 +24,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// </summary>
         /// <param name="email">The user email address, used as the username for logging the system.</param>
         /// <param name="password">The user password.</param>
-        /// <returns>UserBl, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        /// <returns> UserBl new user, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public UserBl Register(string email, string password) 
         {
             if (email == null || password == null)
@@ -47,7 +47,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// </summary>
         /// <param name="email">The email address of the user to login</param>
         /// <param name="password">The password of the user to login</param>
-        /// <returns>UserBl, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        /// <returns> UserBl logged in user, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        
         public UserBl Login(string email, string password)
         {
             if ( !userDictionary.ContainsKey(email) )
@@ -63,6 +64,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// </summary>
         /// <param name="email">The email of the user to log out</param>
         /// <returns> void, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        
         public void Logout(string email)
         {
             if(!userDictionary.ContainsKey(email))
