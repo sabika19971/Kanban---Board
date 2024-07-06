@@ -90,7 +90,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("no board with this name, a board must be created first");
             }
-            if (!boardToBeAdded.isMember(email))
+            if ( !(boardToBeAdded.isMember(email) || boardToBeAdded.Owner  == email) )
             {
                 throw new Exception("must be a member in the board to add a task");
             }
