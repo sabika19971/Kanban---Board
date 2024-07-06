@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntroSE.Kanban.Backend.DataExcessLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,33 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     {
         internal Dictionary<string, UserBl> userDictionary;
         internal BoardFacade boardFacade;
+        internal UserController userController;
         internal Autentication aut;
+        private bool loadUsers = false;
 
         public UserFacade(BoardFacade board , Autentication aut)
         {
             this.userDictionary = new Dictionary<string, UserBl>();
+            userController = new UserController();
             this.boardFacade = board ;
             this.aut = aut;
+            LoadUsers();
+        }
+
+        // Loading all users from the DB
+        private void LoadUsers()
+        {
+            if (loadUsers)
+            {
+                throw new Exception("users DB already loaded");
+            }
+            List<UserDAO> userDAOs = userController.SelectAllUsers();
+            foreach (UserDAO user in userDAOs)
+            {
+                userDictionary.Add(user.Email,new UserBl(user,aut));
+                Console.WriteLine("loaded " + user.Email + " from the DB");
+            }
+            loadUsers = true;
         }
 
         /// <summary>
@@ -27,11 +48,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns> UserBl new user, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public UserBl Register(string email, string password) 
         {
-            if (email == null || password == null)
+            if (String.IsNullOrEmpty(email) || String.IsNullOrEmpty(password))
             {
-                throw new ArgumentNullException("email or pass cant be null");
+                throw new ArgumentNullException("email or pass cant be null or empty");
             }
-            if (userDictionary.ContainsKey(email))
+            if (userDictionary.ContainsKey(email)) 
             {
                 throw new ArgumentException("email is already taken");
             }
