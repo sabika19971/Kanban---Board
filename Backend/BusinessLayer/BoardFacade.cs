@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("board name already exist, cant create two baords with the same name");    
             }
-            BoardBl boardToAdd = new BoardBl(name);
+            BoardBl boardToAdd = new BoardBl(name,email);
             boards[email].Add(boardToAdd);
             return boardToAdd;                     
         }
@@ -74,6 +75,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             if (boardToDelete == null)
             {
                 throw new Exception("there is no such a board");
+            }
+            if(boardToDelete.Owner != email)
+            {
+                throw new Exception("only owner can delete the board");
             }
             boards[email].Remove(boardToDelete);
             return null;          
@@ -128,7 +133,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 foreach (var task in boardToCollect.getColumns(1).Tasks())
                 {
-                    result.Add(task);
+                    if (task.allowToEditTask(email))
+                    {
+                        result.Add(task);
+                    }
+                   
                 }
             }
             return result;
@@ -227,6 +236,98 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }          
             List<TaskBl> result = new List<TaskBl>(boardToCollectTasks.getColumns(columnOrdinal).Tasks());           
             return result;
+        }
+        /// <summary>
+        /// This method adds a user as member to an existing board.
+        /// </summary>
+        /// <param name="email">The email of the user that joins the board. Must be logged in</param>
+        /// <param name="boardID">The board's ID</param>
+        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        public void JoinBoard(string email, int boardID)
+        {
+            if (!aut.isOnline(email))
+            {
+                throw new Exception("user must be logged in");
+            }
+            if (boardID.Equals(null))
+            {
+                throw new Exception("ilegal board id");
+            }
+
+            foreach (KeyValuePair< string, List<BoardBl>> kvp in boards)
+            {
+                foreach(BoardBl boardBl in kvp.Value)
+                {
+                    if(boardBl.Id == boardID)
+                    {
+                        boardBl.Members.Add(email);
+                    }
+                }
+            }
+            throw new Exception("there is no such board with this id");
+        }
+
+
+        /// <summary>
+        /// This method transfers a board ownership.
+        /// </summary>
+        /// <param name="currentOwnerEmail">Email of the current owner. Must be logged in</param>
+        /// <param name="newOwnerEmail">Email of the new owner</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        public void TransferOwnership(string currentOwnerEmail, string newOwnerEmail, string boardName)
+        {
+            if (!aut.isOnline(currentOwnerEmail))
+            {
+                throw new Exception("user must be logged in");
+            }
+            if (!boards.ContainsKey(currentOwnerEmail))
+            {
+                throw new InvalidOperationException("cant show tasks for a user that is not registered in the system");
+            }
+            BoardBl boardToChangeOwner = boards[currentOwnerEmail].Find(board => board.Name == boardName);
+            if ( boardToChangeOwner== null)
+            {
+                throw new Exception("user does not have a board in this name");
+            }
+            boardToChangeOwner.Owner = newOwnerEmail;
+           
+
+        }
+
+        /// <summary>
+        /// This method removes a user from the members list of a board.
+        /// </summary>
+        /// <param name="email">The email of the user. Must be logged in</param>
+        /// <param name="boardID">The board's ID</param>
+        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        public void LeaveBoard(string email, int boardID)
+        {
+
+            if (!aut.isOnline(email))
+            {
+                throw new Exception("user must be logged in");
+            }
+            if (boardID.Equals(null))
+            {
+                throw new Exception("ilegal board id");
+            }
+
+            foreach (KeyValuePair<string, List<BoardBl>> kvp in boards)
+            {
+                foreach (BoardBl boardBl in kvp.Value)
+                {
+                    if (boardBl.Id == boardID)
+                    {
+                        if(boardBl.Owner == email)
+                        {
+                            throw new Exception("owner can leave the board only after transfering ownershoip");
+                        }
+                        boardBl.leaveBoard(email);
+                    }
+                }
+            }
+            throw new Exception("there is no such board with this id");
         }
     }
 }

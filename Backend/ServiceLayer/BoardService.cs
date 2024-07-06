@@ -210,5 +210,71 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 return response;
             }            
         }
+
+
+        /// <summary>
+        /// This method adds a user as member to an existing board.
+        /// </summary>
+        /// <param name="email">The email of the user that joins the board. Must be logged in</param>
+        /// <param name="boardID">The board's ID</param>
+        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        public string JoinBoard(string email, int boardID)
+        {
+            try
+            {
+                bf.JoinBoard(email, boardID);
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex) 
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+            }
+        }
+
+
+        /// <summary>
+        /// This method transfers a board ownership.
+        /// </summary>
+        /// <param name="currentOwnerEmail">Email of the current owner. Must be logged in</param>
+        /// <param name="newOwnerEmail">Email of the new owner</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        public string TransferOwnership(string currentOwnerEmail, string newOwnerEmail, string boardName)
+        {
+            try
+            {
+                bf.TransferOwnership(currentOwnerEmail, newOwnerEmail, boardName);
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+            }
+        }
+
+        /// <summary>
+        /// This method removes a user from the members list of a board.
+        /// </summary>
+        /// <param name="email">The email of the user. Must be logged in</param>
+        /// <param name="boardID">The board's ID</param>
+        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        public string LeaveBoard(string email, int boardID)
+        {
+            try
+            {
+                bf.LeaveBoard(email, boardID);
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+            }
+        }
     }
 }

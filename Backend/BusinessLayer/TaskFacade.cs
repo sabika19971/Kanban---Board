@@ -55,6 +55,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("task does not exist ");
             }
+            if (!taskToEdit.allowToEditTask(email))
+            {
+                throw new Exception("only assingee can edit task");
+            }
             taskToEdit.Description = description;
             return taskToEdit;                     
         }
@@ -86,7 +90,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("no board with this name, a board must be created first");
             }
-            TaskBl taskToAdd = new TaskBl(dueDate, title, description, boardToBeAdded.getNumOfAllTasks() + 1); //boardName, boardToBeAdded.getNumOfAllTasks()+1);
+            if (!boardToBeAdded.isMember(email))
+            {
+                throw new Exception("must be a member in the board to add a task");
+            }
+            TaskBl taskToAdd = new TaskBl(dueDate, title, description, boardToBeAdded.getNumOfAllTasks()+1);
             boardToBeAdded.AddTask(taskToAdd);
             return taskToAdd;                                     
         }
@@ -126,6 +134,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("task does not exist ");
             }
+            if (!taskToEdit.allowToEditTask(email))
+            {
+                throw new Exception("only assingee can edit task");
+            }
             taskToEdit.Title = title;
             return taskToEdit;           
         }
@@ -159,11 +171,18 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception($" board '{boardName} does not exist'");
             }
+            
             TaskBl taskToAdvance = boardTaskBeAdvance.getColumns(columnOrdinal).Tasks().Find(task => task.Id.Equals(taskId));
             if (taskToAdvance == null)
             {
                 throw new Exception("no such task");
             }
+            if (!taskToAdvance.allowToEditTask(email))
+            {
+                throw new Exception("only assingee can advance task");
+            }
+           
+           
             taskToAdvance.ColumnOrdinal = columnOrdinal + 1;
             boardTaskBeAdvance.AdvanceTask(taskToAdvance);
             return taskToAdvance;                                               
@@ -200,12 +219,45 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 throw new Exception($"board '{boardName}' does not exist ");
             }
             TaskBl taskToEdit = boardTaskIsEdit.getColumns(columnOrdinal).Tasks().Find(task => task.Id.Equals(taskId));
-            if (taskToEdit == null)
+            if (taskToEdit == null )
             {
                 throw new Exception("task does not exist ");
             }
+             if (!taskToEdit.allowToEditTask(email))
+                {
+                throw new Exception("only assingee can edit task");
+                }
             taskToEdit.DueDate = dueDate;
             return taskToEdit;                 
+        }
+
+        internal TaskBl AssignTask(string email, string boardName, int columnOrdinal, int taskID, string emailAssignee)
+        {
+            if (!aut.isOnline(email))
+            {
+                throw new Exception("user is not logged in");
+            }
+            List<BoardBl> boards = boardFacade.boardList(email);
+            if (!boards.Any())
+            {
+                throw new Exception("user have no boards");
+            }
+            BoardBl boardTaskIsAssingee = boards.Find(board => board.Name.Equals(boardName));
+            if (boardTaskIsAssingee == null)
+            {
+                throw new Exception($"board '{boardName}' does not exist ");
+            }
+            if (!boardTaskIsAssingee.isMember(emailAssignee) || !boardTaskIsAssingee.isMember(email))
+            {
+                throw new Exception("cant assingee a user that is not a member of the board ");
+            }
+            TaskBl taskToAssisngee = boardTaskIsAssingee.getColumns(columnOrdinal).Tasks().Find(task => task.Id.Equals(taskID));
+            if (taskToAssisngee == null)
+            {
+                throw new Exception("task does not exist ");
+            }
+            taskToAssisngee.AssignTask(emailAssignee, email);
+            return taskToAssisngee;
         }
     }
 }

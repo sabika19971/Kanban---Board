@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
+    using Newtonsoft.Json;
     using System;
     using System.Diagnostics.SymbolStore;
     using System.Reflection;
@@ -19,6 +20,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string title;
         private string description;
         private int columnOrdinal;
+        private string assignee;
 
         internal TaskBl(DateTime dueDate, string title, string description, int id)
         {
@@ -28,6 +30,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.Title = title;         
             this.Description = description;
             this.columnOrdinal = 0;
+            this.assignee = null;
         }
 
         internal string Title
@@ -78,7 +81,12 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
-
+        internal string Assignee
+        {
+            get { return assignee; }
+            set { assignee = value; }
+    
+        }
         internal DateTime DueDate
         {
             get { return dueDate; }
@@ -128,6 +136,23 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private bool IsValidTitle(string title)
         {
             return !(String.IsNullOrWhiteSpace(title) || title.Length > 50);
+        }
+
+        internal void AssignTask(string emailAssignee, string email)
+        {
+            if(assignee == null)
+            {
+                Assignee = emailAssignee;
+            }
+            else if (!Assignee.Equals(email))
+            {
+                throw new Exception("only assingee can assigne new assingee");
+            }
+            else { Assignee = emailAssignee; }
+        }
+        internal bool allowToEditTask (string email)
+        {
+            return assignee == email || assignee==null;
         }
     }
 

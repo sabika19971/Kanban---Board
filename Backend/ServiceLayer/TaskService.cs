@@ -155,5 +155,31 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 return response;
             }
         }
+        /// <summary>
+        /// This method assigns a task to a user
+        /// </summary>
+        /// <param name="email">Email of the user. Must be logged in</param>
+        /// <param name="boardName">The name of the board</param>
+        /// <param name="columnOrdinal">The column number. The first column is 0, the number increases by 1 for each column</param>
+        /// <param name="taskID">The task to be updated identified a task ID</param>        
+        /// <param name="emailAssignee">Email of the asignee user</param>
+        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        public string AssignTask(string email, string boardName, int columnOrdinal, int taskID, string emailAssignee)
+        {
+            try
+            {
+                TaskBl taskBl = taskFacade.AssignTask(email, boardName, columnOrdinal, taskID, emailAssignee);
+                TaskSL taskAfterAssigne = new TaskSL(taskBl);
+                string response = JsonSerializer.Serialize(new Response(null, null));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                return response;
+            }
+        }
+
+
     }
 }
