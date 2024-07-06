@@ -65,7 +65,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 return response;
             }
             catch (Exception ex)
-            {              
+            {                  
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
                 log.Warn(email + " : " + ex.Message + " when trying to login");
                 return response;

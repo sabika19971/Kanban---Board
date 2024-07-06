@@ -27,7 +27,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             columns[2] = new ColumnBl(2);  
             this.id = id;// according to the answer in for the field
             this.members = new List<string>();
-
             this.owner = email;
 
         }

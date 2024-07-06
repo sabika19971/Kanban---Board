@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntroSE.Kanban.Backend.DataExcessLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private Autentication aut;
         private string userEmail;
         private string userPassword;
+        private UserDAO userDAO;
 
         internal string Email
         {
@@ -34,6 +36,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 if (aut.isValidPassword(value))
                 {
+                    userDAO.Password = value; // updating the DB
                     userPassword = value;
                 }
                 else
@@ -45,9 +48,22 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         internal UserBl(string email, string password, Autentication aut)
         {     
+            userDAO = new UserDAO(email, password);
+            userDAO.persist(); 
+
             this.aut = aut;
             Email = email;
             Password = password;         
+        }
+
+        internal UserBl(UserDAO user,Autentication aut)
+        {
+            userDAO = user;
+            user.isPersistent = true;
+            
+            this.aut = aut;
+            Email = user.Email;
+            Password = user.Password;
         }
 
         internal void Login(string password)

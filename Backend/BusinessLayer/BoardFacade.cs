@@ -42,9 +42,9 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         
         public BoardBl CreateBoard(string email, string name)
         {
-            if(email == null || name == null)
+            if (String.IsNullOrEmpty(email)  || String.IsNullOrEmpty(name))
             {
-                throw new Exception("Cannot create board with null arguments");
+                throw new Exception("Cannot create board with null or blank arguments");
             }
             if ( !(boards.ContainsKey(email) && aut.isOnline(email)) )
             {
@@ -95,7 +95,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         
         public bool LimitColumn(string email, string boardName, int columnOrdinal, int limit)
         {
-            if (columnOrdinal < 0 || columnOrdinal >= 2)
+            if (columnOrdinal < 0 || columnOrdinal > 2)
             {
                 throw new Exception("cant limit column that does not exist");
             }

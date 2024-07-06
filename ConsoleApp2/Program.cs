@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System.Reflection;
 using log4net;
 using log4net.Config;
+using System.IO;
 
 namespace ConsoleApp2
 {
@@ -16,10 +17,10 @@ namespace ConsoleApp2
     {
 
       
-               static void Main (string[] args)
+        static void Main (string[] args)
         {
             GradingService g = new GradingService();
-         
+
 
             //UserService us = new UserService(new UserFacade()); 
             /*string notValidePassword=g.Register("sabika@gmail.com", "E123456");
@@ -51,16 +52,23 @@ namespace ConsoleApp2
             String gET_CULUMN_user02 = g.GetColumn("sabika@gmail.com", "wedding", 0);
             string updet_due_date = g.UpdateTaskDueDate("sabika@gmail.com", "wedding", 0, 3, new DateTime((long)DayOfWeek.Saturday));
             */
+
+            /*
             string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
             string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
             string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO");
+            //string createBoard1 = g.CreateBoard("kfirmiz@gmail.com", "");
+            //string limit = g.LimitColumn("kfirmiz@gmail.com","TODO",0,2);
+            string limit = g.LimitColumn("kfirmiz@gmail.com", "TODO", 0, 2);
             string addTask1 = g.AddTask("kfirmiz@gmail.com", "TODO", "wadafikfuk1", "wtf", new DateTime());
             string addTask2 = g.AddTask("kfirmiz@gmail.com", "TODO", "wadafikfuk2", "wtf", new DateTime());
             string addTask3 = g.AddTask("kfirmiz@gmail.com", "TODO", "wadafikfuk3", "wtf", new DateTime());
+            //string addTask4 = g.AddTask("kfirmiz@gmail.com", "", "wadafikfuk3", "wtf", new DateTime());
             string getColumn = g.GetColumn("kfirmiz@gmail.com", "TODO", 0);
             string advanceTask = g.AdvanceTask("kfirmiz@gmail.com", "TODO", 0, 2);
             string getColumn1 = g.GetColumn("kfirmiz@gmail.com", "TODO", 0);
             //string getColumn2 = g.GetColumn("kfirmiz@gmail.co", "TODO", 0);
+            */
 
             //Console.WriteLine(getColumn);
 
@@ -76,12 +84,6 @@ namespace ConsoleApp2
 
             /*string Register_null = g.Register(null,null);
             string Login_user0 = g.Login("sabika@gmail.com", "E123456easdsa");*/
-
-
-
-
-
-
 
 
             /*string create_board_user0 = g.CreateBoard("sabika@gmail.com", "my board");
@@ -104,12 +106,11 @@ namespace ConsoleApp2
             // string create_board_user1_exist = g.CreateBoard("sabika@gmail.com", "my board");
 
 
-
-
-
-
-
+            // DATABASE TESTS
+            string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
+            //string register1 = g.Register("kfirmiz@gmail.com", "Kfir1"); // needs to be fixed
+            //string Register_user02 = g.Register("sabika@gmail.com", "@1235askjhdWg");
+        
         }
     }
-
 }
