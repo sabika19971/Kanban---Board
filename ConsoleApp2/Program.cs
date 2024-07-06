@@ -54,9 +54,13 @@ namespace ConsoleApp2
             string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
             string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
             string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO");
+            //string createBoard1 = g.CreateBoard("kfirmiz@gmail.com", "");
+            //string limit = g.LimitColumn("kfirmiz@gmail.com","TODO",0,2);
+            string limit = g.LimitColumn("kfirmiz@gmail.com", "TODO", 0, 2);
             string addTask1 = g.AddTask("kfirmiz@gmail.com", "TODO", "wadafikfuk1", "wtf", new DateTime());
             string addTask2 = g.AddTask("kfirmiz@gmail.com", "TODO", "wadafikfuk2", "wtf", new DateTime());
             string addTask3 = g.AddTask("kfirmiz@gmail.com", "TODO", "wadafikfuk3", "wtf", new DateTime());
+            //string addTask4 = g.AddTask("kfirmiz@gmail.com", "", "wadafikfuk3", "wtf", new DateTime());
             string getColumn = g.GetColumn("kfirmiz@gmail.com", "TODO", 0);
             string advanceTask = g.AdvanceTask("kfirmiz@gmail.com", "TODO", 0, 2);
             string getColumn1 = g.GetColumn("kfirmiz@gmail.com", "TODO", 0);
