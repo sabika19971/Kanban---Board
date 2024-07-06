@@ -13,19 +13,19 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string name;
         private ColumnBl [] columns = new ColumnBl[3];
         private int sumTask = 0;
-        private int id; // האם אני מביא את ה אי י מהטבלה בדאטה בייס
+        private int id; 
         private List<string> members;
         private string owner;
         
 
 
-        internal BoardBl(string name ,string email)
+        internal BoardBl(int id, string name ,string email)
         {
             this.name = name;
             columns[0]= new ColumnBl(0);
             columns[1] = new ColumnBl(1);
             columns[2] = new ColumnBl(2);  
-            this.id = id;// according to the answer in for the field
+            this.id = id;
             this.members = new List<string>();
             this.owner = email;
 
@@ -35,7 +35,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             get { return members; }
         }
-        internal int Id { get; }
+        internal int getId() 
+        {
+            return id;
+        }
         internal string Name
         {
             get { return name; }

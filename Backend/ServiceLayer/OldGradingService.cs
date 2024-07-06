@@ -1,5 +1,12 @@
-﻿using IntroSE.Kanban.Backend.BusinessLayer;
-using System;
+﻿using System;
+using IntroSE.Kanban.Backend.ServiceLayer;
+using IntroSE.Kanban.Backend.BusinessLayer;
+using log4net;
+using log4net.Config;
+using System.IO;
+using System.Reflection;
+
+
 
 
 namespace IntroSE.Kanban.Backend.ServiceLayer
@@ -48,12 +55,14 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
     /// </code>
     /// </para>
     /// </summary>
-    public class GradingService
+    public class OldGradingService
     {
         private ServiceFactory SF;
-
-        public GradingService()
+          
+        public OldGradingService()
         {
+            //var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+            //XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
             SF = new ServiceFactory();
         }
 
@@ -65,7 +74,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="password">The user password.</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Register(string email, string password)
-        {
+        {   
             return SF.UserService.Register(email, password);
         }
 
@@ -89,7 +98,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string Logout(string email)
         {
-            return SF.UserService.Logout(email);
+           return SF.UserService.Logout(email);
         }
 
         /// <summary>
@@ -112,9 +121,10 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with the column's limit, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        // inside the BoardFacade
         public string GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
-            return SF.BoardService.GetColumnLimit(email, boardName, columnOrdinal);
+            return SF.BoardService.GetColumnLimit( email, boardName, columnOrdinal);
         }
 
 
@@ -125,9 +135,10 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with the column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        // inside BoardFacade
         public string GetColumnName(string email, string boardName, int columnOrdinal)
-        {
-            return SF.BoardService.GetColumnName(email, boardName, columnOrdinal);
+        {   
+            return SF.BoardService.GetColumnName( email, boardName, columnOrdinal);
         }
 
 
@@ -155,6 +166,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="taskId">The task to be updated identified task ID</param>
         /// <param name="dueDate">The new due date of the column</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        // inside TaskFacade
         public string UpdateTaskDueDate(string email, string boardName, int columnOrdinal, int taskId, DateTime dueDate)
         {
             return SF.TaskService.UpdateTaskDueDate(email, boardName, columnOrdinal, taskId, dueDate);
@@ -212,9 +224,10 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns>A response with a list of the column's tasks, unless an error occurs (see <see cref="GradingService"/>)</returns>
+       // inside BoardFacade
         public string GetColumn(string email, string boardName, int columnOrdinal)
         {
-            return SF.BoardService.GetColumn(email, boardName, columnOrdinal);
+            return SF.BoardService.GetColumn( email, boardName, columnOrdinal);
         }
 
 
@@ -226,7 +239,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string CreateBoard(string email, string name)
         {
-            return SF.BoardService.CreateBoard(email, name);
+            return SF.BoardService.CreateBoard( email, name);
         }
 
 
@@ -238,7 +251,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string DeleteBoard(string email, string name)
         {
-            return SF.BoardService.DeleteBoard(email, name);
+            return SF.BoardService.DeleteBoard( email, name);
         }
 
 
@@ -249,102 +262,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <returns>A response with a list of the in-progress tasks of the user, unless an error occurs (see <see cref="GradingService"/>)</returns>
         public string InProgressTasks(string email)
         {
-            return SF.BoardService.InProgressTasks(email);
-        }
-
-
-        /* FROM HERE: NEW METHODS FOR MILESTONE 2-3 */
-
-        /// <summary>
-        /// This method returns a list of IDs of all user's boards.
-        /// </summary>
-        /// <param name="email">Email of the user. Must be logged in</param>
-        /// <returns>A response with a list of IDs of all user's boards, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string GetUserBoards(string email)
-        {
-            return SF.BoardService.GetUserBoards(email);
-        }
-
-        /// <summary>
-        /// This method adds a user as member to an existing board.
-        /// </summary>
-        /// <param name="email">The email of the user that joins the board. Must be logged in</param>
-        /// <param name="boardID">The board's ID</param>
-        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string JoinBoard(string email, int boardID)
-        {
-            return SF.BoardService.JoinBoard(email, boardID);
-        }
-
-        /// <summary>
-        /// This method removes a user from the members list of a board.
-        /// </summary>
-        /// <param name="email">The email of the user. Must be logged in</param>
-        /// <param name="boardID">The board's ID</param>
-        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string LeaveBoard(string email, int boardID)
-        {
-            return SF.BoardService.LeaveBoard(email, boardID);
-        }
-
-        /// <summary>
-        /// This method assigns a task to a user
-        /// </summary>
-        /// <param name="email">Email of the user. Must be logged in</param>
-        /// <param name="boardName">The name of the board</param>
-        /// <param name="columnOrdinal">The column number. The first column is 0, the number increases by 1 for each column</param>
-        /// <param name="taskID">The task to be updated identified a task ID</param>        
-        /// <param name="emailAssignee">Email of the asignee user</param>
-        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string AssignTask(string email, string boardName, int columnOrdinal, int taskID, string emailAssignee) // TODO
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// This method returns a board's name
-        /// </summary>
-        /// <param name="boardId">The board's ID</param>
-        /// <returns>A response with the board's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string GetBoardName(int boardId) // TODO
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// This method transfers a board ownership.
-        /// </summary>
-        /// <param name="currentOwnerEmail">Email of the current owner. Must be logged in</param>
-        /// <param name="newOwnerEmail">Email of the new owner</param>
-        /// <param name="boardName">The name of the board</param>
-        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string TransferOwnership(string currentOwnerEmail, string newOwnerEmail, string boardName)
-        {
-            return SF.BoardService.TransferOwnership(currentOwnerEmail, newOwnerEmail, boardName);
-        }
-
-        ///<summary>This method loads all persisted data.
-        ///<para>
-        ///<b>IMPORTANT:</b> When starting the system via the GradingService - do not load the data automatically, only through this method. 
-        ///In some cases we will call LoadData when the program starts and in other cases we will call DeleteData. Make sure you support both options.
-        ///</para>
-        /// </summary>
-        /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string LoadData()
-        {
-            throw new NotImplementedException();
-        }
-
-        ///<summary>This method deletes all persisted data.
-        ///<para>
-        ///<b>IMPORTANT:</b> 
-        ///In some cases we will call LoadData when the program starts and in other cases we will call DeleteData. Make sure you support both options.
-        ///</para>
-        /// </summary>
-        ///<returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string DeleteData()
-        {
-            throw new NotImplementedException();
+            return SF.BoardService.InProgressTasks( email);
         }
     }
 }
