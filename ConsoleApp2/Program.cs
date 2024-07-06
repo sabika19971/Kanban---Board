@@ -22,6 +22,7 @@ namespace ConsoleApp2
             GradingService g = new GradingService();
 
 
+
             //UserService us = new UserService(new UserFacade()); 
             /*string notValidePassword=g.Register("sabika@gmail.com", "E123456");
             string noValidEmail = g.Register("@kajdhg", "12345667");
@@ -107,9 +108,15 @@ namespace ConsoleApp2
 
 
             // DATABASE TESTS
-            string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
-            //string register1 = g.Register("kfirmiz@gmail.com", "Kfir1"); // needs to be fixed
+            //string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
             //string Register_user02 = g.Register("sabika@gmail.com", "@1235askjhdWg");
+            string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
+            string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO");
+            string createBoard1 = g.CreateBoard("kfirmiz@gmail.com", "second");
+            string createBoard2 = g.CreateBoard("kfirmiz@gmail.com", "third");
+            string getIds = g.GetUserBoards("kfirmiz@gmail.com");
+            string limit = g.LimitColumn("kfirmiz@gmail.com","TODO",0,2);
+            
         
         }
     }

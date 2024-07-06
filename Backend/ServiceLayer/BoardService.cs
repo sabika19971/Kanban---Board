@@ -212,6 +212,44 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         }
 
 
+
+
+
+
+
+
+
+
+
+        // FROM HERE NEW FUNCTIONS
+
+
+
+
+        /// <summary>
+        /// This method returns a list of IDs of all user's boards.
+        /// </summary>
+        /// <param name="email">Email of the user. Must be logged in</param>
+        /// <returns>A response with a list of IDs of all user's boards, unless an error occurs (see <see cref="GradingService"/>)</returns>
+
+        public string GetUserBoards(string email)
+        {
+            try
+            {
+                List<int> ids = bf.GetUserBoards(email);               
+                string response = JsonSerializer.Serialize(new Response(ids, null));
+                log.Info(email + " got user boards ids");
+                return response;
+            }
+            catch (Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to get user boards ids");
+                return response;
+            }
+        }
+
+
         /// <summary>
         /// This method adds a user as member to an existing board.
         /// </summary>
@@ -224,11 +262,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             {
                 bf.JoinBoard(email, boardID);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " joined a board");
                 return response;
             }
             catch (Exception ex) 
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to join a board");
                 return response;
             }
         }
@@ -247,11 +287,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             {
                 bf.TransferOwnership(currentOwnerEmail, newOwnerEmail, boardName);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(currentOwnerEmail + " has transfered ownership to " + newOwnerEmail);
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(currentOwnerEmail + " : " + ex.Message + " when trying to transfer ownership to " + newOwnerEmail);
                 return response;
             }
         }
@@ -268,11 +310,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             {
                 bf.LeaveBoard(email, boardID);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " left a board");
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to leave a board");
                 return response;
             }
         }

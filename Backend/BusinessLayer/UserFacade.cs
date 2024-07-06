@@ -35,6 +35,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             foreach (UserDAO user in userDAOs)
             {
                 userDictionary.Add(user.Email,new UserBl(user,aut));
+                boardFacade.resetBoards(user.Email);
                 Console.WriteLine("loaded " + user.Email + " from the DB");
             }
             loadUsers = true;

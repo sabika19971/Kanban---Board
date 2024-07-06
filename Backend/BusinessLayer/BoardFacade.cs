@@ -1,8 +1,10 @@
-﻿using System;
+﻿using EllipticCurve.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +14,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     {
         private Dictionary<string, List<BoardBl>> boards;
         private Autentication aut;
+        private int idGen = 0;
 
         public BoardFacade(Autentication aut)
         {
@@ -42,7 +45,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         
         public BoardBl CreateBoard(string email, string name)
         {
-            if (String.IsNullOrEmpty(email)  || String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(email)  || string.IsNullOrEmpty(name))
             {
                 throw new Exception("Cannot create board with null or blank arguments");
             }
@@ -54,9 +57,16 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("board name already exist, cant create two baords with the same name");    
             }
-            BoardBl boardToAdd = new BoardBl(name,email);
+            BoardBl boardToAdd = new BoardBl(getIdGen(),name,email);
             boards[email].Add(boardToAdd);
             return boardToAdd;                     
+        }
+
+
+        private int getIdGen()
+        {
+            idGen++;
+            return idGen;
         }
 
         /// <summary>
@@ -237,6 +247,54 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             List<TaskBl> result = new List<TaskBl>(boardToCollectTasks.getColumns(columnOrdinal).Tasks());           
             return result;
         }
+
+
+
+
+
+
+
+
+
+        // FROM HERE NEW FUNCTIONS
+
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// This method returns a list of IDs of all user's boards.
+        /// </summary>
+        /// <param name="email">Email of the user. Must be logged in</param>
+        /// <returns>A response with a list of IDs of all user's boards, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        
+        public List<int> GetUserBoards(string email)
+        {
+            if (!aut.isOnline(email))
+            {
+                throw new Exception("user must be logged in");
+            }
+            if (!boards.ContainsKey(email))
+            {
+                throw new Exception("User does not exist");
+            }
+            List<int> ids = new List<int>();
+            foreach (var board in boards[email])
+            {
+                ids.Add(board.getId());
+            }           
+            return ids;
+        }
+
+
+
+
         /// <summary>
         /// This method adds a user as member to an existing board.
         /// </summary>
@@ -258,7 +316,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 foreach(BoardBl boardBl in kvp.Value)
                 {
-                    if(boardBl.Id == boardID)
+                    if(boardBl.getId() == boardID)
                     {
                         boardBl.Members.Add(email);
                     }
@@ -317,7 +375,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 foreach (BoardBl boardBl in kvp.Value)
                 {
-                    if (boardBl.Id == boardID)
+                    if (boardBl.getId() == boardID)
                     {
                         if(boardBl.Owner == email)
                         {
