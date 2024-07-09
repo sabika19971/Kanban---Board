@@ -14,6 +14,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal UserController userController;
         internal Autentication aut;
         private bool loadUsers = false;
+        
 
         public UserFacade(BoardFacade board , Autentication aut)
         {
