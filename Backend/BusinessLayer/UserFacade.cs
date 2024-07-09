@@ -15,7 +15,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal Autentication aut;
         private bool loadUsers = false;
 
-        public UserFacade(BoardFacade board , Autentication aut)
+        internal UserFacade(BoardFacade board , Autentication aut)
         {
             this.userDictionary = new Dictionary<string, UserBl>();
             userController = new UserController();
@@ -47,7 +47,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">The user email address, used as the username for logging the system.</param>
         /// <param name="password">The user password.</param>
         /// <returns> UserBl new user, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public UserBl Register(string email, string password) 
+        internal UserBl Register(string email, string password) 
         {
             if (String.IsNullOrEmpty(email) || String.IsNullOrEmpty(password))
             {
@@ -71,7 +71,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="password">The password of the user to login</param>
         /// <returns> UserBl logged in user, unless an error occurs (see <see cref="GradingService"/>)</returns>
         
-        public UserBl Login(string email, string password)
+        internal UserBl Login(string email, string password)
         {
             if ( !userDictionary.ContainsKey(email) )
             {             
@@ -87,7 +87,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">The email of the user to log out</param>
         /// <returns> void, unless an error occurs (see <see cref="GradingService"/>)</returns>
         
-        public void Logout(string email)
+        internal void Logout(string email)
         {
             if(!userDictionary.ContainsKey(email))
             {             

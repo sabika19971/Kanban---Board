@@ -16,18 +16,18 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private Autentication aut;
         private int idGen = 0;
 
-        public BoardFacade(Autentication aut)
+        internal BoardFacade(Autentication aut)
         {
             boards = new Dictionary<string, List<BoardBl>>();
             this.aut = aut;
         }
         
-        public void resetBoards (string email)
+        internal void resetBoards (string email)
         {          
             boards.Add(email, new List<BoardBl>());           
         }
 
-        public List<BoardBl> boardList(string email)
+        internal List<BoardBl> boardList(string email)
         {
             if (boards.ContainsKey(email))
             {
@@ -43,7 +43,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="name">The name of the new board</param>
         /// <returns>A BoardBl, unless an error occurs (see <see cref="GradingService"/>)</returns>
         
-        public BoardBl CreateBoard(string email, string name)
+        internal BoardBl CreateBoard(string email, string name)
         {
             if (string.IsNullOrEmpty(email)  || string.IsNullOrEmpty(name))
             {
@@ -75,7 +75,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">Email of the user. Must be logged in and an owner of the board.</param>
         /// <param name="name">The name of the board</param>
         /// <returns> null, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public BoardBl DeleteBoard(string email, string name)
+        internal BoardBl DeleteBoard(string email, string name)
         {
             if (!(boards.ContainsKey(email)))
             {
@@ -103,7 +103,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="limit">The new limit value. A value of -1 indicates no limit.</param>
         /// <returns> true, unless an error occurs (see <see cref="GradingService"/>)</returns>
         
-        public bool LimitColumn(string email, string boardName, int columnOrdinal, int limit)
+        internal bool LimitColumn(string email, string boardName, int columnOrdinal, int limit)
         {
             if (columnOrdinal < 0 || columnOrdinal > 2)
             {
@@ -127,7 +127,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// </summary>
         /// <param name="email">Email of the user. Must be logged in</param>
         /// <returns> A list of taskBl of the user, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public List<TaskBl> InProgressTasks(string email)
+        internal List<TaskBl> InProgressTasks(string email)
         {
             List<TaskBl> result = new List<TaskBl>();
             if ( !boards.ContainsKey(email) )
@@ -160,7 +160,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns> int columLimit, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
-        public int GetColumnLimit(string email, string boardName, int columnOrdinal)
+        internal int GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
             if ( !aut.isOnline(email) ) 
             { 
@@ -191,7 +191,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns> string column's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
-        public string GetColumnName(string email, string boardName, int columnOrdinal)
+        internal string GetColumnName(string email, string boardName, int columnOrdinal)
         {
             if (!aut.isOnline(email)) 
             { 
@@ -225,7 +225,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns> list of taskBl, unless an error occurs (see <see cref="GradingService"/>)</returns>
 
-        public List<TaskBl> GetColumn(string email, string boardName, int columnOrdinal)
+        internal List<TaskBl> GetColumn(string email, string boardName, int columnOrdinal)
         {
             if (columnOrdinal < 0 || columnOrdinal > 2)
             {
@@ -274,7 +274,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">Email of the user. Must be logged in</param>
         /// <returns>A response with a list of IDs of all user's boards, unless an error occurs (see <see cref="GradingService"/>)</returns>
         
-        public List<int> GetUserBoards(string email)
+        internal List<int> GetUserBoards(string email)
         {
             if (!aut.isOnline(email))
             {
@@ -301,7 +301,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">The email of the user that joins the board. Must be logged in</param>
         /// <param name="boardID">The board's ID</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public void JoinBoard(string email, int boardID)
+        internal void JoinBoard(string email, int boardID)
         {
             if (!aut.isOnline(email))
             {
@@ -333,7 +333,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="newOwnerEmail">Email of the new owner</param>
         /// <param name="boardName">The name of the board</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public void TransferOwnership(string currentOwnerEmail, string newOwnerEmail, string boardName)
+        internal void TransferOwnership(string currentOwnerEmail, string newOwnerEmail, string boardName)
         {
             if (!aut.isOnline(currentOwnerEmail))
             {
@@ -359,7 +359,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">The email of the user. Must be logged in</param>
         /// <param name="boardID">The board's ID</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public void LeaveBoard(string email, int boardID)
+        internal void LeaveBoard(string email, int boardID)
         {
 
             if (!aut.isOnline(email))
