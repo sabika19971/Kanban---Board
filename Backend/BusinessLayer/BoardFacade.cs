@@ -14,12 +14,13 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     {
         private Dictionary<string, List<BoardBl>> boards;
         private Autentication aut;
-        private int idGen = 0;
+        private int idGen;
 
         public BoardFacade(Autentication aut)
         {
             boards = new Dictionary<string, List<BoardBl>>();
             this.aut = aut;
+            getHighestId();
         }
         
         public void resetBoards (string email)
@@ -68,6 +69,22 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             idGen++;
             return idGen;
         }
+        private void getHighestId() // this function is for set the board idGen when uploading the boards from DB 
+        {
+            int maxId = 0;
+            foreach (var user in boards.Values)
+            {
+                foreach (BoardBl boardOfUser in user)
+                {
+                    if (boardOfUser.getId() > maxId)
+                    {
+                        maxId = boardOfUser.getId();
+                    }
+                }
+
+            }
+            idGen = maxId;
+        }
 
         /// <summary>
         /// This method deletes a board.
@@ -90,6 +107,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("only owner can delete the board");
             }
+            boardToDelete.delete();
             boards[email].Remove(boardToDelete);
             return null;          
         }
@@ -318,7 +336,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 {
                     if(boardBl.getId() == boardID)
                     {
-                        boardBl.Members.Add(email);
+                        boardBl.addMemberToBoard(email);
+                       
                     }
                 }
             }
@@ -348,6 +367,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user does not have a board in this name");
             }
+            boardToChangeOwner.changeOwner(currentOwnerEmail, newOwnerEmail);
             boardToChangeOwner.Owner = newOwnerEmail;
            
 

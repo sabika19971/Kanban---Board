@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using IntroSE.Kanban.Backend.DataAxcessLayer;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,6 +60,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("only assingee can edit task");
             }
+            
             taskToEdit.Description = description;
             return taskToEdit;                     
         }
@@ -94,7 +96,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("must be a member in the board to add a task");
             }
-            TaskBl taskToAdd = new TaskBl(dueDate, title, description, boardToBeAdded.getNumOfAllTasks()+1);
+            TaskBl taskToAdd = new TaskBl(dueDate, title, description, boardToBeAdded.getNumOfAllTasks()+1 , boardToBeAdded.getId());
             boardToBeAdded.AddTask(taskToAdd);
             return taskToAdd;                                     
         }

@@ -6,19 +6,36 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
+    using IntroSE.Kanban.Backend.DataAxcessLayer;
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
     internal class ColumnBl
     {
+        
         private int id;
         private List<TaskBl> tasks;
         private int maxTasks;
         private int currTask;
+        private ColumnDAO columnDAO;
+        
 
+        internal ColumnBl(int id, int boardId)
+        {
+            columnDAO = new ColumnDAO(id, boardId,-1,0);
+            columnDAO.persist();
+
+            this.id = id;
+            this.tasks = new List<TaskBl>();
+            currTask = 0;
+            maxTasks = -1;
+        }
+        // maybe need to earase this constructor.
         internal ColumnBl(int id)
         {
+          
+
             this.id = id;
             this.tasks = new List<TaskBl>();
             currTask = 0;
@@ -47,6 +64,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 if (value >= currTask)
                 {
+                    columnDAO.MaxTasks=value;
                     maxTasks = value;
                 }
                 else
@@ -62,6 +80,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 if(currTask + 1 <= maxTasks)
                 {
+                    columnDAO.CurrTask=currTask+1;
                     currTask++;
                     tasks.Add(task);
                 }            
@@ -72,6 +91,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             else
             {
+                columnDAO.CurrTask = currTask;
                 currTask++;
                 tasks.Add(task);
             }
@@ -90,6 +110,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             if (tasks.Contains(taskToAdvance))
             {
+                columnDAO.CurrTask--;
                 tasks.Remove(taskToAdvance);
                 currTask = currTask - 1;
             }
@@ -116,9 +137,33 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 if(task.Assignee == email)
                 {
+                    
                     task.Assignee = null;
                 }
             }
+        }
+
+        internal int maxTasksId()
+        {
+            int maxId = 0;
+            foreach (TaskBl task in tasks )
+            {
+                if (task.Id > maxId)
+                {
+                    maxId = task.Id;
+                }
+            }
+            return maxId;
+        }
+
+        internal void delete()
+        {
+            foreach (var task in tasks)
+            {
+                task.delete();
+            }
+            columnDAO.delete();
+            
         }
     }
 

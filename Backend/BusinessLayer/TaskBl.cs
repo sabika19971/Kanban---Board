@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
+    using IntroSE.Kanban.Backend.DataAxcessLayer;
     using Newtonsoft.Json;
     using System;
+    using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.SymbolStore;
     using System.Reflection;
 
@@ -21,9 +23,14 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string description;
         private int columnOrdinal;
         private string assignee;
+        private TaskDAO taskDAO;
 
-        internal TaskBl(DateTime dueDate, string title, string description, int id)
+        internal TaskBl(DateTime dueDate, string title, string description, int id , int boardId)
         {
+            taskDAO = new TaskDAO(id,boardId,DateTime.Now,dueDate,title,description,0,null);
+            taskDAO.persist();
+
+
             this.id = id;
             this.dueDate = dueDate;
             this.creationTime = DateTime.Now;
@@ -43,6 +50,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
                     if (legalColumnForEdit(columnOrdinal))
                     {
+                       
+                        taskDAO.Title = value;
                         title = value;
                     }
                     else
@@ -67,6 +76,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 {                   
                     if (legalColumnForEdit(columnOrdinal))
                     {
+                        taskDAO.Description = value;
                         description = value;
                     }
                     else
@@ -84,13 +94,34 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal string Assignee
         {
             get { return assignee; }
-            set { assignee = value; }
+            set {
+                
+                
+                taskDAO.Assignee = value;
+                assignee = value;
+            
+            
+            
+            }
     
         }
         internal DateTime DueDate
         {
             get { return dueDate; }
-            set { dueDate = value; }
+            set {
+                if(dueDate.CompareTo(CreationTime)< 0 )
+                {
+                    throw new Exception("cant set time to past");
+                }  
+                else if(value.Equals(null)) 
+                {
+                    throw new ArgumentException("cant set dueDate to null");
+                }
+                taskDAO.DueDate = value;
+                dueDate = value;
+            
+            
+            }
         }
 
         internal DateTime CreationTime
@@ -109,6 +140,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 }
                 else
                 {
+                    taskDAO.ColumnOrdinal = value;
                     columnOrdinal = value;
                 }
             }
@@ -142,17 +174,27 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             if(assignee == null)
             {
+                taskDAO.Assignee= emailAssignee;
                 Assignee = emailAssignee;
             }
             else if (!Assignee.Equals(email))
             {
                 throw new Exception("only assingee can assigne new assingee");
             }
-            else { Assignee = emailAssignee; }
+            else 
+            {
+                taskDAO.Assignee = emailAssignee;
+                Assignee = emailAssignee; 
+            }
         }
         internal bool allowToEditTask (string email)
         {
             return assignee == email || assignee==null;
+        }
+
+        internal void delete()
+        {
+            taskDAO.delete();
         }
     }
 
