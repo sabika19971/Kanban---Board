@@ -10,6 +10,7 @@ namespace IntroSE.Kanban.Backend.DataExcessLayer
 {
     internal class UserDAO
     {
+        //  --------- name of fields ------------------//
         internal string Email { get; set; } // maybe should be public
         private string password;
         internal string Password { 
@@ -21,11 +22,15 @@ namespace IntroSE.Kanban.Backend.DataExcessLayer
                 }
                 password = value;
             }
-        } 
+        }
+        // ----------- name of columns ----------------// 
         internal string EmailColumnName = "Email";
         internal string PasswordColumnName = "Password";
-        private UserController UserController  { get; set; }
+
+        // ---------- field for insert method ----------//
         internal bool isPersistent = false;
+        // ----------- the controller ------------------// 
+        private UserController UserController  { get; set; }
 
 
 

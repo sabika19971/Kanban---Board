@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IntroSE.Kanban.Backend.DataAxcessLayer;
+using IntroSE.Kanban.Backend.DataExcessLayer;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -12,22 +14,35 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     {
         private string name;
         private ColumnBl [] columns = new ColumnBl[3];
-        private int sumTask = 0;
+        private int sumTask; //inisialized with the function getHighestSumMax in cunstracutor 
         private int id; 
         private List<string> members;
         private string owner;
+        private BoardDAO boardDAO;
+        private UserBoardssStatusDAO userBoardssStatusDAO;
         
+
 
 
         internal BoardBl(int id, string name ,string email)
         {
+            boardDAO = new BoardDAO(id,name,email);
+            boardDAO.persist();
+             userBoardssStatusDAO = new UserBoardssStatusDAO(email,id,1);
+            userBoardssStatusDAO.persist();
+            
+            columns[0]= new ColumnBl(0 , id);
+            columns[1] = new ColumnBl(1,id);
+            columns[2] = new ColumnBl(2, id);
+
             this.name = name;
-            columns[0]= new ColumnBl(0);
-            columns[1] = new ColumnBl(1);
-            columns[2] = new ColumnBl(2);  
-            this.id = id;
+            this.id = id; 
             this.members = new List<string>();
             this.owner = email;
+            getHighestSumMax();
+            
+
+
 
         }
 
@@ -73,6 +88,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             get { return owner; }
             set { if (isMember(value)){
+                   
+                 
                     owner = value;
                 }
                 else
@@ -93,12 +110,15 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         internal void AddTask(TaskBl taskToAdd)
         {
+
             columns[0].AddTask(taskToAdd);
+            
             sumTask++;
         }
 
         internal void AdvanceTask(TaskBl taskToAdvance)
-        {
+        {   
+            
             columns[taskToAdvance.ColumnOrdinal].AddTask(taskToAdvance);
             columns[taskToAdvance.ColumnOrdinal-1].RemoveTask(taskToAdvance);
         }
@@ -126,12 +146,60 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
            this.getColumns(0).leaveBoard(email);
            this.getColumns(1).leaveBoard(email);
+            UserBoardssStatusDAO userToLeaveBoard = new UserBoardssStatusDAO(email,this.id);
+            userToLeaveBoard.delete();
             members.Remove(email);
         }
 
         internal bool isMember(string email)
         {
             return members.Contains(email);
+        }
+
+        private void getHighestSumMax()
+        {
+            int maxSumMax = 0;
+            for (int i = 0; i < columns.Length; i++)
+            {
+                if(columns[i].maxTasksId()> maxSumMax)
+                {
+                    maxSumMax = columns[i].maxTasksId();
+                }  
+
+            }
+            sumTask = maxSumMax;
+
+        }
+
+        internal void delete()
+        {
+            for (int i = 0; i < columns.Length; i++)
+            {
+                columns[i].delete();
+            }
+            userBoardssStatusDAO.delete();
+            boardDAO.delete();
+        }
+
+        internal void addMemberToBoard(string email)
+        {
+            foreach(var member in members)
+            {
+                if (email == member)
+                {
+                    throw new ArgumentException("member already exist in the board");
+                }
+            }
+            UserBoardssStatusDAO userToAddAsMember = new UserBoardssStatusDAO(email,getId(),0);
+            userToAddAsMember.persist();
+            
+           Members.Add(email);
+        }
+
+        internal void changeOwner(string currentOwnerEmail, string newOwnerEmail)
+        {
+           
+            userBoardssStatusDAO.changeOwner(currentOwnerEmail, newOwnerEmail);
         }
     }
 }
