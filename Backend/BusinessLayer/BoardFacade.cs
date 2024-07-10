@@ -1,4 +1,5 @@
 ﻿using EllipticCurve.Utils;
+using IntroSE.Kanban.Backend.DataAxcessLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,13 +16,41 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private Dictionary<string, List<BoardBl>> boards;
         private Autentication aut;
         private int idGen;
+        private BoardController boardController;
+        private ColumnController columnController; // didnt find a way to implement DeleteData without holding this instance
+        private bool loadBoards = false;
 
         internal BoardFacade(Autentication aut)
         {
             boards = new Dictionary<string, List<BoardBl>>();
+            this.boardController = new BoardController();
+            this.columnController = new ColumnController();
             this.aut = aut;
-            getHighestId();
+            //LoadBoards(); LOAD ONLY FROM GRADINGSERVICE
+            //getHighestId(); ASSENTIAL
         }
+
+        internal void LoadBoards()
+        {
+            List<BoardDAO> boardDAOs = boardController.SelectAllBoards();
+            foreach (var boardDAO in boardDAOs)
+            {
+                if ( !this.boards.ContainsKey(boardDAO.Owner))
+                {
+                    resetBoards(boardDAO.Owner); // WILL NEED TO BE CHANGED IF WE LOAD A USER WHEN HE IS ALREADY ON THE RAM
+                }
+                this.boards[boardDAO.Owner].Add(new BoardBl(boardDAO));
+                Console.WriteLine("loaded " + boardDAO.Name + " used by user " + boardDAO.Owner + " from the DB");
+            }
+            loadBoards = true;
+        }
+
+        internal void DeleteBoards()
+        {
+            columnController.DeleteAllColumns();
+            boardController.DeleteAllBoards();
+        }
+            
         
         internal void resetBoards (string email)
         {          
@@ -69,7 +98,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             idGen++;
             return idGen;
         }
-        private void getHighestId() // this function is for set the board idGen when uploading the boards from DB 
+        internal void getHighestId() // this function is for set the board idGen when uploading the boards from DB 
         {
             int maxId = 0;
             foreach (var user in boards.Values)

@@ -13,82 +13,107 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         internal int Id { get;}
         internal int BoardId { get; }
         internal DateTime CreationTime { get; }
-        internal DateTime DueDate { get=>DueDate; 
-            
+
+        DateTime dueDate;
+        string title;
+        string description;
+        string assignee;
+        int columnOrdinal;
+        internal DateTime DueDate 
+        { 
+            get => dueDate;           
             set
             {
                 if (!isPersistent)
                 {
-                    throw new InvalidOperationException("cand edit a task that is not in the Db");
+                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
                 }
-                taskController.UpdateTaskDueDate(Id,BoardId, DueDateColumnName, value);
-                DueDate = value; 
-            
-            
+                else
+                {
+                    taskController.UpdateTaskDueDate(Id, BoardId, DueDateColumnName, value);
+                }
+                dueDate = value;
             }
-                }
-        internal string Title {  get=> Title; 
+        }
+        internal string Title 
+        {  
+            get=> title; 
             set
             {
                 if (!isPersistent)
                 {
-                    throw new InvalidOperationException("cand edit a task that is not in the Db");
+                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
                 }
-                taskController.Update(Id,BoardId, TitleColumnName, value);
-                Title = value;
+                else
+                {
+                    taskController.Update(Id, BoardId, TitleColumnName, value);                
+                }
+                title = value;
+
             } 
         }
+
         internal string Description
         {
-            get => Description;
-
+            get => description;
             set
             {
                 if (!isPersistent)
                 {
-                    throw new InvalidOperationException("cand edit a task that is not in the Db");
+                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
                 }
-                taskController.Update(Id,BoardId, DescriptionColumnName, value); 
-                Description = value;
+                else
+                {
+                    taskController.Update(Id, BoardId, DescriptionColumnName, value);
+                }
+                description = value;
             }
         }
-        internal int ColumnOrdinal { get => ColumnOrdinal;
+
+        internal int ColumnOrdinal 
+        { 
+            get => columnOrdinal;
             set 
             {
                 if (!isPersistent)
                 { 
-                    throw new InvalidOperationException("cand edit a task that is not in the Db");
+                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
                 }
-                taskController.UpdateColumnOrdinal(Id, ColumnOrdinalColumnName, value);
-                ColumnOrdinal = value;
-
+                else
+                {
+                    taskController.UpdateColumnOrdinal(Id, ColumnOrdinalColumnName, value);
+                }
+                columnOrdinal = value;
             }
         }
-        internal string Assignee 
-        {  get=>Assignee;
 
+        internal string Assignee 
+        {  
+            get => assignee;
             set
             {
                 if (!isPersistent)
                 {
-                    throw new InvalidOperationException("cand edit a task that is not in the Db");
+                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
                 }
-                taskController.Update(Id,BoardId, AssigneeColumnName, value);
-                Assignee = value;
+                else
+                {
+                    taskController.Update(Id, BoardId, AssigneeColumnName, value);
+                }
+                assignee = value;
             }
-
         }
-       
+
 
 
         // ----------- names of columns ----------- // 
-        internal string BoardIdColumnName = "BoradId";
         internal string idColumnName = "Id";
+        internal string BoardIdColumnName = "BoardId";
+        internal string ColumnOrdinalColumnName = "ColumnOrdinal";
         internal string CreationTimeColumnName = "CreationTime";
         internal string DueDateColumnName = "DueDate";
         internal string TitleColumnName = "Title";
         internal string DescriptionColumnName = "Description";
-        internal string ColumnOrdinalColumnName = "ColumnOrdinal";
         internal string AssigneeColumnName = "Assignee";
 
 
@@ -98,7 +123,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         //------------ field for insert method --------//
          internal bool isPersistent = false;
 
-        public TaskDAO(int id, int boardId, DateTime creationTime, DateTime dueDate, string title, string description, int columnOrdinal, string assignee)
+        public TaskDAO(int id, int boardId, int columnOrdinal, string title, string description, DateTime creationTime, DateTime dueDate, string assignee)
         {
 
             taskController = new TaskController();
@@ -112,7 +137,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             this.Title = title;
             this.Description = description;
             this.ColumnOrdinal = columnOrdinal;
-            this.AssigneeColumnName = assignee;
+            this.Assignee = assignee;
 
 
         }
@@ -123,8 +148,10 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
         public void persist()
         {
-            taskController.Insert(this);
-            isPersistent = true;
+            if (!isPersistent) { 
+                taskController.Insert(this);
+                isPersistent = true;
+            }
         }
 
         internal void delete()

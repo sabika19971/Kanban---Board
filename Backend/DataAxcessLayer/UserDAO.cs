@@ -18,7 +18,7 @@ namespace IntroSE.Kanban.Backend.DataExcessLayer
             set
             {
                 if (isPersistent) { 
-                    UserController.Update(Email, PasswordColumnName, value); // (id, column, newValue)
+                    //UserController.Update(Email, PasswordColumnName, value); // (id, column, newValue) MAKING BUGS THAT WERENT BEFORE 
                 }
                 password = value;
             }

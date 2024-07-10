@@ -78,10 +78,12 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 try
                 {
                     connection.Open();
-                    string insert = $"INSERT INTO {TableName} ({task.BoardIdColumnName}, {task.idColumnName}, {task.CreationTimeColumnName}, {task.DueDateColumnName}, " +
-                                    $"{task.TitleColumnName}, {task.DescriptionColumnName}, {task.ColumnOrdinalColumnName}, {task.AssigneeColumnName}) " +
-                                    $"VALUES (@boardIdVal, @idTaskVal, @creationTimeVal, @dueDateVal, @titleVal, @descriptionVal, @columnOrdinalVal, @assigneeVal)";
-
+                    string insert = $"INSERT INTO {TableName} ({task.idColumnName}, {task.BoardIdColumnName}, {task.ColumnOrdinalColumnName}, {task.TitleColumnName}, {task.DescriptionColumnName}, {task.CreationTimeColumnName}, {task.DueDateColumnName}, {task.AssigneeColumnName}) VALUES (@idTaskVal, @boardIdVal, @columnOrdinalVal, @titleVal, @descriptionVal, @creationTimeVal, @dueDateVal, @assigneeVal)";
+                    /*
+                    $"INSERT INTO {TableName} ({task.idColumnName}, {task.BoardIdColumnName}, {task.ColumnOrdinalColumnName}, {task.TitleColumnName}, " +
+                    $"{task.DescriptionColumnName}, {task.CreationTimeColumnName}, {task.DueDateColumnName}, {task.AssigneeColumnName}) " +
+                    $"VALUES (@idTaskVal, @boardIdVal, @columnOrdinalVal, @titleVal, @descriptionVal, @creationTimeVal, @dueDateVal, @assigneeVal)";
+                    */
                     using (var command = new SQLiteCommand(insert, connection))
                     {
                         command.Parameters.AddWithValue("@boardIdVal", task.BoardId);
@@ -184,8 +186,29 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
+        public bool DeleteAllTasks()
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"DELETE from {TableName} ;";
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"
+                    res = command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to load user from the DB");
+                }
+            }
+            Console.WriteLine(res);
+            return res > 0;
+        }
 
-        public TaskDAO Select(Dictionary<string, string> filters)
+
+        public TaskDAO SelectFilters(Dictionary<string, string> filters)
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {
@@ -235,6 +258,42 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                         dataReader.Close(); // Close the data reader
                     }
                 }
+            }
+        }
+
+        public List<TaskDAO> SelectTasks(int boardId, int columnOrdinal)  // Dictionary<string,string> if we want many filters
+        {
+            List<TaskDAO> tasks = new List<TaskDAO>();
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"select * from {TableName} where BoardId=@BoardIdVal AND ColumnOrdinal=@ColumnOrdinalVal;";
+                command.Parameters.AddWithValue("@BoardIdVal", boardId);
+                command.Parameters.AddWithValue("@ColumnOrdinalVal", columnOrdinal);
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"  
+                    dataReader = command.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        tasks.Add(ConvertReaderToObject(dataReader));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to load tasks from the DB");
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
+                }
+
+                return tasks;
             }
         }
 
@@ -304,11 +363,11 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         private TaskDAO ConvertReaderToObject(SQLiteDataReader reader)
         {
             // convert from string in de DB into DateTime Object
-            DateTime creationTime = DateTime.Parse(reader.GetString(2));
-            DateTime dueDate = DateTime.Parse(reader.GetString(3));
+            DateTime creationTime = DateTime.Parse(reader.GetString(5));
+            DateTime dueDate = DateTime.Parse(reader.GetString(6));
+            string assignee = reader.IsDBNull(7) ? string.Empty : reader.GetString(7); // Checks if assignee is null or a string
 
-            return new TaskDAO(reader.GetInt32(0), reader.GetInt32(1)
-                ,creationTime,dueDate,reader.GetString(4),reader.GetString(5),reader.GetInt32(6),reader.GetString(7));
+            return new TaskDAO(reader.GetInt32(0), reader.GetInt32(1) , reader.GetInt32(2), reader.GetString(3), reader.GetString(4), creationTime,dueDate,assignee);
         }
 
        

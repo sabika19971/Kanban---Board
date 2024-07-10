@@ -14,7 +14,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
     {
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
-        private const string TableName = "Borads";
+        private const string TableName = "Boards";
         string dbFileName = "KanbanDB.db";
         string solutionDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
 
@@ -107,6 +107,28 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
+        public bool DeleteAllBoards()
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+
+                command.CommandText = $"DELETE from {TableName};";
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"
+                    res = command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to Delete board from the DB");
+                }
+            }
+            Console.WriteLine(res);
+            return res > 0;
+        }
+
 
         public BoardDAO Select(Dictionary<string, string> filters)
         {
@@ -162,7 +184,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         }
 
 
-        public List<BoardDAO> SelectAllUsers() // will be used for LoadUsers
+        public List<BoardDAO> SelectAllBoards() // will be used for LoadUsers
         {
             List<BoardDAO> boards = new List<BoardDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))

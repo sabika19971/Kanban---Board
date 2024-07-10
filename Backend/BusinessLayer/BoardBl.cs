@@ -20,33 +20,46 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string owner;
         private BoardDAO boardDAO;
         private UserBoardssStatusDAO userBoardssStatusDAO;
-        
+        private ColumnController ColumnController = new ColumnController();
 
 
 
         internal BoardBl(int id, string name ,string email)
         {
             boardDAO = new BoardDAO(id,name,email);
+            //boardDAO.isPersisted = true; 
             boardDAO.persist();
-             userBoardssStatusDAO = new UserBoardssStatusDAO(email,id,1);
-            userBoardssStatusDAO.persist();
+            //userBoardssStatusDAO = new UserBoardssStatusDAO(email,id,1);
+            //userBoardssStatusDAO.persist();
             
-            columns[0]= new ColumnBl(0 , id);
+            columns[0]= new ColumnBl(0,id);
             columns[1] = new ColumnBl(1,id);
-            columns[2] = new ColumnBl(2, id);
+            columns[2] = new ColumnBl(2,id);
 
             this.name = name;
             this.id = id; 
             this.members = new List<string>();
             this.owner = email;
             getHighestSumMax();
-            
-
-
-
         }
 
-       internal List<string> Members
+        internal BoardBl(BoardDAO boardDAO)
+        {
+            this.boardDAO = boardDAO;
+            this.boardDAO.isPersisted = true;
+            this.id = boardDAO.Id;
+            this.name = boardDAO.Name;
+            this.owner = boardDAO.Owner;
+            this.members = new List<string>(); // NEEDS TO BE LOADED after dealing with the connecting table
+            columns[0] = new ColumnBl(ColumnController.Select(0,this.id));      
+            columns[1] = new ColumnBl(ColumnController.Select(1, this.id));
+            columns[2] = new ColumnBl(ColumnController.Select(2, this.id));
+            getHighestSumMax();
+            //userBoardssStatusDAO = new UserBoardssStatusDAO(email, id, 1);         WILL BE ADDED AFTER WE WILL DEAL WITH THE CONNECTING TABLE
+            //userBoardssStatusDAO.persist();
+        }
+
+        internal List<string> Members
         {
             get { return members; }
         }
@@ -108,12 +121,15 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             return false;
         }
 
-        internal void AddTask(TaskBl taskToAdd)
+        internal bool canAddTask()
         {
+            return columns[0].canAddTask();
+        }
 
+        internal void AddTask(TaskBl taskToAdd)
+        {  
             columns[0].AddTask(taskToAdd);
-            
-            sumTask++;
+            sumTask++;      
         }
 
         internal void AdvanceTask(TaskBl taskToAdvance)
@@ -168,7 +184,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
             }
             sumTask = maxSumMax;
-
         }
 
         internal void delete()

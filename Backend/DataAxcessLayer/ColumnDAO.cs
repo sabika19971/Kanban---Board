@@ -12,35 +12,43 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         //  --------- name of fields ------------------//
         internal int Id { get;} // 0 - "beckLog" 1 -"inProgress" 2- "done"
         internal int BoardId {  get;} // FK, PK.
-        internal int MaxTasks { get => MaxTasks;
+        private int maxTasks;
+        internal int MaxTasks
+        {
+            get => maxTasks;
             set
             {
                 if (!isPersistent)
                 {
-                    throw new InvalidOperationException("cant eddit a column that is not in the database");
+                    Console.WriteLine("column isnt in the DB"); // will be changed after LoadColumns  //throw new InvalidOperationException("cant edit a column that is not in the database");
                 }
-                columnController.Update(Id,BoardId, maxTasksColumnName, value);
-                MaxTasks = value;
+                else
+                {
+                    columnController.Update(Id, BoardId, maxTasksColumnName, value);
+                }
+                maxTasks = value;
             }
+        } 
+        // the num of tasks can be added to a column.
 
-        
-        
-        
-        } // the num of tasks can be added to a column.
-        internal int CurrTask { get => CurrTask;
+        private int currTask;
+        internal int CurrTask { get => currTask;
             set
             {
                 if (!isPersistent)
                 {
-                    throw new InvalidOperationException("cant eddit a column that is not in the database");
+                    Console.WriteLine("column isnt in the DB"); // will be changed after LoadColumns //throw new InvalidOperationException("cant edit a column that is not in the database");
                 }
-                columnController.Update(Id,BoardId, currTaskColumnName, value);
-                CurrTask = value;
+                else
+                {
+                    columnController.Update(Id, BoardId, currTaskColumnName, value);
+                }
+                currTask = value;
             }
-        
-        
-        
-        } // curr task in the column. ---- maybe need to delete
+        } 
+
+
+        // curr task in the column. ---- maybe need to delete
         // ----------- name of columns ----------------// 
         internal string idColumnName = "Id";
         internal string boardIdColumnName = "BoardId";
@@ -49,7 +57,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
 
         // ---------- field for insert method ----------//
-        internal bool isPersistent = false;
+        internal bool isPersistent = false; 
 
         // ----------- the controller ------------------// 
         private ColumnController columnController { get; set; }
@@ -64,14 +72,16 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             this.CurrTask = currTask;
         
         }
-        
+
         /// <summary>
         /// insert the values into the DB
         /// </summary>
         public void persist()
         {
-            columnController.Insert(this);
-            isPersistent = true;
+            if (!isPersistent) { 
+                columnController.Insert(this);
+                isPersistent = true;
+            }
         }
 
         internal void delete()

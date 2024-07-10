@@ -10,6 +10,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
 
     internal class ColumnBl
     {
@@ -19,6 +20,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private int maxTasks;
         private int currTask;
         private ColumnDAO columnDAO;
+        private int boardId; // new
+        private TaskController taskController = new TaskController(); //new
         
 
         internal ColumnBl(int id, int boardId)
@@ -32,6 +35,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             maxTasks = -1;
         }
         // maybe need to earase this constructor.
+        /*
         internal ColumnBl(int id)
         {
           
@@ -40,6 +44,23 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.tasks = new List<TaskBl>();
             currTask = 0;
             maxTasks = -1;
+        }
+        */
+
+        internal ColumnBl(ColumnDAO column)
+        {
+            this.columnDAO = column;
+            columnDAO.isPersistent = true;
+            this.id = column.Id;
+            this.boardId = column.BoardId;
+            this.maxTasks = column.MaxTasks;
+            this.currTask = column.CurrTask;
+            this.tasks = new List<TaskBl>();
+            List<TaskDAO> taskDAOs = taskController.SelectTasks(this.boardId,this.id);
+            foreach (var taskDAO in taskDAOs)
+            {
+                tasks.Add(new TaskBl(taskDAO));
+            }
         }
 
         internal int Id
@@ -74,6 +95,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
+        internal bool canAddTask()
+        {
+            return (maxTasks == -1 || currTask + 1 <= maxTasks);
+        }
+        
         internal void AddTask(TaskBl task)
         {
             if (maxTasks != -1)
@@ -91,7 +117,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             else
             {
-                columnDAO.CurrTask = currTask;
+                columnDAO.CurrTask = currTask+1;
                 currTask++;
                 tasks.Add(task);
             }

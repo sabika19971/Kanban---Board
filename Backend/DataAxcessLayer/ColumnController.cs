@@ -93,7 +93,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             using (var connection = new SQLiteConnection(this._connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
-                command.CommandText = $"DELETE from {TableName} where BoardId=@BoardId AND Id=@Id;";
+                command.CommandText = $"DELETE from {TableName} where Id=@Id AND BoardId=@BoardId;";
                 command.Parameters.AddWithValue("@BoardId", boardId);
                 command.Parameters.AddWithValue("@Id", Id);
                 try
@@ -110,8 +110,67 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
+        public bool DeleteAllColumns()
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"DELETE from {TableName};";
 
-        public ColumnDAO Select(Dictionary<string, string> filters)
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"
+                    res = command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to load user from the DB");
+                }
+            }
+            Console.WriteLine(res);
+            return res > 0;
+        }
+
+
+        public ColumnDAO Select(int id, int boardId)  
+        {
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"select * from {TableName} where Id=@IdVal AND BoardId=@BoardIdVal;";
+                command.Parameters.AddWithValue("@IdVal", id);
+                command.Parameters.AddWithValue("@BoardIdVal", boardId);
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"  
+                    dataReader = command.ExecuteReader();
+                    if (dataReader.Read()) // indicates if there is a line to read or not
+                    {
+                        return ConvertReaderToObject(dataReader);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to load column from the DB");
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
+                }
+            }
+        }
+
+        public ColumnDAO SelectFeatures(Dictionary<string, string> filters)
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {
@@ -203,7 +262,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
         private ColumnDAO ConvertReaderToObject(SQLiteDataReader reader)
         {
-            return new ColumnDAO(reader.GetInt32(0), reader.GetInt32(1),reader.GetInt32(2), reader.GetInt32(2));
+            return new ColumnDAO(reader.GetInt32(0), reader.GetInt32(1),reader.GetInt32(2), reader.GetInt32(3));
         }
     }
 }

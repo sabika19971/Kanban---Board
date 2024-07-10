@@ -296,7 +296,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="taskID">The task to be updated identified a task ID</param>        
         /// <param name="emailAssignee">Email of the asignee user</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string AssignTask(string email, string boardName, int columnOrdinal, int taskID, string emailAssignee) // TODO
+        public string AssignTask(string email, string boardName, int columnOrdinal, int taskID, string emailAssignee) // TODO needs implemetation
         {
             throw new NotImplementedException();
         }
@@ -306,7 +306,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// </summary>
         /// <param name="boardId">The board's ID</param>
         /// <returns>A response with the board's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string GetBoardName(int boardId) // TODO
+        public string GetBoardName(int boardId) // TODO needs implemetation
         {
             throw new NotImplementedException();
         }
@@ -330,11 +330,11 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         ///</para>
         /// </summary>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string LoadData()
+        public string LoadData() // TODO not finished
         {
-            throw new NotImplementedException();
+            return SF.LoadData();
         }
-
+        
         ///<summary>This method deletes all persisted data.
         ///<para>
         ///<b>IMPORTANT:</b> 
@@ -342,9 +342,9 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         ///</para>
         /// </summary>
         ///<returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string DeleteData()
+        public string DeleteData() // TODO not finished
         {
-            throw new NotImplementedException();
+            return SF.DeleteData();
         }
     }
 }

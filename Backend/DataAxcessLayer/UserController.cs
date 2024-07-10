@@ -11,7 +11,7 @@ using IntroSE.Kanban.Backend.BusinessLayer;
 
 namespace IntroSE.Kanban.Backend.DataExcessLayer
 {
-    internal class UserController
+    internal class UserController                       // FUNCTIONS SHOULD BE INTERNAL IN ALL CONTROLLERS
     {
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
@@ -103,6 +103,26 @@ namespace IntroSE.Kanban.Backend.DataExcessLayer
             return res > 0;
         }
 
+        public bool DeleteAllUsers()
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"DELETE from {TableName};";         
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"
+                    res = command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to load user from the DB");
+                }
+            }
+            Console.WriteLine(res);
+            return res > 0;
+        }
 
         public UserDAO Select(string email)  // Dictionary<string,string> if we want many filters
         {
@@ -175,6 +195,8 @@ namespace IntroSE.Kanban.Backend.DataExcessLayer
                 return users;
             }
         } 
+        
+
         
 
         private UserDAO ConvertReaderToObject(SQLiteDataReader reader)

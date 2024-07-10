@@ -107,17 +107,33 @@ namespace ConsoleApp2
             // string create_board_user1_exist = g.CreateBoard("sabika@gmail.com", "my board");
 
 
-            // DATABASE TESTS
-            //string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
-            //string Register_user02 = g.Register("sabika@gmail.com", "@1235askjhdWg");
-            string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
-            string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO");
-            string createBoard1 = g.CreateBoard("kfirmiz@gmail.com", "second");
-            string createBoard2 = g.CreateBoard("kfirmiz@gmail.com", "third");
-            string getIds = g.GetUserBoards("kfirmiz@gmail.com");
-            string limit = g.LimitColumn("kfirmiz@gmail.com","TODO",0,2);
-            
+
+
+
+
+            // ------------------------------ DATABASE TESTS ----------------------------
         
+            //string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
+            //string register = g.Register("second@gmail.com", "Kfir1%");
+            //string loadData = g.LoadData();
+            //string deleteData = g.DeleteData();
+
+            //string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
+            //string login1 = g.Login("second@gmail.com", "Kfir1%");
+            //string createBoard = g.CreateBoard("second@gmail.com", "TODO1");
+            //string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO1");
+            //string addtask = g.AddTask("kfirmiz@gmail.com", "TODO1", "first", "It should work this time", new DateTime(2024, 8, 9));
+            //string addtask1 = g.AddTask("second@gmail.com", "TODO1", "first", "It should work this time", new DateTime(2024, 8, 9));
+
+            //string limit = g.LimitColumn("kfirmiz@gmail.com", "TODO1", 0, 2);
+            //string limit1 = g.LimitColumn("second@gmail.com", "TODO1", 1, 4);
+
+            //string createBoard1 = g.CreateBoard("kfirmiz@gmail.com", "second");
+            //string createBoard2 = g.CreateBoard("kfirmiz@gmail.com", "third");
+            //string getIds = g.GetUserBoards("kfirmiz@gmail.com");
+
+            // --------------------------------------------------------------------------
+
         }
     }
 }

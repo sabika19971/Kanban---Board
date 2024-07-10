@@ -36,7 +36,25 @@ public class ServiceFactory
         BS = new BoardService(bf, Log);
         TS = new TaskService(tf, Log);
     }
-  
+    
+    public string LoadData() // NEED TO ADD TRY CATCH AND JASON SERILIZER INSTEAD OF RETURNING TODO
+    {
+        uf.LoadUsers();
+        bf.LoadBoards();
+        bf.getHighestId();
+
+        return "TODO";
+    }
+    // ALL CONTROLLERS SHOULD BE INTERNAL NOT PUBLIC NEED TO CHANGE
+    public string DeleteData()
+    {
+        tf.DeleteTasks();
+        uf.DeleteUsers();
+        bf.DeleteBoards();
+
+        return "TODO";
+    }
+
     public UserService UserService => US;
     public BoardService BoardService => BS;
     public TaskService TaskService => TS;

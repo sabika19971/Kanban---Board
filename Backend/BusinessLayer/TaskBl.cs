@@ -27,7 +27,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         internal TaskBl(DateTime dueDate, string title, string description, int id , int boardId)
         {
-            taskDAO = new TaskDAO(id,boardId,DateTime.Now,dueDate,title,description,0,null);
+            taskDAO = new TaskDAO(id,boardId,0,title,description,DateTime.Now,dueDate,null);
             taskDAO.persist();
 
 
@@ -38,6 +38,19 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.Description = description;
             this.columnOrdinal = 0;
             this.assignee = null;
+        }
+
+        internal TaskBl(TaskDAO task)
+        {
+            taskDAO = task;
+            taskDAO.isPersistent = true;
+            this.id = task.Id;
+            this.dueDate = task.DueDate;
+            this.creationTime = task.CreationTime;
+            this.Title = task.Title;
+            this.Description = task.Description;
+            this.columnOrdinal = task.ColumnOrdinal;
+            this.assignee = task.Assignee;
         }
 
         internal string Title

@@ -10,8 +10,8 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
     internal class BoardDAO
     {
         //  --------- name of fields ------------------//
-        internal string Name { get; set; }
         internal int Id { get; }
+        internal string Name { get; set; }
         internal string owner;
         internal string Owner
         {
@@ -27,12 +27,12 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         }
 
         // ----------- name of columns ----------------// 
-        internal string BoardColumnName = "Name";
         internal string IdColumnName = "Id";
+        internal string BoardColumnName = "Name";
         internal string OwnerColumnName = "Owner";
 
         // ---------- field for insert method ----------//
-        private bool isPersisted = false;
+        internal bool isPersisted = false; // maybe provate after load boards
 
         // ----------- the controller ------------------// 
         BoardController BoardController;
@@ -49,8 +49,10 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
         internal void persist()
         {
-            BoardController.Insert(this);
-            isPersisted = true;
+            if (!isPersisted) { // WILL BE REMOVED AFTER LOAD BOARDS 
+                BoardController.Insert(this);
+                isPersisted = true;
+            }
         }
 
         internal bool delete()

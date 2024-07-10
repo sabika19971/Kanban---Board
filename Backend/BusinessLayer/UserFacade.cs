@@ -22,11 +22,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             userController = new UserController();
             this.boardFacade = board ;
             this.aut = aut;
-            LoadUsers();
+            //LoadUsers(); LOAD ONLY FROM GRADINGSERVICE
         }
 
         // Loading all users from the DB
-        private void LoadUsers()
+        internal void LoadUsers()
         {
             if (loadUsers)
             {
@@ -40,6 +40,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 Console.WriteLine("loaded " + user.Email + " from the DB");
             }
             loadUsers = true;
+        }
+
+        internal void DeleteUsers()
+        {
+            userController.DeleteAllUsers();
         }
 
         /// <summary>
