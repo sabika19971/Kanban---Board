@@ -20,7 +20,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string owner;
         private BoardDAO boardDAO;
         private UserBoardssStatusDAO userBoardssStatusDAO;
-        private ColumnController ColumnController = new ColumnController();
+        //private ColumnController ColumnController = new ColumnController();
 
 
 
@@ -51,9 +51,13 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.name = boardDAO.Name;
             this.owner = boardDAO.Owner;
             this.members = new List<string>(); // NEEDS TO BE LOADED after dealing with the connecting table
-            columns[0] = new ColumnBl(ColumnController.Select(0,this.id));      
-            columns[1] = new ColumnBl(ColumnController.Select(1, this.id));
-            columns[2] = new ColumnBl(ColumnController.Select(2, this.id));
+            //columns[0] = new ColumnBl(ColumnController.Select(0,this.id));      
+            //columns[1] = new ColumnBl(ColumnController.Select(1, this.id));
+            //columns[2] = new ColumnBl(ColumnController.Select(2, this.id));
+            columns[0] = new ColumnBl(0, this.id,true);         // to reduce coupling
+            columns[1] = new ColumnBl(1, this.id,true);         // to reduce coupling
+            columns[2] = new ColumnBl(2, this.id,true);         // to reduce coupling
+
             getHighestSumMax();
             //userBoardssStatusDAO = new UserBoardssStatusDAO(email, id, 1);         WILL BE ADDED AFTER WE WILL DEAL WITH THE CONNECTING TABLE
             //userBoardssStatusDAO.persist();

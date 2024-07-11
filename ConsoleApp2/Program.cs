@@ -115,14 +115,14 @@ namespace ConsoleApp2
         
             //string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
             //string register = g.Register("second@gmail.com", "Kfir1%");
-            //string loadData = g.LoadData();
+            string loadData = g.LoadData();
             //string deleteData = g.DeleteData();
 
-            //string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
+            string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
             //string login1 = g.Login("second@gmail.com", "Kfir1%");
             //string createBoard = g.CreateBoard("second@gmail.com", "TODO1");
-            //string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO1");
-            //string addtask = g.AddTask("kfirmiz@gmail.com", "TODO1", "first", "It should work this time", new DateTime(2024, 8, 9));
+            string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO2");
+            string addtask = g.AddTask("kfirmiz@gmail.com", "TODO2", "first", "It should work this time", new DateTime(2024, 8, 9));
             //string addtask1 = g.AddTask("second@gmail.com", "TODO1", "first", "It should work this time", new DateTime(2024, 8, 9));
 
             //string limit = g.LimitColumn("kfirmiz@gmail.com", "TODO1", 0, 2);

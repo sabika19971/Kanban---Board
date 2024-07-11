@@ -9,6 +9,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     using IntroSE.Kanban.Backend.DataAxcessLayer;
     using System;
     using System.Collections.Generic;
+    using System.Data.Common;
     using System.Linq;
     using System.Net;
 
@@ -20,7 +21,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private int maxTasks;
         private int currTask;
         private ColumnDAO columnDAO;
-        private int boardId; // new
+        private int boardId; // new for pk 
+        private ColumnController columnController = new ColumnController(); // new
         private TaskController taskController = new TaskController(); //new
         
 
@@ -34,18 +36,23 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             currTask = 0;
             maxTasks = -1;
         }
-        // maybe need to earase this constructor.
-        /*
-        internal ColumnBl(int id)
-        {
-          
 
-            this.id = id;
+        internal ColumnBl(int id, int boardId, bool indicateLoad) // DIDNT MANAGE TO CHAIN CONSTRUCTORS WITH THE ONE BELOW
+        {
+            this.columnDAO = columnController.Select(id, boardId);
+            columnDAO.isPersistent = true;
+            this.id = columnDAO.Id;
+            this.boardId = columnDAO.BoardId;
+            this.maxTasks = columnDAO.MaxTasks;
+            this.currTask = columnDAO.CurrTask;
             this.tasks = new List<TaskBl>();
-            currTask = 0;
-            maxTasks = -1;
+            List<TaskDAO> taskDAOs = taskController.SelectTasks(this.boardId, this.id);
+            foreach (var taskDAO in taskDAOs)
+            {
+                tasks.Add(new TaskBl(taskDAO));
+            }
+
         }
-        */
 
         internal ColumnBl(ColumnDAO column)
         {
