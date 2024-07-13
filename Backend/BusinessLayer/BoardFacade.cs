@@ -152,9 +152,9 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         
         internal bool LimitColumn(string email, string boardName, int columnOrdinal, int limit)
         {
-            if (columnOrdinal < 0 || columnOrdinal > 2)
+            if (columnOrdinal < 0 || columnOrdinal >= 2)
             {
-                throw new Exception("cant limit column that does not exist");
+                throw new Exception("cant limit last column or one that doesnt exist");
             }
             if ( !(boards.ContainsKey(email)) )
             {
