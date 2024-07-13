@@ -402,6 +402,28 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         }
 
+
+                /// <summary>
+        /// This method returns a board's name
+        /// </summary>
+        /// <param name="boardId">The board's ID</param>
+        /// <returns>A response with the board's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
+    public string GetBoardName(int boardId)
+    {
+        if (boardId < 0)
+        {
+            throw new ArgumentException("Invalid board ID");
+        }
+
+        BoardDAO boardDAO = boardController.Select(new Dictionary<string, string> { { "Id", boardId.ToString() } });
+        if (boardDAO == null)
+        {
+            throw new Exception($"No board found with ID {boardId}");
+        }
+        return boardDAO.Name;
+    }
+
+
         /// <summary>
         /// This method removes a user from the members list of a board.
         /// </summary>
