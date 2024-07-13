@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using IntroSE.Kanban.Backend.BusinessLayer;
 using IntroSE.Kanban.Backend.ServiceLayer;
@@ -39,20 +40,37 @@ public class ServiceFactory
     
     public string LoadData() // NEED TO ADD TRY CATCH AND JASON SERILIZER INSTEAD OF RETURNING TODO
     {
-        uf.LoadUsers();
-        bf.LoadBoards();
-        bf.getHighestId();
-
-        return "TODO";
+        try
+        {
+            uf.LoadUsers();
+            bf.LoadBoards();
+            bf.getHighestId();
+            string response = JsonSerializer.Serialize(new Response(null,null));  
+            return response;
+        }
+        catch(Exception ex)
+        {
+            string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+            return response;
+        }
     }
+
     // ALL CONTROLLERS SHOULD BE INTERNAL NOT PUBLIC NEED TO CHANGE
     public string DeleteData()
     {
+        try
+        {
         tf.DeleteTasks();
         uf.DeleteUsers();
         bf.DeleteBoards();
-
-        return "TODO";
+        string response = JsonSerializer.Serialize(new Response(null, null));
+        return response;
+        }
+        catch(Exception ex)
+        {
+            string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+            return response;  
+        }
     }
 
     public UserService UserService => US;

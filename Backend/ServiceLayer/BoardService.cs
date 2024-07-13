@@ -298,6 +298,29 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
             }
         }
 
+
+                /// <summary>
+        /// This method returns a board's name
+        /// </summary>
+        /// <param name="boardId">The board's ID</param>
+        /// <returns>A response with the board's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
+        public string GetBoardName(int boardId) // TODO needs implemetation
+        {
+            try
+            {
+                string boardName = bf.GetBoardName(boardId);
+                string response = JsonSerializer.Serialize(new Response(boardName,null));  
+                log.Info("The board "+boardId+ " name is: "+boardName);
+                return response;
+            }
+            catch(Exception ex)
+            {
+                string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn("Couldn't reach the board "+boardId+" because: "+ex.Message);
+                return response;
+            }
+        }
+
         /// <summary>
         /// This method removes a user from the members list of a board.
         /// </summary>
