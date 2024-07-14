@@ -44,6 +44,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         */
 
 
+      
+
         /// <summary>
         /// This method updates the description of a task.
         /// </summary>
@@ -64,12 +66,15 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in");
             }
+            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName); // new, to allow members access
+            /*
             List<BoardBl> boards = boardFacade.boardList(email);
             if ( !boards.Any() )
             {
                 throw new Exception("user have no boards");
             }
             BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
+            */
             if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
@@ -83,7 +88,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("only assingee can edit task");
             }
-            
             taskToEdit.Description = description;
             return taskToEdit;                     
         }
@@ -98,19 +102,22 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="dueDate">The due date if the new task</param>
         /// <returns> taskBl added task, unless an error occurs (see <see cref="GradingService"/>)</returns>
         
-        internal TaskBl AddTask(string email, string boardName, string title, string description, DateTime dueDate) // to ask about the id generator.
+        internal TaskBl AddTask(string email, string boardName, string title, string description, DateTime dueDate) 
         {
 
             if ( !aut.isOnline(email) )
             {
                 throw new Exception("user must be logged in in order to add task");
             }
-            List<BoardBl> boards = boardFacade.boardList(email);
+            BoardBl boardToBeAdded = boardFacade.findBoard(boardName); // new, to allow members access
+            //List<BoardBl> boards = boardFacade.boardList(email);
+            /* DOESNT ALLOW MEMBERS TO ADD TASK MAYBE NOT NESSECERY
             if( !boards.Any() )
             {
                 throw new Exception("user have no boards");
             }
-            BoardBl boardToBeAdded = boards.Find(board => board.Name.Equals(boardName));
+            */
+            //BoardBl boardToBeAdded = boards.Find(board => board.Name.Equals(boardName));
             if (boardToBeAdded == null)
             {
                 throw new Exception("no board with this name, a board must be created first");
@@ -119,7 +126,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("must be a member in the board to add a task");
             }
-            if ( !boardToBeAdded.canAddTask() ) 
+            if ( !boardToBeAdded.canAddTask() ) // make sure we dont add to DB if RAM insertion isnt possible
             {
                 throw new Exception("reached maximum of tasks in the first column");
             }
@@ -148,12 +155,15 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in");
             }
+            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName); // new, to allow members access
+            /*
             List<BoardBl> boards = boardFacade.boardList(email);
             if ( !boards.Any() )
             {
                 throw new Exception("user have no boards");
             }
             BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
+            */
             if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
@@ -190,12 +200,15 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in ");
             }
+            BoardBl boardTaskBeAdvance = boardFacade.findBoard(boardName); // new, to allow members access
+            /*
             List<BoardBl> boards = boardFacade.boardList(email);
             if ( !boards.Any() )
             {
                 throw new ArgumentException("user dont have any boards");
             }
             BoardBl boardTaskBeAdvance = boards.Find(board => board.Name.Equals(boardName));
+            */
             if (boardTaskBeAdvance == null)
             {
                 throw new Exception($" board '{boardName} does not exist'");
@@ -209,9 +222,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             if (!taskToAdvance.allowToEditTask(email))
             {
                 throw new Exception("only assingee can advance task");
-            }
-           
-           
+            }              
             taskToAdvance.ColumnOrdinal = columnOrdinal + 1;
             boardTaskBeAdvance.AdvanceTask(taskToAdvance);
             return taskToAdvance;                                               
@@ -237,12 +248,15 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in");
             }
+            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName); // new, to allow members access
+            /*
             List<BoardBl> boards = boardFacade.boardList(email);
             if ( !boards.Any() )
             {
                 throw new Exception("user have no boards");
             }
             BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
+            */
             if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
@@ -252,10 +266,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("task does not exist ");
             }
-             if (!taskToEdit.allowToEditTask(email))
-                {
+            if (!taskToEdit.allowToEditTask(email))
+            {
                 throw new Exception("only assingee can edit task");
-                }
+            }
             taskToEdit.DueDate = dueDate;
             return taskToEdit;                 
         }
@@ -266,17 +280,24 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in");
             }
+            if (String.IsNullOrEmpty(emailAssignee))
+            {
+                throw new ArgumentException("cant assign a task to null or empty email");
+            }
+            BoardBl boardTaskIsAssingee = boardFacade.findBoard(boardName); // new, to allow members access
+            /*
             List<BoardBl> boards = boardFacade.boardList(email);
             if (!boards.Any())
             {
                 throw new Exception("user have no boards");
             }
             BoardBl boardTaskIsAssingee = boards.Find(board => board.Name.Equals(boardName));
+            */
             if (boardTaskIsAssingee == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
             }
-            if (!boardTaskIsAssingee.isMember(emailAssignee) || !boardTaskIsAssingee.isMember(email))
+            if ( (!boardTaskIsAssingee.isMember(emailAssignee) && boardTaskIsAssingee.Owner != emailAssignee) || (!boardTaskIsAssingee.isMember(email) && boardTaskIsAssingee.Owner != email) )
             {
                 throw new Exception("cant assingee a user that is not a member of the board ");
             }

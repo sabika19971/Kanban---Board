@@ -16,14 +16,13 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
-        private const string TableName = "UsersBorads";
-        string dbFileName = "KanbanDB.db";
-        string solutionDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+        private const string TableName = "UsersBoardsStatus";
+        string dbFileName = "kanban.db";
+        string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
 
         public UserBoardController() // init and connecting to the DB
         {
-
-            string path = Path.GetFullPath(Path.Combine(solutionDirectory, "Backend", dbFileName));
+            string path = Path.Combine(solutionDirectory, dbFileName);
             this._connectionString = $"Data Source={path}; Version=3;";
             this._tableName = TableName;
         }
@@ -85,6 +84,42 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
+        public bool UpdateOwnership(int boardID, string currentOwner, string newOwner)
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                SQLiteCommand command1 = new SQLiteCommand
+                {
+                    Connection = connection,
+                    CommandText = $"update {TableName} set [Status]=@Val where Email=@Email AND Id=@BoardId"
+                };
+                SQLiteCommand command2 = new SQLiteCommand
+                {
+                    Connection = connection,
+                    CommandText = $"update {TableName} set [Status]=@Val where Email=@Email AND Id=@BoardId"
+                };
+                command1.Parameters.AddWithValue("@BoardId", boardID);
+                command2.Parameters.AddWithValue("@BoardId", boardID);
+                
+                command1.Parameters.AddWithValue("@Email", currentOwner);                
+                command1.Parameters.AddWithValue("@Val", 0);
+                
+                command2.Parameters.AddWithValue("@Email", newOwner);
+                command2.Parameters.AddWithValue("@Val", 1);
+                try
+                {
+                    connection.Open();
+                    res = command1.ExecuteNonQuery() + command2.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(" failed to update email");
+                }
+            }
+            return res > 0;
+        }
+
         public bool Delete(string email, int Id)
         {
             int res = -1;
@@ -101,13 +136,56 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB");
+                    throw new Exception("failed to delete a connection to a board");
                 }
             }
             Console.WriteLine(res);
             return res > 0;
         }
 
+        public bool DeleteBoard(int Id)
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"DELETE from {TableName} where Id=@Id;";
+                command.Parameters.AddWithValue("@Id", Id);
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"
+                    res = command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("failed to delete all connections to a board");
+                }
+            }
+            Console.WriteLine(res);
+            return res > 0;
+        }
+
+        public bool DeleteAllConnections()
+        {
+            int res = -1;
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+
+                command.CommandText = $"DELETE from {TableName};";
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"
+                    res = command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to Delete Connections from the DB");
+                }
+            }
+            Console.WriteLine(res);
+            return res > 0;
+        }
 
         public UserBoardssStatusDAO Select(Dictionary<string, string> filters)
         {
@@ -162,11 +240,44 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             }
         }
 
-
-
-        public List<UserBoardssStatusDAO> SelectAllUsers() // will be used for LoadUsers
+        internal List<UserBoardssStatusDAO> LoadMembers(int BoardId)
         {
-            List<UserBoardssStatusDAO> users = new List<UserBoardssStatusDAO>();
+            List<UserBoardssStatusDAO> connections = new List<UserBoardssStatusDAO>();
+            using (var connection = new SQLiteConnection(this._connectionString))
+            {
+                SQLiteCommand command = new SQLiteCommand(null, connection);
+                command.CommandText = $"select * from {TableName} where Id=@id;";
+                command.Parameters.AddWithValue("@id", BoardId);
+                SQLiteDataReader dataReader = null;
+                try
+                {
+                    connection.Open(); // nessecery even though we use "using"  
+                    dataReader = command.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        connections.Add(ConvertReaderToObject(dataReader));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to load users from the DB");
+                }
+                finally
+                {
+                    if (dataReader != null)
+                    {
+                        dataReader.Close();
+                    }
+                }
+                return connections;
+            }
+        }
+
+        /*
+        public List<UserBoardssStatusDAO> SelectAllConnections() 
+        {
+            List<UserBoardssStatusDAO> connections = new List<UserBoardssStatusDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
@@ -179,7 +290,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
                     while (dataReader.Read())
                     {
-                        users.Add(ConvertReaderToObject(dataReader));
+                        connections.Add(ConvertReaderToObject(dataReader));
                     }
                 }
                 catch (Exception ex)
@@ -194,9 +305,10 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                     }
                 }
 
-                return users;
+                return connections;
             }
         }
+        */
 
 
         private UserBoardssStatusDAO ConvertReaderToObject(SQLiteDataReader reader)

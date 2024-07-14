@@ -24,11 +24,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             get => dueDate;           
             set
             {
-                if (!isPersistent)
-                {
-                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
-                }
-                else
+                if (isPersistent)              
                 {
                     taskController.UpdateTaskDueDate(Id, BoardId, DueDateColumnName, value);
                 }
@@ -40,16 +36,11 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             get=> title; 
             set
             {
-                if (!isPersistent)
-                {
-                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
-                }
-                else
+                if (isPersistent)             
                 {
                     taskController.Update(Id, BoardId, TitleColumnName, value);                
                 }
                 title = value;
-
             } 
         }
 
@@ -58,11 +49,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             get => description;
             set
             {
-                if (!isPersistent)
-                {
-                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
-                }
-                else
+                if (isPersistent)
                 {
                     taskController.Update(Id, BoardId, DescriptionColumnName, value);
                 }
@@ -75,11 +62,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             get => columnOrdinal;
             set 
             {
-                if (!isPersistent)
-                { 
-                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
-                }
-                else
+                if (isPersistent)
                 {
                     taskController.UpdateColumnOrdinal(Id, ColumnOrdinalColumnName, value);
                 }
@@ -92,11 +75,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             get => assignee;
             set
             {
-                if (!isPersistent)
-                {
-                    //throw new InvalidOperationException("cand edit a task that is not in the Db");
-                }
-                else
+                if (isPersistent)
                 {
                     taskController.Update(Id, BoardId, AssigneeColumnName, value);
                 }
@@ -128,8 +107,6 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
             taskController = new TaskController();
 
-            
-            
             this.Id = id;
             this.BoardId = boardId;
             this.CreationTime = creationTime;
@@ -138,7 +115,6 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             this.Description = description;
             this.ColumnOrdinal = columnOrdinal;
             this.Assignee = assignee;
-
 
         }
 

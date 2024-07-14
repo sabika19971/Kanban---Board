@@ -10,7 +10,8 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
     internal class BoardDAO
     {
         //  --------- name of fields ------------------//
-        internal int Id { get; }
+        internal int id;
+        internal int Id{ get { return id; } set { id = value; } }
         internal string Name { get; set; }
         internal string owner;
         internal string Owner
@@ -20,7 +21,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             {
                 if (isPersisted)
                 {
-                    BoardController.Update(Id, IdColumnName, value);
+                    BoardController.Update(Id, OwnerColumnName, value);
                 }
                 owner = value;
             }
@@ -63,14 +64,6 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
             }
             return BoardController.Delete(Id, Name);
-
-
-
-
-
-
-        }
-
-       
+        }     
     }
 }

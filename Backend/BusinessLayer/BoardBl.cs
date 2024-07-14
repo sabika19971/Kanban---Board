@@ -27,10 +27,9 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal BoardBl(int id, string name ,string email)
         {
             boardDAO = new BoardDAO(id,name,email);
-            //boardDAO.isPersisted = true; 
             boardDAO.persist();
-            //userBoardssStatusDAO = new UserBoardssStatusDAO(email,id,1);
-            //userBoardssStatusDAO.persist();
+            userBoardssStatusDAO = new UserBoardssStatusDAO(email,id,1);
+            userBoardssStatusDAO.persist();
             
             columns[0]= new ColumnBl(0,id);
             columns[1] = new ColumnBl(1,id);
@@ -40,7 +39,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.id = id; 
             this.members = new List<string>();
             this.owner = email;
-            getHighestSumMax();
+            getHighestSumMax(); // maybe unnecessery
         }
 
         internal BoardBl(BoardDAO boardDAO)
@@ -50,7 +49,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.id = boardDAO.Id;
             this.name = boardDAO.Name;
             this.owner = boardDAO.Owner;
-            this.members = new List<string>(); // NEEDS TO BE LOADED after dealing with the connecting table
+            userBoardssStatusDAO = new UserBoardssStatusDAO(boardDAO.Owner, id, 1); // already in the DB
+            userBoardssStatusDAO.isPersistent = true;
+            this.members = userBoardssStatusDAO.LoadMembers(); 
+                   
             //columns[0] = new ColumnBl(ColumnController.Select(0,this.id));      
             //columns[1] = new ColumnBl(ColumnController.Select(1, this.id));
             //columns[2] = new ColumnBl(ColumnController.Select(2, this.id));
@@ -84,6 +86,26 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
+        internal List<TaskBl> getTasksOf(string email)
+        {
+            if( Owner != email && !members.Contains(email))
+            {
+                return null;
+            }
+            List<TaskBl> result = new List<TaskBl>();
+            for (int i=0; i<=2; i++)
+            {
+                foreach (var task in columns[i].Tasks())
+                {
+                    if(task.Assignee == email)
+                    {
+                        result.Add(task);
+                    }
+                }
+            }
+            return result;
+        }
+        
         internal ColumnBl getColumns (int i)
         {
             if (indexIsValid(i))
@@ -104,9 +126,9 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal string Owner
         {
             get { return owner; }
-            set { if (isMember(value)){
-                   
-                 
+            set { 
+                if (isMember(value)){        
+                    boardDAO.Owner = value;
                     owner = value;
                 }
                 else
@@ -164,10 +186,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("only a member of the board can leave the borad");
             }
-           this.getColumns(0).leaveBoard(email);
-           this.getColumns(1).leaveBoard(email);
-            UserBoardssStatusDAO userToLeaveBoard = new UserBoardssStatusDAO(email,this.id);
-            userToLeaveBoard.delete();
+            this.getColumns(0).leaveBoard(email);
+            this.getColumns(1).leaveBoard(email);
+            UserBoardssStatusDAO userToLeaveBoard = new UserBoardssStatusDAO(email,this.id); // only for deletion, reduces coupling
+            userToLeaveBoard.deleteFake();
             members.Remove(email);
         }
 
@@ -196,7 +218,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 columns[i].delete();
             }
-            userBoardssStatusDAO.delete();
+            userBoardssStatusDAO.deleteBoard();
             boardDAO.delete();
         }
 
@@ -210,15 +232,18 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 }
             }
             UserBoardssStatusDAO userToAddAsMember = new UserBoardssStatusDAO(email,getId(),0);
-            userToAddAsMember.persist();
-            
-           Members.Add(email);
+            userToAddAsMember.persist();            
+            Members.Add(email);
         }
 
         internal void changeOwner(string currentOwnerEmail, string newOwnerEmail)
         {
            
             userBoardssStatusDAO.changeOwner(currentOwnerEmail, newOwnerEmail);
+            Owner = newOwnerEmail;
+            members.Remove(newOwnerEmail);
+            members.Add(currentOwnerEmail);
+
         }
     }
 }

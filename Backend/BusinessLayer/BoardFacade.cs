@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
@@ -17,14 +18,13 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private Autentication aut;
         private int idGen;
         private BoardController boardController;
-        private ColumnController columnController; // didnt find a way to implement DeleteData without holding this instance
+        private UserBoardController UBC;
         private bool loadBoards = false;
 
         internal BoardFacade(Autentication aut)
         {
             boards = new Dictionary<string, List<BoardBl>>();
             this.boardController = new BoardController();
-            this.columnController = new ColumnController();
             this.aut = aut;
             //LoadBoards(); LOAD ONLY FROM GRADINGSERVICE
             //getHighestId(); ASSENTIAL
@@ -33,13 +33,20 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal void LoadBoards()
         {
             List<BoardDAO> boardDAOs = boardController.SelectAllBoards();
+            //UserBoardController userBoardController = new UserBoardController();
+            //List<UserBoardssStatusDAO> connections = userBoardController.SelectAllConnections();
             foreach (var boardDAO in boardDAOs)
             {
                 if ( !this.boards.ContainsKey(boardDAO.Owner))
                 {
                     resetBoards(boardDAO.Owner); // WILL NEED TO BE CHANGED IF WE LOAD A USER WHEN HE IS ALREADY ON THE RAM
                 }
-                this.boards[boardDAO.Owner].Add(new BoardBl(boardDAO));
+                BoardBl boardToLoad = new BoardBl(boardDAO);
+                //foreach(var connection in connections)
+                //{
+                //    if (connection.)
+                //}
+                this.boards[boardDAO.Owner].Add(boardToLoad);
                 Console.WriteLine("loaded " + boardDAO.Name + " used by user " + boardDAO.Owner + " from the DB");
             }
             loadBoards = true;
@@ -47,7 +54,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         internal void DeleteBoards()
         {
+            ColumnController columnController = new ColumnController();
+            UserBoardController userBoardController = new UserBoardController();
             columnController.DeleteAllColumns();
+            userBoardController.DeleteAllConnections();
             boardController.DeleteAllBoards();
         }
             
@@ -66,6 +76,21 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             return null;
         }
        
+        internal BoardBl findBoard(string name)
+        {
+            foreach (var kvp in boards)
+            {
+                foreach (var board in kvp.Value)
+                {
+                    if (board.Name == name)
+                    {
+                        return board;
+                    }
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// This method creates a board for the given user.
         /// </summary>
@@ -177,15 +202,29 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal List<TaskBl> InProgressTasks(string email)
         {
             List<TaskBl> result = new List<TaskBl>();
+            /* changed implementation to allow members to see their tasks too
             if ( !boards.ContainsKey(email) )
             {
                 throw new InvalidOperationException("cant show tasks for a user that is not registered in the system");
             }
+            */
             if ( !aut.isOnline(email) )
             {
                 throw new Exception("user is not logged in");
             }
-            List<BoardBl> boardsToCollectTasks = boards[email]; 
+            //List<BoardBl> boardsToCollectTasks = boards[email]; 
+            foreach (var kvp in boards)
+            {
+                foreach (var board in kvp.Value)
+                {
+                    List<TaskBl> tempList = board.getTasksOf(email);
+                    if (tempList != null)
+                    {
+                        result.AddRange(tempList);    // combines the lists                    
+                    }
+                }
+            }
+            /*
             foreach (var boardToCollect in boardsToCollectTasks)
             {
                 foreach (var task in boardToCollect.getColumns(1).Tasks())
@@ -197,6 +236,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                    
                 }
             }
+            */
             return result;
         }
         /// <summary>
@@ -356,7 +396,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             if (boardID.Equals(null))
             {
-                throw new Exception("ilegal board id");
+                throw new Exception("illegal board id");
             }
 
             foreach (KeyValuePair< string, List<BoardBl>> kvp in boards)
@@ -366,7 +406,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                     if(boardBl.getId() == boardID)
                     {
                         boardBl.addMemberToBoard(email);
-                       
+                        return;
                     }
                 }
             }
@@ -396,32 +436,42 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user does not have a board in this name");
             }
-            boardToChangeOwner.changeOwner(currentOwnerEmail, newOwnerEmail);
-            boardToChangeOwner.Owner = newOwnerEmail;
-           
-
+            boardToChangeOwner.changeOwner(currentOwnerEmail, newOwnerEmail); // changes the connecting table in the DB, updates members on RAM, and owner on bot RAM and DB
+            //boardToChangeOwner.Owner = newOwnerEmail; // changed owner of the board in RAM and DB
+            boards[currentOwnerEmail].Remove(boardToChangeOwner); // switching the board owner in boards Dict RAM
+            boards[newOwnerEmail].Add(boardToChangeOwner); // switching the board owner in boards Dict RAM
         }
 
 
-                /// <summary>
+        /// <summary>
         /// This method returns a board's name
         /// </summary>
         /// <param name="boardId">The board's ID</param>
         /// <returns>A response with the board's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
-    public string GetBoardName(int boardId)
-    {
-        if (boardId < 0)
+        public string GetBoardName(int boardId)
         {
-            throw new ArgumentException("Invalid board ID");
+            if (boardId <= 0)
+            {
+                throw new ArgumentException("Invalid board ID");
+            }
+            BoardBl boardOfName = null;
+            foreach (var keyAndValue in boards)
+            {
+                List<BoardBl> List = keyAndValue.Value; 
+                foreach (BoardBl board in List)
+                {
+                    if (board.getId() == boardId)
+                    {
+                        boardOfName = board;
+                    }
+                }
+            }
+            if (boardOfName == null)
+            {
+                throw new ArgumentException("No board with this ID");
+            }
+            return boardOfName.Name;          
         }
-
-        BoardDAO boardDAO = boardController.Select(new Dictionary<string, string> { { "Id", boardId.ToString() } });
-        if (boardDAO == null)
-        {
-            throw new Exception($"No board found with ID {boardId}");
-        }
-        return boardDAO.Name;
-    }
 
 
         /// <summary>
@@ -432,7 +482,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         internal void LeaveBoard(string email, int boardID)
         {
-
             if (!aut.isOnline(email))
             {
                 throw new Exception("user must be logged in");
@@ -441,7 +490,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("ilegal board id");
             }
-
             foreach (KeyValuePair<string, List<BoardBl>> kvp in boards)
             {
                 foreach (BoardBl boardBl in kvp.Value)
@@ -450,9 +498,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                     {
                         if(boardBl.Owner == email)
                         {
-                            throw new Exception("owner can leave the board only after transfering ownershoip");
+                            throw new Exception("Owner can leave the board only after transfering ownershoip");
                         }
                         boardBl.leaveBoard(email);
+                        return;
                     }
                 }
             }

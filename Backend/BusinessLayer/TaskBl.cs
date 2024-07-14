@@ -107,14 +107,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal string Assignee
         {
             get { return assignee; }
-            set {
-                
-                
+            set 
+            {                          
                 taskDAO.Assignee = value;
                 assignee = value;
-            
-            
-            
             }
     
         }
@@ -122,7 +118,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             get { return dueDate; }
             set {
-                if(dueDate.CompareTo(CreationTime)< 0 )
+                if(dueDate.CompareTo(CreationTime) < 0 )
                 {
                     throw new Exception("cant set time to past");
                 }  
@@ -149,7 +145,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 if (value > 2 || value < 0)
                 {
-                    throw new Exception("cant progres a done task.");
+                    throw new Exception("cant progress a done task.");
                 }
                 else
                 {
@@ -187,22 +183,23 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             if(assignee == null)
             {
-                taskDAO.Assignee= emailAssignee;
+                //taskDAO.Assignee = emailAssignee; included in the below 
                 Assignee = emailAssignee;
             }
             else if (!Assignee.Equals(email))
             {
-                throw new Exception("only assingee can assigne new assingee");
+                throw new Exception("only assingee can assign new assingee");
             }
             else 
             {
-                taskDAO.Assignee = emailAssignee;
+                //taskDAO.Assignee = emailAssignee; included in the below 
                 Assignee = emailAssignee; 
             }
         }
+
         internal bool allowToEditTask (string email)
         {
-            return assignee == email || assignee==null;
+            return (assignee == email || assignee==null);
         }
 
         internal void delete()

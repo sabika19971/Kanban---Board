@@ -17,13 +17,12 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
         private const string TableName = "Columns";
-        string dbFileName = "KanbanDB.db";
-        string solutionDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+        string dbFileName = "kanban.db";
+        string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
 
         public ColumnController() // init and connecting to the DB
         {
-
-            string path = Path.GetFullPath(Path.Combine(solutionDirectory, "Backend", dbFileName));
+            string path = Path.Combine(solutionDirectory, dbFileName);
             this._connectionString = $"Data Source={path}; Version=3;";
             this._tableName = TableName;
         }
@@ -79,7 +78,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" failed to update email");
+                    throw new Exception(" Failed to update a Cloumn field");
                 }
             }
             return res > 0;

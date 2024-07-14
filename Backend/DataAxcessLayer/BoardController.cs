@@ -15,13 +15,12 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
         private const string TableName = "Boards";
-        string dbFileName = "KanbanDB.db";
-        string solutionDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
-
+        string dbFileName = "kanban.db";
+        string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
         public BoardController() // init and connecting to the DB
         {
 
-            string path = Path.GetFullPath(Path.Combine(solutionDirectory, "Backend", dbFileName));
+            string path = Path.Combine(solutionDirectory, dbFileName);
             this._connectionString = $"Data Source={path}; Version=3;";
             this._tableName = TableName;
         }
@@ -65,7 +64,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                     Connection = connection,
                     CommandText = $"update {TableName} set [{column}]=@Val where Id=@Id"
                 };
-                command.Parameters.AddWithValue("@Email", Id);
+                command.Parameters.AddWithValue("@Id", Id);
                 command.Parameters.AddWithValue("@Val", newValue);
                 try
                 {
@@ -92,7 +91,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 command.CommandText = $"DELETE from {TableName}" +
                                        $" where Id=@Id AND Name=@name;";
                 command.Parameters.AddWithValue("@Id", Id);
-                command.Parameters.AddWithValue("@Name", name);
+                command.Parameters.AddWithValue("@name", name);
                 try
                 {
                     connection.Open(); // nessecery even though we use "using"

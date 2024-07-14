@@ -18,11 +18,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             get => maxTasks;
             set
             {
-                if (!isPersistent)
-                {
-                    Console.WriteLine("column isnt in the DB"); // will be changed after LoadColumns  //throw new InvalidOperationException("cant edit a column that is not in the database");
-                }
-                else
+                if (isPersistent)
                 {
                     columnController.Update(Id, BoardId, maxTasksColumnName, value);
                 }
@@ -35,11 +31,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         internal int CurrTask { get => currTask;
             set
             {
-                if (!isPersistent)
-                {
-                    Console.WriteLine("column isnt in the DB"); // will be changed after LoadColumns //throw new InvalidOperationException("cant edit a column that is not in the database");
-                }
-                else
+                if (isPersistent)
                 {
                     columnController.Update(Id, BoardId, currTaskColumnName, value);
                 }
