@@ -16,13 +16,12 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
         private const string TableName = "Tasks";
-        string dbFileName = "KanbanDB.db";
-        string solutionDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+        string dbFileName = "kanban.db";
+        string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
 
         public TaskController() // init and connecting to the DB
         {
-
-            string path = Path.GetFullPath(Path.Combine(solutionDirectory, "Backend", dbFileName));
+            string path = Path.Combine(solutionDirectory, dbFileName);
             this._connectionString = $"Data Source={path}; Version=3;";
             this._tableName = TableName;
         }
@@ -169,7 +168,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             using (var connection = new SQLiteConnection(this._connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
-                command.CommandText = $"DELETE from {TableName} where Id=@Id AND BoradId=@boardId ;";
+                command.CommandText = $"DELETE from {TableName} where Id=@Id AND BoardId=@boardId ;";
                 command.Parameters.AddWithValue("@Id", Id);
                 command.Parameters.AddWithValue("@boardId", boardId);
                 try
@@ -298,7 +297,6 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         }
 
 
-
         public List<TaskDAO> SelectAllTasks() // will be used for LoadUsers
         {
             List<TaskDAO> tasks = new List<TaskDAO>();
@@ -355,7 +353,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" failed to update email");
+                    throw new Exception(" failed to update task dueDate");
                 }
             }
             return res > 0;
@@ -365,7 +363,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             // convert from string in de DB into DateTime Object
             DateTime creationTime = DateTime.Parse(reader.GetString(5));
             DateTime dueDate = DateTime.Parse(reader.GetString(6));
-            string assignee = reader.IsDBNull(7) ? string.Empty : reader.GetString(7); // Checks if assignee is null or a string
+            string assignee = reader.IsDBNull(7) ? null : reader.GetString(7); // Checks if assignee is null or a string
 
             return new TaskDAO(reader.GetInt32(0), reader.GetInt32(1) , reader.GetInt32(2), reader.GetString(3), reader.GetString(4), creationTime,dueDate,assignee);
         }

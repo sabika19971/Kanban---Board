@@ -171,11 +171,13 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 TaskBl taskBl = taskFacade.AssignTask(email, boardName, columnOrdinal, taskID, emailAssignee);
                 TaskSL taskAfterAssigne = new TaskSL(taskBl);
                 string response = JsonSerializer.Serialize(new Response(null, null));
+                log.Info(email + " has assigned a task to " + emailAssignee + " at board " + boardName);
                 return response;
             }
             catch (Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+                log.Warn(email + " : " + ex.Message + " when trying to assign a task to " + emailAssignee);
                 return response;
             }
         }

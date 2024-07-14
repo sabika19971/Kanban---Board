@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,9 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
     {
 
         //  --------- name of fields ------------------//
-        private string email;
-        private int id;
-        private int status; // 0 - for member, 1 - for owner
+        //private string email;
+        //private int id;
+        //private int status; // 0 - for member, 1 - for owner
 
         // ----------- name of columns ----------------//
         internal string EmailColumnName = "Email";
@@ -25,35 +26,17 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         // ----------- the controller ------------------// 
         private UserBoardController controller;
 
-
         //  --------- getters & setters --------------
         internal int BoardId { get;  set; }
-        internal string Email 
-        { get => Email;
-            set
-            {
-                if (!isPersistent)
-                {
-                    throw new InvalidOperationException("cant change email for boardUser that is not in the db");
-                }
-                Email = value;
-
-            }
-           
-                
-                
-        }
+        internal string Email { get; set; } // we dont use the setter
         internal int Status { get;  set; }
 
         public UserBoardssStatusDAO(string email,int id, int status)
         {
-             controller = new UserBoardController(); // inisialized the controller
-                                                                   
+            controller = new UserBoardController(); // inisialized the controller                                                                
             this.Email = email;
             this.BoardId = id;
             this.Status = status;   
-
-
         }
 
         public UserBoardssStatusDAO(string email, int id)
@@ -62,35 +45,49 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
             this.Email = email;
             this.BoardId = id;
-           
-
-
         }
 
         internal void persist()
         {
             controller.Insert(this);
-            isPersistent = true;
-           
+            isPersistent = true;           
         }
 
-        internal void delete()
+        internal void deleteBoard() // used to delete all connections to a board
         {
-            if (!isPersistent)
+            if (isPersistent)
             {
-                throw new Exception("cant delete an object that is not on the data base");
+                controller.DeleteBoard(BoardId);
             }
-            controller.Delete(email, id);
         }
 
-        
+        internal void deleteFake() // used for removing a member
+        {
+            controller.Delete(Email, BoardId);
+        }
+
+        internal List<string> LoadMembers() 
+        {
+            List<UserBoardssStatusDAO> connections = controller.LoadMembers(BoardId);
+            List<string> members = new List<string>();
+            foreach (var connection in connections)
+            {
+                if (connection.Email != this.Email)
+                {
+                    members.Add(connection.Email);
+                }
+            }
+            return members;
+        }
 
         internal void changeOwner(string currentOwnerEmail, string newOwnerEmail)
         {
+            controller.UpdateOwnership(BoardId, currentOwnerEmail, newOwnerEmail);        
+            /*
             controller.Delete(newOwnerEmail, BoardId);
             controller.Update(BoardId,currentOwnerEmail, EmailColumnName, newOwnerEmail);
+            */
             Email = newOwnerEmail;
-
         }
     }
 }

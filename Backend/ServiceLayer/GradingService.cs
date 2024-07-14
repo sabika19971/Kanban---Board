@@ -296,9 +296,9 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// <param name="taskID">The task to be updated identified a task ID</param>        
         /// <param name="emailAssignee">Email of the asignee user</param>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string AssignTask(string email, string boardName, int columnOrdinal, int taskID, string emailAssignee) // TODO needs implemetation
+        public string AssignTask(string email, string boardName, int columnOrdinal, int taskID, string emailAssignee) 
         {
-            throw new NotImplementedException();
+            return SF.TaskService.AssignTask(email, boardName, columnOrdinal, taskID, emailAssignee);
         }
 
         /// <summary>
@@ -306,9 +306,9 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// </summary>
         /// <param name="boardId">The board's ID</param>
         /// <returns>A response with the board's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string GetBoardName(int boardId) // TODO needs implemetation
+        public string GetBoardName(int boardId) 
         {
-            throw new NotImplementedException();
+            return SF.BoardService.GetBoardName(boardId);
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         ///</para>
         /// </summary>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string LoadData() // TODO not finished
+        public string LoadData() // TODO not finished need to reduce coupling
         {
             return SF.LoadData();
         }
@@ -342,7 +342,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         ///</para>
         /// </summary>
         ///<returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string DeleteData() // TODO not finished
+        public string DeleteData() // TODO not finished need to reduce coupling
         {
             return SF.DeleteData();
         }

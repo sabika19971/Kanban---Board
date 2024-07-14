@@ -119,6 +119,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 }            
                 else
                 {
+                    task.ColumnOrdinal--; // reverting it (for failed advance)
                     throw new Exception("you have reached the limit of tasks in the column");
                 }
             }
@@ -143,7 +144,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             if (tasks.Contains(taskToAdvance))
             {
-                columnDAO.CurrTask--;
+                columnDAO.CurrTask = currTask - 1;
                 tasks.Remove(taskToAdvance);
                 currTask = currTask - 1;
             }
@@ -169,8 +170,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             foreach (var task in tasks)
             {
                 if(task.Assignee == email)
-                {
-                    
+                {                    
                     task.Assignee = null;
                 }
             }
@@ -195,8 +195,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 task.delete();
             }
-            columnDAO.delete();
-            
+            columnDAO.delete();           
         }
     }
 

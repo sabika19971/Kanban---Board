@@ -114,19 +114,52 @@ namespace ConsoleApp2
             // ------------------------------ DATABASE TESTS ----------------------------
         
             //string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
-            //string register = g.Register("second@gmail.com", "Kfir1%");
-            string loadData = g.LoadData();
+            //string register1 = g.Register("second@gmail.com", "Kfir1%");
+            //string register2 = g.Register("assign@gmail.com", "Kfir1%");
+            //string loadData = g.LoadData();
             //string deleteData = g.DeleteData();
 
-            string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
+            //string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
             //string login1 = g.Login("second@gmail.com", "Kfir1%");
-            //string createBoard = g.CreateBoard("second@gmail.com", "TODO1");
-            string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO2");
-            string addtask = g.AddTask("kfirmiz@gmail.com", "TODO2", "first", "It should work this time", new DateTime(2024, 8, 9));
-            //string addtask1 = g.AddTask("second@gmail.com", "TODO1", "first", "It should work this time", new DateTime(2024, 8, 9));
+            //string login1 = g.Login("assign@gmail.com", "Kfir1%");
 
+            //string assign = g.AssignTask("second@gmail.com", "TODO1", 0, 1,"assign@gmail.com");
+            //string assignBack = g.AssignTask("assign@gmail.com", "TODO1", 0, 1, "second@gmail.com");
+            //string assignOwner = g.AssignTask("second@gmail.com", "TODO1", 0, 1, "kfirmiz@gmail.com");
+            //string assignOwnerBack = g.AssignTask("kfirmiz@gmail.com", "TODO1", 0, 1, "second@gmail.com");
+
+
+            //string logout = g.Logout("kfirmiz@gmail.com");
+            //string createBoard = g.CreateBoard("second@gmail.com", "TODO1");
+            //string createBoard = g.CreateBoard("kfirmiz@gmail.com", "TODO1");
+            //string deleteBoard = g.DeleteBoard("kfirmiz@gmail.com", "TODO1");
+            //string addtask = g.AddTask("kfirmiz@gmail.com", "TODO1", "first", "It should work this time", new DateTime(2024, 8, 9));
+            //string addtask1 = g.AddTask("second@gmail.com", "TODO1", "first", "It should work this time", new DateTime(2024, 8, 9));
+            //string updateTask = g.UpdateTaskDescription("second@gmail.com", "TODO1",0,1,"changed description");
+            //string updateTask1 = g.UpdateTaskDueDate("second@gmail.com", "TODO1", 0, 1, new DateTime(2024, 11, 12));
+            //string updateTask2 = g.UpdateTaskTitle("second@gmail.com", "TODO1", 0, 1, "changed title");
+
+            //string inProgress = g.InProgressTasks("second@gmail.com");
+
+            // CONNECTING table tests
+
+            //string join = g.JoinBoard("second@gmail.com", 1);
+            //string join1 = g.JoinBoard("assign@gmail.com", 1);
+            //string leave = g.LeaveBoard("second@gmail.com", 1);
+
+            //string transfer = g.TransferOwnership("kfirmiz@gmail.com", "second@gmail.com", "TODO1");
+            //string transferBack = g.TransferOwnership("second@gmail.com", "kfirmiz@gmail.com", "TODO1");
+
+            //string advanceTask = g.AdvanceTask("kfirmiz@gmail.com", "TODO1",0,2);
+
+            //string name = g.GetBoardName(2);
+            //Console.WriteLine(name);
             //string limit = g.LimitColumn("kfirmiz@gmail.com", "TODO1", 0, 2);
-            //string limit1 = g.LimitColumn("second@gmail.com", "TODO1", 1, 4);
+            //string limit1 = g.LimitColumn("kfirmiz@gmail.com", "TODO1", 1, 1);
+            //string limit2 = g.LimitColumn("kfirmiz@gmail.com", "TODO1", 2, 4);
+            //string getLimit = g.GetColumnLimit("kfirmiz@gmail.com", "TODO1",2);
+
+            //string limit3 = g.LimitColumn("second@gmail.com", "TODO1", 1, 4);
 
             //string createBoard1 = g.CreateBoard("kfirmiz@gmail.com", "second");
             //string createBoard2 = g.CreateBoard("kfirmiz@gmail.com", "third");

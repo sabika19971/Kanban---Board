@@ -140,7 +140,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         {
             try 
             { 
-                int columnlimit = bf.GetColumnLimit(email, boardName, columnOrdinal);                                        
+                int columnlimit = bf.GetColumnLimit(email, boardName, columnOrdinal);
                 string response = JsonSerializer.Serialize(new Response(((object)columnlimit),null));
                 log.Info(email + " got column limit");
                 return response;           
@@ -304,19 +304,19 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         /// </summary>
         /// <param name="boardId">The board's ID</param>
         /// <returns>A response with the board's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string GetBoardName(int boardId) // TODO needs implemetation
+        public string GetBoardName(int boardId) 
         {
             try
             {
                 string boardName = bf.GetBoardName(boardId);
                 string response = JsonSerializer.Serialize(new Response(boardName,null));  
-                log.Info("The board "+boardId+ " name is: "+boardName);
+                log.Info("The board " + boardId + " name is: " + boardName);
                 return response;
             }
             catch(Exception ex)
             {
                 string response = JsonSerializer.Serialize(new Response(null, ex.Message));
-                log.Warn("Couldn't reach the board "+boardId+" because: "+ex.Message);
+                log.Warn("Couldn't reach the board " + boardId + " because: " + ex.Message);
                 return response;
             }
         }

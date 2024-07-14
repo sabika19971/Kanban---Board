@@ -38,7 +38,7 @@ public class ServiceFactory
         TS = new TaskService(tf, Log);
     }
     
-    public string LoadData() // NEED TO ADD TRY CATCH AND JASON SERILIZER INSTEAD OF RETURNING TODO
+    public string LoadData() 
     {
         try
         {
