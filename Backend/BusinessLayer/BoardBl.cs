@@ -14,14 +14,14 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string name;
         private ColumnBl [] columns = new ColumnBl[3];
         private int sumTask; //inisialized with the function getHighestSumMax in cunstracutor 
-        private int id; 
+        private long id; 
         private List<string> members;
         private string owner;
         private BoardDAO boardDAO;
         private UserBoardssStatusDAO userBoardssStatusDAO;
 
 
-        internal BoardBl(int id, string name ,string email)
+        internal BoardBl(long id, string name ,string email)
         {
             boardDAO = new BoardDAO(id,name,email);
             boardDAO.persist();
@@ -61,7 +61,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             get { return members; }
         }
-        internal int getId() 
+        internal long getId() 
         {
             return id;
         }

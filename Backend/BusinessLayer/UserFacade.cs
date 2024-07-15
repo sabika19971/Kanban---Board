@@ -59,6 +59,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new ArgumentNullException("email or pass cant be null or empty");
             }
+            email = email.ToLower();
             if (userDictionary.ContainsKey(email)) 
             {
                 throw new ArgumentException("email is already taken");
@@ -79,6 +80,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         
         internal UserBl Login(string email, string password)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant login");
+            }
+            email = email.ToLower();
             if ( !userDictionary.ContainsKey(email) )
             {             
                 throw new ArgumentException($"{email} is not registered.");
@@ -95,7 +101,12 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         
         internal void Logout(string email)
         {
-            if(!userDictionary.ContainsKey(email))
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant logout");
+            }
+            email = email.ToLower();
+            if (!userDictionary.ContainsKey(email))
             {             
                 throw new ArgumentException("there is not such a user at all");
             }           

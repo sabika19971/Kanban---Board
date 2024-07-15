@@ -58,7 +58,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
         
 
-        internal bool Update(int boardID,string email, string column, string newValue)
+        internal bool Update(long boardID,string email, string column, string newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -84,7 +84,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             return res > 0;
         }
 
-        internal bool UpdateOwnership(int boardID, string currentOwner, string newOwner)
+        internal bool UpdateOwnership(long boardID, string currentOwner, string newOwner)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -120,7 +120,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             return res > 0;
         }
 
-        internal bool Delete(string email, int Id)
+        internal bool Delete(string email, long Id)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -143,7 +143,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             return res > 0;
         }
 
-        internal bool DeleteBoard(int Id)
+        internal bool DeleteBoard(long Id)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -240,7 +240,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             }
         }
 
-        internal List<UserBoardssStatusDAO> LoadMembers(int BoardId)
+        internal List<UserBoardssStatusDAO> LoadMembers(long BoardId)
         {
             List<UserBoardssStatusDAO> connections = new List<UserBoardssStatusDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))

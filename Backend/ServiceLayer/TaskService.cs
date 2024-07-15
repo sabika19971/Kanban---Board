@@ -60,7 +60,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         public string UpdateTaskDescription(string email, string boardName, int columnOrdinal, int taskId, string description)
         {
             try
-            {              
+            {
                 TaskBl taskBl = taskFacade.UpdateTaskDescription(email,boardName, columnOrdinal, taskId, description);
                 TaskSL taskAfterEdit = new TaskSL(taskBl);
                 string response = JsonSerializer.Serialize(new Response(null, null));

@@ -10,8 +10,8 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
     internal class BoardDAO
     {
         //  --------- name of fields ------------------//
-        internal int id;
-        internal int Id{ get { return id; } set { id = value; } }
+        internal long id;
+        internal long Id{ get { return id; } set { id = value; } }
         internal string Name { get; set; }
         internal string owner;
         internal string Owner
@@ -38,7 +38,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         // ----------- the controller ------------------// 
         private BoardController BoardController;
 
-        internal BoardDAO(int id, string name, string email)
+        internal BoardDAO(long id, string name, string email)
         {
             BoardController = new BoardController();
             this.Id = id;

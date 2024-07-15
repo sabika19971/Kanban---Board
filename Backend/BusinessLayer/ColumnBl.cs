@@ -21,12 +21,12 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private int maxTasks;
         private int currTask;
         private ColumnDAO columnDAO;
-        private int boardId; // new for pk 
+        private long boardId; // new for pk 
         private ColumnController columnController = new ColumnController(); // new
         private TaskController taskController = new TaskController(); //new
         
 
-        internal ColumnBl(int id, int boardId)
+        internal ColumnBl(int id, long boardId)
         {
             columnDAO = new ColumnDAO(id, boardId,-1,0);
             columnDAO.persist();
@@ -37,7 +37,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             maxTasks = -1;
         }
 
-        internal ColumnBl(int id, int boardId, bool indicateLoad) // DIDNT MANAGE TO CHAIN CONSTRUCTORS WITH THE ONE BELOW
+        internal ColumnBl(int id, long boardId, bool indicateLoad) // DIDNT MANAGE TO CHAIN CONSTRUCTORS WITH THE ONE BELOW
         {
             this.columnDAO = columnController.Select(id, boardId);
             columnDAO.isPersistent = true;

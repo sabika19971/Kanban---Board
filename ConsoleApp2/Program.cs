@@ -112,14 +112,14 @@ namespace ConsoleApp2
 
 
             // ------------------------------ DATABASE TESTS ----------------------------
-        
-            //string register = g.Register("kfirmiz@gmail.com", "Kfir1%");
+
+            //string register = g.Register("kfirMiz@gmail.com", "Kfir1%");
             //string register1 = g.Register("second@gmail.com", "Kfir1%");
             //string register2 = g.Register("assign@gmail.com", "Kfir1%");
             //string loadData = g.LoadData();
             //string deleteData = g.DeleteData();
 
-            //string login = g.Login("kfirmiz@gmail.com", "Kfir1%");
+            //string login = g.Login("KFirmiz@gmaIL.cOm", "Kfir1%");
             //string login1 = g.Login("second@gmail.com", "Kfir1%");
             //string login1 = g.Login("assign@gmail.com", "Kfir1%");
 
@@ -165,8 +165,8 @@ namespace ConsoleApp2
             //string createBoard2 = g.CreateBoard("kfirmiz@gmail.com", "third");
             //string getIds = g.GetUserBoards("kfirmiz@gmail.com");
 
-            // --------------------------------------------------------------------------
-
+            // --------------------------------------------------------------------------        
+                  
         }
     }
 }

@@ -22,11 +22,11 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         private UserBoardController controller;
 
         //  --------- getters & setters --------------
-        internal int BoardId { get;  set; }
+        internal long BoardId { get;  set; }
         internal string Email { get; set; } // we dont use the setter
         internal int Status { get;  set; } // 0 - for member, 1 - for owner
 
-        internal UserBoardssStatusDAO(string email,int id, int status)
+        internal UserBoardssStatusDAO(string email,long id, int status)
         {
             controller = new UserBoardController(); // inisialized the controller                                                                
             this.Email = email;
@@ -34,7 +34,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             this.Status = status;   
         }
 
-        internal UserBoardssStatusDAO(string email, int id)
+        internal UserBoardssStatusDAO(string email, long id)
         {
              controller = new UserBoardController(); // inisialized the controller
 

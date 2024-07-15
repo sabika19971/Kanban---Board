@@ -46,6 +46,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("cant edit done task");
             }
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant Update Task Description");
+            }
+            email = email.ToLower();
             if ( !aut.isOnline(email) )
             {
                 throw new Exception("user is not logged in");
@@ -89,6 +94,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal TaskBl AddTask(string email, string boardName, string title, string description, DateTime dueDate) 
         {
 
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant add task");
+            }
+            email = email.ToLower();
             if ( !aut.isOnline(email) )
             {
                 throw new Exception("user must be logged in in order to add task");
@@ -135,6 +145,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("cant edit done task");
             }
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant Update Task title");
+            }
+            email = email.ToLower();
             if ( !aut.isOnline(email) )
             {
                 throw new Exception("user is not logged in");
@@ -180,6 +195,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("cant advance done task or ilegal columnOrdinal");
             }
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant advance a task");
+            }
+            email = email.ToLower();
             if ( !aut.isOnline(email) )
             {
                 throw new Exception("user is not logged in ");
@@ -228,6 +248,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("cant edit done task");
             }
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant Update Task due date");
+            }
+            email = email.ToLower();
             if ( !aut.isOnline(email) )
             {
                 throw new Exception("user is not logged in");
@@ -260,6 +285,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         internal TaskBl AssignTask(string email, string boardName, int columnOrdinal, int taskID, string emailAssignee)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant assign a Task");
+            }
+            email = email.ToLower();
             if (!aut.isOnline(email))
             {
                 throw new Exception("user is not logged in");

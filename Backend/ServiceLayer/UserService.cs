@@ -32,7 +32,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         public string Register(string email, string password)
         {
             try
-            {               
+            {
                 UserBl userBl = uf.Register(email, password);
                 UserSL usl = new UserSL(userBl);
                 string response = JsonSerializer.Serialize(new Response(null,null));
@@ -57,7 +57,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         public string Login(string email, string password)
         {               
             try
-            {               
+            {
                 UserBl userBl = uf.Login(email, password);
                 UserSL usl = new UserSL(userBl);               
                 string response = JsonSerializer.Serialize(new Response(usl.Email, null));
@@ -81,7 +81,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         public string Logout(string email)
         {
             try
-            {             
+            {
                 uf.Logout(email);
                 string response = JsonSerializer.Serialize(new Response(null, null));
                 log.Info(email + " has logged out");

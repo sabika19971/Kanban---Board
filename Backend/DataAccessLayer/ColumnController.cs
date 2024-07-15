@@ -58,7 +58,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             }
         }
 
-        internal bool Update(int id,int boradId, string column, int newValue)
+        internal bool Update(int id,long boradId, string column, int newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -86,7 +86,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
 
 
-        internal bool Delete(int Id,int boardId)
+        internal bool Delete(int Id,long boardId)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -132,7 +132,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         }
 
 
-        internal ColumnDAO Select(int id, int boardId)  
+        internal ColumnDAO Select(int id, long boardId)  
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {

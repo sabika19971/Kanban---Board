@@ -236,7 +236,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         {
             try
             {
-                List<int> ids = bf.GetUserBoards(email);               
+                List<long> ids = bf.GetUserBoards(email);               
                 string response = JsonSerializer.Serialize(new Response(ids, null));
                 log.Info(email + " got user boards ids");
                 return response;
@@ -343,5 +343,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
                 return response;
             }
         }
+
+
     }
 }

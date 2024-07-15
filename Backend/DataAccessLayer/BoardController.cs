@@ -55,7 +55,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             }
         }
 
-        internal bool Update(int Id, string column, string newValue)
+        internal bool Update(long Id, string column, string newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -82,7 +82,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
 
 
-        internal bool Delete(int Id, string name)
+        internal bool Delete(long Id, string name)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))

@@ -11,7 +11,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
     {
         //  --------- name of fields ------------------//
         internal int Id { get;} // 0 - "beckLog" 1 -"inProgress" 2- "done"
-        internal int BoardId {  get;} // FK, PK.
+        internal long BoardId {  get;} // FK, PK.
         private int maxTasks;
         internal int MaxTasks
         {
@@ -53,7 +53,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
         // ----------- the controller ------------------// 
         private ColumnController columnController { get; set; }
-        internal ColumnDAO(int id, int boardId, int maxTasks, int currTask)
+        internal ColumnDAO(int id, long boardId, int maxTasks, int currTask)
         {
             // setting the controller 
             this.columnController = new ColumnController();

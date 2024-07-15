@@ -16,7 +16,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     {
         private Dictionary<string, List<BoardBl>> boards;
         private Autentication aut;
-        private int idGen;
+        private long idGen;
         private BoardController boardController;
         private UserBoardController UBC;
         private bool loadBoards = false;
@@ -104,6 +104,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("Cannot create board with null or blank arguments");
             }
+            email = email.ToLower();
             if ( !(boards.ContainsKey(email) && aut.isOnline(email)) )
             {
                 throw new Exception("user email is not registered to the system or is not logged in");
@@ -118,14 +119,14 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         }
 
 
-        private int getIdGen()
+        private long getIdGen()
         {
             idGen++;
             return idGen;
         }
         internal void getHighestId() // this function is for set the board idGen when uploading the boards from DB 
         {
-            int maxId = 0;
+            long maxId = 0;
             foreach (var user in boards.Values)
             {
                 foreach (BoardBl boardOfUser in user)
@@ -148,6 +149,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns> null, unless an error occurs (see <see cref="GradingService"/>)</returns>
         internal BoardBl DeleteBoard(string email, string name)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant delete board");
+            }
+            email = email.ToLower();
             if (!(boards.ContainsKey(email)))
             {
                 throw new Exception("cant delete board from a user that does not exist in the system");
@@ -177,9 +183,18 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         
         internal bool LimitColumn(string email, string boardName, int columnOrdinal, int limit)
         {
-            if (columnOrdinal < 0 || columnOrdinal >= 2)
+            if (columnOrdinal < 0 || columnOrdinal > 2)
             {
-                throw new Exception("cant limit last column or one that doesnt exist");
+                throw new Exception("cant limit column that doesnt exist");
+            }
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant limit column");
+            }
+            email = email.ToLower();
+            if ( !aut.isOnline(email))
+            {
+                throw new Exception("user must be logged in");
             }
             if ( !(boards.ContainsKey(email)) )
             {
@@ -201,6 +216,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns> A list of taskBl of the user, unless an error occurs (see <see cref="GradingService"/>)</returns>
         internal List<TaskBl> InProgressTasks(string email)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant get in progress tasks");
+            }
+            email = email.ToLower();
             List<TaskBl> result = new List<TaskBl>();
             /* changed implementation to allow members to see their tasks too
             if ( !boards.ContainsKey(email) )
@@ -249,6 +269,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         internal int GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant get in progress tasks");
+            }
+            email = email.ToLower();
             if ( !aut.isOnline(email) ) 
             { 
                 throw new Exception("user must be logged in"); 
@@ -280,6 +305,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
 
         internal string GetColumnName(string email, string boardName, int columnOrdinal)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant get column name");
+            }
+            email = email.ToLower();
             if (!aut.isOnline(email)) 
             { 
                 throw new Exception("user must be logged in"); 
@@ -318,6 +348,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("cant get column that does not exist");
             }
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant get column");
+            }
+            email = email.ToLower();
             if (!aut.isOnline(email))
             {
                 throw new Exception("user must be logged in");
@@ -361,8 +396,13 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="email">Email of the user. Must be logged in</param>
         /// <returns>A response with a list of IDs of all user's boards, unless an error occurs (see <see cref="GradingService"/>)</returns>
         
-        internal List<int> GetUserBoards(string email)
+        internal List<long> GetUserBoards(string email)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant get user boards");
+            }
+            email = email.ToLower();
             if (!aut.isOnline(email))
             {
                 throw new Exception("user must be logged in");
@@ -371,11 +411,25 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("User does not exist");
             }
-            List<int> ids = new List<int>();
+            List<long> ids = new List<long>();
+
+            foreach (var keyAndValue in boards)
+            {
+                List<BoardBl> List = keyAndValue.Value;
+                foreach (BoardBl board in List)
+                {
+                    if (board.Members.Contains(email) || board.Owner == email)
+                    {
+                        ids.Add(board.getId());
+                    }
+                }
+            }
+            /*
             foreach (var board in boards[email])
             {
                 ids.Add(board.getId());
-            }           
+            } 
+            */
             return ids;
         }
 
@@ -390,6 +444,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         internal void JoinBoard(string email, int boardID)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant join a board");
+            }
+            email = email.ToLower();
             if (!aut.isOnline(email))
             {
                 throw new Exception("user must be logged in");
@@ -423,6 +482,12 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         internal void TransferOwnership(string currentOwnerEmail, string newOwnerEmail, string boardName)
         {
+            if (string.IsNullOrEmpty(currentOwnerEmail) || string.IsNullOrEmpty(newOwnerEmail))
+            {
+                throw new Exception("Email is null or empty, cant transfer ownership");
+            }
+            currentOwnerEmail = currentOwnerEmail.ToLower();
+            newOwnerEmail = newOwnerEmail.ToLower();
             if (!aut.isOnline(currentOwnerEmail))
             {
                 throw new Exception("user must be logged in");
@@ -482,6 +547,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
         internal void LeaveBoard(string email, int boardID)
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new Exception("Email is null or empty, cant leave a board");
+            }
+            email = email.ToLower();
             if (!aut.isOnline(email))
             {
                 throw new Exception("user must be logged in");

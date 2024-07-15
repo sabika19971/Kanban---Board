@@ -69,7 +69,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
 
         // update for description or title
-        internal bool Update(int taskId,int boardId, string column, string newValue)
+        internal bool Update(int taskId,long boardId, string column, string newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -121,7 +121,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         }
 
 
-        internal bool Delete(int Id,int boardId)
+        internal bool Delete(int Id,long boardId)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -219,7 +219,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             }
         }
 
-        internal List<TaskDAO> SelectTasks(int boardId, int columnOrdinal)  // Dictionary<string,string> if we want many filters
+        internal List<TaskDAO> SelectTasks(long boardId, int columnOrdinal)  // Dictionary<string,string> if we want many filters
         {
             List<TaskDAO> tasks = new List<TaskDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -290,7 +290,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             }
         }
 
-        internal bool UpdateTaskDueDate(int taskId,int boardId, string column, DateTime newValue )
+        internal bool UpdateTaskDueDate(int taskId,long boardId, string column, DateTime newValue )
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))

@@ -25,7 +25,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string assignee;
         private TaskDAO taskDAO;
 
-        internal TaskBl(DateTime dueDate, string title, string description, int id , int boardId)
+        internal TaskBl(DateTime dueDate, string title, string description, int id , long boardId)
         {
             taskDAO = new TaskDAO(id,boardId,0,title,description,DateTime.Now,dueDate,null);
             taskDAO.persist();

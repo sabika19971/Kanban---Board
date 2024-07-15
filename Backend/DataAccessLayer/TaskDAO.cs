@@ -11,7 +11,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         // ----------- name Of fields -----------//
 
         internal int Id { get;}
-        internal int BoardId { get; }
+        internal long BoardId { get; }
         internal DateTime CreationTime { get; }
 
         private DateTime dueDate;
@@ -102,7 +102,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         //------------ field for insert method --------//
         internal bool isPersistent = false;
 
-        internal TaskDAO(int id, int boardId, int columnOrdinal, string title, string description, DateTime creationTime, DateTime dueDate, string assignee)
+        internal TaskDAO(int id, long boardId, int columnOrdinal, string title, string description, DateTime creationTime, DateTime dueDate, string assignee)
         {
 
             taskController = new TaskController();
