@@ -1,4 +1,4 @@
-﻿using IntroSE.Kanban.Backend.DataAxcessLayer;
+﻿using IntroSE.Kanban.Backend.DataAccessLayer;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private TaskController taskController;
         private bool loadTasks = false;
 
-        public TaskFacade(Autentication aut, BoardFacade boardFacade, UserFacade userFacade) {
+        internal TaskFacade(Autentication aut, BoardFacade boardFacade, UserFacade userFacade) {
             this.aut = aut;
             this.boardFacade = boardFacade;
             this.uf = userFacade;
@@ -28,23 +28,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         {
             taskController.DeleteAllTasks();
         }
-
-
-        /* TOO EXPENSIVE
-        private void LoadTasks()
-        {
-            List<TaskDAO> taskDAOs = taskController.SelectAllTasks();
-            List<TaskBl> taskBls = new List<TaskBl>();
-            foreach (var taskDAO in taskDAOs)
-            {
-                taskBls.Add(new TaskBl(taskDAO));
-            }
-            boardFacade.LoadTasks(taskBls);
-        }
-        */
-
-
-      
+     
 
         /// <summary>
         /// This method updates the description of a task.
@@ -309,5 +293,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             taskToAssisngee.AssignTask(emailAssignee, email);
             return taskToAssisngee;
         }
+
+
     }
 }

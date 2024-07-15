@@ -45,30 +45,33 @@ public class ServiceFactory
             uf.LoadUsers();
             bf.LoadBoards();
             bf.getHighestId();
-            string response = JsonSerializer.Serialize(new Response(null,null));  
+            string response = JsonSerializer.Serialize(new Response(null,null));
+            Log.Info("The system has loaded the DATA");
             return response;
         }
         catch(Exception ex)
         {
             string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+            Log.Warn("The system has failed to load the DATA");
             return response;
         }
     }
 
-    // ALL CONTROLLERS SHOULD BE INTERNAL NOT PUBLIC NEED TO CHANGE
     public string DeleteData()
     {
         try
         {
-        tf.DeleteTasks();
-        uf.DeleteUsers();
-        bf.DeleteBoards();
-        string response = JsonSerializer.Serialize(new Response(null, null));
-        return response;
+            tf.DeleteTasks();
+            uf.DeleteUsers();
+            bf.DeleteBoards();
+            string response = JsonSerializer.Serialize(new Response(null, null));
+            Log.Info("The system has deleted the DATA");
+            return response;
         }
         catch(Exception ex)
         {
             string response = JsonSerializer.Serialize(new Response(null, ex.Message));
+            Log.Warn("The system has failed to delete the DATA");
             return response;  
         }
     }

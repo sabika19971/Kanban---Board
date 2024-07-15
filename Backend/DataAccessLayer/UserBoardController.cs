@@ -8,8 +8,8 @@ using System.IO;
 using System.Data.Entity.Infrastructure;
 using EllipticCurve;
 using IntroSE.Kanban.Backend.BusinessLayer;
-using IntroSE.Kanban.Backend.DataExcessLayer;
-namespace IntroSE.Kanban.Backend.DataAxcessLayer
+using IntroSE.Kanban.Backend.DataAccessLayer;
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class UserBoardController
     {
@@ -17,17 +17,17 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
         private const string TableName = "UsersBoardsStatus";
-        string dbFileName = "kanban.db";
-        string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
+        private string dbFileName = "kanban.db";
+        private string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
 
-        public UserBoardController() // init and connecting to the DB
+        internal UserBoardController() // init and connecting to the DB
         {
             string path = Path.Combine(solutionDirectory, dbFileName);
             this._connectionString = $"Data Source={path}; Version=3;";
             this._tableName = TableName;
         }
 
-        public bool Insert(UserBoardssStatusDAO user)
+        internal bool Insert(UserBoardssStatusDAO user)
         {
             int result = -1;
             using (var connection = new SQLiteConnection(this._connectionString)) // using the connection for the following scope
@@ -58,7 +58,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
         
 
-        public bool Update(int boardID,string email, string column, string newValue)
+        internal bool Update(int boardID,string email, string column, string newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -84,7 +84,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
-        public bool UpdateOwnership(int boardID, string currentOwner, string newOwner)
+        internal bool UpdateOwnership(int boardID, string currentOwner, string newOwner)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -120,7 +120,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
-        public bool Delete(string email, int Id)
+        internal bool Delete(string email, int Id)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -143,7 +143,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
-        public bool DeleteBoard(int Id)
+        internal bool DeleteBoard(int Id)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -165,7 +165,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
-        public bool DeleteAllConnections()
+        internal bool DeleteAllConnections()
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -187,7 +187,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
-        public UserBoardssStatusDAO Select(Dictionary<string, string> filters)
+        internal UserBoardssStatusDAO Select(Dictionary<string, string> filters)
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {
@@ -273,43 +273,6 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 return connections;
             }
         }
-
-        /*
-        public List<UserBoardssStatusDAO> SelectAllConnections() 
-        {
-            List<UserBoardssStatusDAO> connections = new List<UserBoardssStatusDAO>();
-            using (var connection = new SQLiteConnection(this._connectionString))
-            {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
-                command.CommandText = $"select * from {TableName};";
-                SQLiteDataReader dataReader = null;
-                try
-                {
-                    connection.Open(); // nessecery even though we use "using"  
-                    dataReader = command.ExecuteReader();
-
-                    while (dataReader.Read())
-                    {
-                        connections.Add(ConvertReaderToObject(dataReader));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Failed to load users from the DB");
-                }
-                finally
-                {
-                    if (dataReader != null)
-                    {
-                        dataReader.Close();
-                    }
-                }
-
-                return connections;
-            }
-        }
-        */
-
 
         private UserBoardssStatusDAO ConvertReaderToObject(SQLiteDataReader reader)
         {

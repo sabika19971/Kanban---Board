@@ -6,19 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntroSE.Kanban.Backend.DataExcessLayer
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class UserDAO
     {
         //  --------- name of fields ------------------//
-        internal string Email { get; set; } // maybe should be public
+        internal string Email { get; set; } 
         private string password;
         internal string Password { 
             get => password;
             set
             {
                 if (isPersistent) { 
-                    //UserController.Update(Email, PasswordColumnName, value); // (id, column, newValue) MAKING BUGS THAT WERENT BEFORE 
                 }
                 password = value;
             }
@@ -41,7 +40,7 @@ namespace IntroSE.Kanban.Backend.DataExcessLayer
             Password = password;
         }
 
-        public void persist()
+        internal void persist()
         {
             UserController.Insert(this);
             isPersistent = true;  

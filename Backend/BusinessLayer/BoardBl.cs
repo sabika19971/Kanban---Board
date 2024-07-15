@@ -1,5 +1,4 @@
-﻿using IntroSE.Kanban.Backend.DataAxcessLayer;
-using IntroSE.Kanban.Backend.DataExcessLayer;
+﻿using IntroSE.Kanban.Backend.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -20,8 +19,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private string owner;
         private BoardDAO boardDAO;
         private UserBoardssStatusDAO userBoardssStatusDAO;
-        //private ColumnController ColumnController = new ColumnController();
-
 
 
         internal BoardBl(int id, string name ,string email)
@@ -53,16 +50,11 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             userBoardssStatusDAO.isPersistent = true;
             this.members = userBoardssStatusDAO.LoadMembers(); 
                    
-            //columns[0] = new ColumnBl(ColumnController.Select(0,this.id));      
-            //columns[1] = new ColumnBl(ColumnController.Select(1, this.id));
-            //columns[2] = new ColumnBl(ColumnController.Select(2, this.id));
             columns[0] = new ColumnBl(0, this.id,true);         // to reduce coupling
             columns[1] = new ColumnBl(1, this.id,true);         // to reduce coupling
             columns[2] = new ColumnBl(2, this.id,true);         // to reduce coupling
 
             getHighestSumMax();
-            //userBoardssStatusDAO = new UserBoardssStatusDAO(email, id, 1);         WILL BE ADDED AFTER WE WILL DEAL WITH THE CONNECTING TABLE
-            //userBoardssStatusDAO.persist();
         }
 
         internal List<string> Members

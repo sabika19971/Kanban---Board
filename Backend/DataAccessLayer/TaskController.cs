@@ -8,68 +8,27 @@ using System.IO;
 using System.Data.Entity.Infrastructure;
 using EllipticCurve;
 using IntroSE.Kanban.Backend.BusinessLayer;
-using IntroSE.Kanban.Backend.DataExcessLayer;
-namespace IntroSE.Kanban.Backend.DataAxcessLayer
+using IntroSE.Kanban.Backend.DataAccessLayer;
+
+
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class TaskController
     {
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
         private const string TableName = "Tasks";
-        string dbFileName = "kanban.db";
-        string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
+        private string dbFileName = "kanban.db";
+        private string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
 
-        public TaskController() // init and connecting to the DB
+        internal TaskController() // init and connecting to the DB
         {
             string path = Path.Combine(solutionDirectory, dbFileName);
             this._connectionString = $"Data Source={path}; Version=3;";
             this._tableName = TableName;
         }
-        
-        /*public bool Insert(TaskDAO task) 
-        {
-            int result = -1;
-            using (var connection = new SQLiteConnection(this._connectionString)) // using the connection for the following scope
-            {
-                try
-                {
-                    connection.Open(); // nessecery even though we use "using"
-                    SQLiteCommand command = new SQLiteCommand(null, connection); // on which connection the command will run
-                    string insert = $"INSERT INTO {TableName} ({task.BoardIdColumnName},{task.idColumnName},{task.CreationTimeColumnName},{task.DueDateColumnName}" +
-                        $"{task.TitleColumnName},{task.DescriptionColumnName},{task.ColumnOrdinalColumnName}" +
-                        $"{task.AssigneeColumnName})" +
-                        $" Values (@boardIdVal,@idTaskVal,@creationTimeVal,@dueDateVal,@titleVal,@descriptionVal,columnOrdinalVal,@asseingeeVal)"; // the @ is a place holders to avoid SQL injection                   
-                    SQLiteParameter boardIdParam = new SQLiteParameter(@"boardIdVal", task.BoardId); // inserting parameters to the place holders
-                    SQLiteParameter idTaskParam = new SQLiteParameter(@"idTaskVal", task.Id); // inserting parameters to the place holders
-                    SQLiteParameter CreationTimeParam = new SQLiteParameter(@"creationTimeVal", task.CreationTime); // inserting parameters to the place holders
-                    SQLiteParameter DueDateParam = new SQLiteParameter(@"dueDateVal", task.DueDate); // inserting parameters to the place holders
-                    SQLiteParameter titleParam = new SQLiteParameter(@"titleVal", task.Title); // inserting parameters to the place holders
-                    SQLiteParameter descriptionParam = new SQLiteParameter(@"descriptionVal", task.Description); // inserting parameters to the place holders
-                    SQLiteParameter ColumnOrdinalParam = new SQLiteParameter(@"columnOrdinalVal", task.ColumnOrdinal); // inserting parameters to the place holders
-                    SQLiteParameter AssigneeParam = new SQLiteParameter(@"asseingeeVal", task.Assignee); // inserting parameters to the place holders
-                    command.CommandText = insert; // assigning the command 
-                    command.Parameters.Add(boardIdParam); // update inside the command
-                    command.Parameters.Add(idTaskParam); // update inside the command
-                    command.Parameters.Add(CreationTimeParam); // update inside the command
-                    command.Parameters.Add(DueDateParam); // update inside the command
-                    command.Parameters.Add(titleParam); // update inside the command
-                    command.Parameters.Add(descriptionParam); // update inside the command
-                    command.Parameters.Add(ColumnOrdinalParam); // update inside the command
-                    command.Parameters.Add(AssigneeParam); // update inside the command
 
-                    result = command.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(" Insertion to the DB has failed"); // will be handeled in the service layer
-                }
-                Console.WriteLine(result);
-                return result > 0; // return true if the command affected 1 or more rows in the DB
-            }
-        }
-*/
-
-        public bool Insert(TaskDAO task)
+        internal bool Insert(TaskDAO task)
         {
             int result = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -110,7 +69,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
 
         // update for description or title
-        public bool Update(int taskId,int boardId, string column, string newValue)
+        internal bool Update(int taskId,int boardId, string column, string newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -136,7 +95,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
-        public bool UpdateColumnOrdinal(int taskId, string column, int newValue)
+        internal bool UpdateColumnOrdinal(int taskId, string column, int newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -162,7 +121,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         }
 
 
-        public bool Delete(int Id,int boardId)
+        internal bool Delete(int Id,int boardId)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -185,7 +144,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
-        public bool DeleteAllTasks()
+        internal bool DeleteAllTasks()
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -207,7 +166,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         }
 
 
-        public TaskDAO SelectFilters(Dictionary<string, string> filters)
+        internal TaskDAO SelectFilters(Dictionary<string, string> filters)
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {
@@ -260,7 +219,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             }
         }
 
-        public List<TaskDAO> SelectTasks(int boardId, int columnOrdinal)  // Dictionary<string,string> if we want many filters
+        internal List<TaskDAO> SelectTasks(int boardId, int columnOrdinal)  // Dictionary<string,string> if we want many filters
         {
             List<TaskDAO> tasks = new List<TaskDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -297,7 +256,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         }
 
 
-        public List<TaskDAO> SelectAllTasks() // will be used for LoadUsers
+        internal List<TaskDAO> SelectAllTasks() // will be used for LoadUsers
         {
             List<TaskDAO> tasks = new List<TaskDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))

@@ -1,11 +1,11 @@
-﻿using IntroSE.Kanban.Backend.DataExcessLayer;
+﻿using IntroSE.Kanban.Backend.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntroSE.Kanban.Backend.DataAxcessLayer
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class ColumnDAO
     {
@@ -53,7 +53,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
         // ----------- the controller ------------------// 
         private ColumnController columnController { get; set; }
-        public ColumnDAO(int id, int boardId, int maxTasks, int currTask)
+        internal ColumnDAO(int id, int boardId, int maxTasks, int currTask)
         {
             // setting the controller 
             this.columnController = new ColumnController();
@@ -68,7 +68,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         /// <summary>
         /// insert the values into the DB
         /// </summary>
-        public void persist()
+        internal void persist()
         {
             if (!isPersistent) { 
                 columnController.Insert(this);

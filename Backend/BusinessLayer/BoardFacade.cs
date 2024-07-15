@@ -1,5 +1,5 @@
 ﻿using EllipticCurve.Utils;
-using IntroSE.Kanban.Backend.DataAxcessLayer;
+using IntroSE.Kanban.Backend.DataAccessLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -448,7 +448,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// </summary>
         /// <param name="boardId">The board's ID</param>
         /// <returns>A response with the board's name, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string GetBoardName(int boardId)
+        internal string GetBoardName(int boardId)
         {
             if (boardId <= 0)
             {
@@ -507,5 +507,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             throw new Exception("there is no such board with this id");
         }
+
+
     }
 }

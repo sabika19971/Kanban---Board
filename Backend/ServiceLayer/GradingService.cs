@@ -330,7 +330,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         ///</para>
         /// </summary>
         /// <returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string LoadData() // TODO not finished need to reduce coupling
+        public string LoadData() 
         {
             return SF.LoadData();
         }
@@ -342,7 +342,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         ///</para>
         /// </summary>
         ///<returns>An empty response, unless an error occurs (see <see cref="GradingService"/>)</returns>
-        public string DeleteData() // TODO not finished need to reduce coupling
+        public string DeleteData() 
         {
             return SF.DeleteData();
         }

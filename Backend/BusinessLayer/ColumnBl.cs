@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
-    using IntroSE.Kanban.Backend.DataAxcessLayer;
+    using IntroSE.Kanban.Backend.DataAccessLayer;
     using System;
     using System.Collections.Generic;
     using System.Data.Common;
@@ -154,6 +154,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
         }
 
+        /* to remove
         public override string ToString()
         {
             string s = "";
@@ -164,6 +165,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             return s;
         }
+        */
 
         internal void leaveBoard(string email)
         {

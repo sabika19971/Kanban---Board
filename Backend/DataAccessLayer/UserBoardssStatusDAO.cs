@@ -5,16 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntroSE.Kanban.Backend.DataAxcessLayer
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class UserBoardssStatusDAO
     {
-
-        //  --------- name of fields ------------------//
-        //private string email;
-        //private int id;
-        //private int status; // 0 - for member, 1 - for owner
-
+  
         // ----------- name of columns ----------------//
         internal string EmailColumnName = "Email";
         internal string idColumnName = "Id";
@@ -29,9 +24,9 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         //  --------- getters & setters --------------
         internal int BoardId { get;  set; }
         internal string Email { get; set; } // we dont use the setter
-        internal int Status { get;  set; }
+        internal int Status { get;  set; } // 0 - for member, 1 - for owner
 
-        public UserBoardssStatusDAO(string email,int id, int status)
+        internal UserBoardssStatusDAO(string email,int id, int status)
         {
             controller = new UserBoardController(); // inisialized the controller                                                                
             this.Email = email;
@@ -39,7 +34,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             this.Status = status;   
         }
 
-        public UserBoardssStatusDAO(string email, int id)
+        internal UserBoardssStatusDAO(string email, int id)
         {
              controller = new UserBoardController(); // inisialized the controller
 
