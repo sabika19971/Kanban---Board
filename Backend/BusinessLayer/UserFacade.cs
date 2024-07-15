@@ -1,5 +1,4 @@
-﻿using IntroSE.Kanban.Backend.DataAxcessLayer;
-using IntroSE.Kanban.Backend.DataExcessLayer;
+﻿using IntroSE.Kanban.Backend.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +22,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             userController = new UserController();
             this.boardFacade = board ;
             this.aut = aut;
-            //LoadUsers(); LOAD ONLY FROM GRADINGSERVICE
         }
+
 
         // Loading all users from the DB
         internal void LoadUsers()

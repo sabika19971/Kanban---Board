@@ -1,11 +1,11 @@
-﻿using IntroSE.Kanban.Backend.DataExcessLayer;
+﻿using IntroSE.Kanban.Backend.DataAccessLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntroSE.Kanban.Backend.DataAxcessLayer
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class BoardDAO
     {
@@ -36,11 +36,9 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         internal bool isPersisted = false; // maybe provate after load boards
 
         // ----------- the controller ------------------// 
-        BoardController BoardController;
+        private BoardController BoardController;
 
-
-
-        public BoardDAO(int id, string name, string email)
+        internal BoardDAO(int id, string name, string email)
         {
             BoardController = new BoardController();
             this.Id = id;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntroSE.Kanban.Backend.DataAxcessLayer
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class TaskDAO
     {
@@ -14,11 +14,11 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         internal int BoardId { get; }
         internal DateTime CreationTime { get; }
 
-        DateTime dueDate;
-        string title;
-        string description;
-        string assignee;
-        int columnOrdinal;
+        private DateTime dueDate;
+        private string title;
+        private string description;
+        private string assignee;
+        private int columnOrdinal;
         internal DateTime DueDate 
         { 
             get => dueDate;           
@@ -100,9 +100,9 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         private TaskController taskController;
 
         //------------ field for insert method --------//
-         internal bool isPersistent = false;
+        internal bool isPersistent = false;
 
-        public TaskDAO(int id, int boardId, int columnOrdinal, string title, string description, DateTime creationTime, DateTime dueDate, string assignee)
+        internal TaskDAO(int id, int boardId, int columnOrdinal, string title, string description, DateTime creationTime, DateTime dueDate, string assignee)
         {
 
             taskController = new TaskController();
@@ -118,11 +118,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
         }
 
-
-
-
-
-        public void persist()
+        internal void persist()
         {
             if (!isPersistent) { 
                 taskController.Insert(this);

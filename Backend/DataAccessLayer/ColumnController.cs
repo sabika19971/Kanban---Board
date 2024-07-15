@@ -8,26 +8,26 @@ using System.IO;
 using System.Data.Entity.Infrastructure;
 using EllipticCurve;
 using IntroSE.Kanban.Backend.BusinessLayer;
-using IntroSE.Kanban.Backend.DataExcessLayer;
+using IntroSE.Kanban.Backend.DataAccessLayer;
 
-namespace IntroSE.Kanban.Backend.DataAxcessLayer
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class ColumnController
     {
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
         private const string TableName = "Columns";
-        string dbFileName = "kanban.db";
-        string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
+        private string dbFileName = "kanban.db";
+        private string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
 
-        public ColumnController() // init and connecting to the DB
+        internal ColumnController() // init and connecting to the DB
         {
             string path = Path.Combine(solutionDirectory, dbFileName);
             this._connectionString = $"Data Source={path}; Version=3;";
             this._tableName = TableName;
         }
 
-        public bool Insert(ColumnDAO col)
+        internal bool Insert(ColumnDAO col)
         {
             int result = -1;
             using (var connection = new SQLiteConnection(this._connectionString)) // using the connection for the following scope
@@ -58,7 +58,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             }
         }
 
-        public bool Update(int id,int boradId, string column, int newValue)
+        internal bool Update(int id,int boradId, string column, int newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -86,7 +86,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
 
 
-        public bool Delete(int Id,int boardId)
+        internal bool Delete(int Id,int boardId)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -109,7 +109,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
-        public bool DeleteAllColumns()
+        internal bool DeleteAllColumns()
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -132,7 +132,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
         }
 
 
-        public ColumnDAO Select(int id, int boardId)  
+        internal ColumnDAO Select(int id, int boardId)  
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {
@@ -169,7 +169,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             }
         }
 
-        public ColumnDAO SelectFeatures(Dictionary<string, string> filters)
+        internal ColumnDAO SelectFeatures(Dictionary<string, string> filters)
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {
@@ -224,7 +224,7 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
 
 
 
-        public List<ColumnDAO> SelectAllColumns() // will be used for LoadColumns
+        internal List<ColumnDAO> SelectAllColumns() // will be used for LoadColumns
         {
             List<ColumnDAO> columns = new List<ColumnDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))

@@ -1,31 +1,32 @@
-﻿using IntroSE.Kanban.Backend.DataExcessLayer;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
-using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.SQLite;
+using System.IO;
+using System.Data.Entity.Infrastructure;
+using EllipticCurve;
+using IntroSE.Kanban.Backend.BusinessLayer;
 
-namespace IntroSE.Kanban.Backend.DataAxcessLayer
+namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
-    internal class BoardController
+    internal class UserController                       // FUNCTIONS SHOULD BE INTERNAL IN ALL CONTROLLERS
     {
         private readonly string _connectionString; // where is the DB
         private readonly string _tableName;
-        private const string TableName = "Boards";
-        string dbFileName = "kanban.db";
-        string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
-        public BoardController() // init and connecting to the DB
-        {
+        private const string TableName = "Users";
+        private string dbFileName = "kanban.db";
+        private string solutionDirectory = Path.GetFullPath(Directory.GetCurrentDirectory());
 
+        internal UserController() // init and connecting to the DB
+        {
             string path = Path.Combine(solutionDirectory, dbFileName);
             this._connectionString = $"Data Source={path}; Version=3;";
             this._tableName = TableName;
         }
 
-        public bool Insert(BoardDAO board)
+        internal bool Insert(UserDAO user) 
         {
             int result = -1;
             using (var connection = new SQLiteConnection(this._connectionString)) // using the connection for the following scope
@@ -34,27 +35,25 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 {
                     connection.Open(); // nessecery even though we use "using"
                     SQLiteCommand command = new SQLiteCommand(null, connection); // on which connection the command will run
-                    string insert = $"INSERT INTO {TableName} ({board.IdColumnName},{board.BoardColumnName},{board.OwnerColumnName}) Values (@ID,@name,@owner)"; // the @ is a place holders to avoid SQL injection                   
-                    SQLiteParameter idParam = new SQLiteParameter(@"ID", board.Id); // inserting parameters to the place holders
-                    SQLiteParameter NameParam = new SQLiteParameter(@"name", board.Name); // inserting parameters to the place holders
-                    SQLiteParameter ownerParam = new SQLiteParameter(@"owner", board.Owner); // inserting parameters to the place holders
+                    string insert = $"INSERT INTO {TableName} ({user.EmailColumnName},{user.PasswordColumnName}) Values (@emailVal,@passwordVal)"; // the @ is a place holders to avoid SQL injection                   
+                    SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email); // inserting parameters to the place holders
+                    SQLiteParameter passwordParam = new SQLiteParameter(@"passwordVal", user.Password); // inserting parameters to the place holders
                     command.CommandText = insert; // assigning the command 
-                    command.Parameters.Add(idParam); // update inside the command
-                    command.Parameters.Add(NameParam); // update inside the command
-                    command.Parameters.Add(ownerParam); // update inside the command
+                    command.Parameters.Add(emailParam); // update inside the command
+                    command.Parameters.Add(passwordParam); // update inside the command
 
                     result = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" Insertion to the DB has failed"); // will be handeled in the service layer
+                   throw new Exception(" Insertion to the DB has failed"); // will be handeled in the service layer
                 }
-                Console.WriteLine(result);
+                Console.WriteLine(result);              
                 return result > 0; // return true if the command affected 1 or more rows in the DB
-            }
+            }           
         }
 
-        public bool Update(int Id, string column, string newValue)
+        internal bool Update(string email, string column, string newValue)
         {
             int res = -1;
             using (var connection = new SQLiteConnection(_connectionString))
@@ -62,9 +61,9 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 SQLiteCommand command = new SQLiteCommand
                 {
                     Connection = connection,
-                    CommandText = $"update {TableName} set [{column}]=@Val where Id=@Id"
+                    CommandText = $"update {TableName} set [{column}]=@Val where Email=@Email"
                 };
-                command.Parameters.AddWithValue("@Id", Id);
+                command.Parameters.AddWithValue("@Email", email);
                 command.Parameters.AddWithValue("@Val", newValue);
                 try
                 {
@@ -79,19 +78,16 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
             return res > 0;
         }
 
+        
 
-
-        public bool Delete(int Id, string name)
+        internal bool Delete(string email) 
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
-               
-                command.CommandText = $"DELETE from {TableName}" +
-                                       $" where Id=@Id AND Name=@name;";
-                command.Parameters.AddWithValue("@Id", Id);
-                command.Parameters.AddWithValue("@name", name);
+                command.CommandText = $"DELETE from {TableName} where Email=@Email;";
+                command.Parameters.AddWithValue("@Email", email);
                 try
                 {
                     connection.Open(); // nessecery even though we use "using"
@@ -99,21 +95,20 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to Delete board from the DB");
-                }
+                    throw new Exception("Failed to load user from the DB");
+                }             
             }
             Console.WriteLine(res);
             return res > 0;
         }
 
-        public bool DeleteAllBoards()
+        internal bool DeleteAllUsers()
         {
             int res = -1;
             using (var connection = new SQLiteConnection(this._connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
-
-                command.CommandText = $"DELETE from {TableName};";
+                command.CommandText = $"DELETE from {TableName};";         
                 try
                 {
                     connection.Open(); // nessecery even though we use "using"
@@ -121,71 +116,54 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to Delete board from the DB");
+                    throw new Exception("Failed to load user from the DB");
                 }
             }
             Console.WriteLine(res);
             return res > 0;
         }
 
-
-        public BoardDAO Select(Dictionary<string, string> filters)
+        internal UserDAO Select(string email)  // Dictionary<string,string> if we want many filters
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
-
-                // Constructing the WHERE clause dynamically based on the provided filters
-                StringBuilder queryBuilder = new StringBuilder($"SELECT * FROM {TableName} WHERE ");
-
-                // Add each filter condition to the WHERE clause
-                int index = 0;
-                foreach (var filter in filters)
-                {
-                    string paramName = $"@Param{index}";
-                    queryBuilder.Append($"{filter.Key} = {paramName} AND ");
-                    command.Parameters.AddWithValue(paramName, filter.Value);
-                    index++;
-                }
-
-                // Remove the last " AND " from the query
-                queryBuilder.Remove(queryBuilder.Length - 5, 5); // Remove the last " AND "
-
-                command.CommandText = queryBuilder.ToString();
-
+                command.CommandText = $"select * from {TableName} where Email=@Email;";
+                command.Parameters.AddWithValue("@Email", email);
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // Open the connection
+                    connection.Open(); // nessecery even though we use "using"  
                     dataReader = command.ExecuteReader();
-
-                    if (dataReader.Read()) // Check if there is a row to read
+                    if (dataReader.Read()) // indicates if there is a line to read or not
                     {
-                        return ConvertReaderToObject(dataReader); // Convert dataReader to UserDAO object
+                        return ConvertReaderToObject(dataReader);
                     }
                     else
                     {
-                        return null; // No matching user found
+                        return null;
                     }
+
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB", ex);
+                    throw new Exception("Failed to load user from the DB");
                 }
                 finally
                 {
                     if (dataReader != null)
                     {
-                        dataReader.Close(); // Close the data reader
+                        dataReader.Close();
                     }
-                }
+                }             
             }
-        }
+        } 
 
 
-        public List<BoardDAO> SelectAllBoards() // will be used for LoadUsers
+
+        internal List<UserDAO> SelectAllUsers() // will be used for LoadUsers
         {
-            List<BoardDAO> boards = new List<BoardDAO>();
+            List<UserDAO> users = new List<UserDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
             {
                 SQLiteCommand command = new SQLiteCommand(null, connection);
@@ -196,12 +174,12 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                     connection.Open(); // nessecery even though we use "using"  
                     dataReader = command.ExecuteReader();
 
-                    while (dataReader.Read())
+                    while(dataReader.Read())
                     {
-                        boards.Add(ConvertReaderToObject(dataReader));
+                        users.Add(ConvertReaderToObject(dataReader));
                     }
                 }
-                catch (Exception ex)
+                catch(Exception ex) 
                 {
                     throw new Exception("Failed to load users from the DB");
                 }
@@ -212,15 +190,17 @@ namespace IntroSE.Kanban.Backend.DataAxcessLayer
                         dataReader.Close();
                     }
                 }
-
-                return boards;
+               
+                return users;
             }
-        }
+        } 
+        
 
+        
 
-        private BoardDAO ConvertReaderToObject(SQLiteDataReader reader)
+        private UserDAO ConvertReaderToObject(SQLiteDataReader reader)
         {
-            return new BoardDAO(reader.GetInt32(0), reader.GetString(1), reader.GetString(2));
+            return new UserDAO(reader.GetString(0), reader.GetString(1));
         }
     }
 }

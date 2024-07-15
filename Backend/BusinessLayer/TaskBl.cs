@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntroSE.Kanban.Backend.BusinessLayer
 {
-    using IntroSE.Kanban.Backend.DataAxcessLayer;
+    using IntroSE.Kanban.Backend.DataAccessLayer;
     using Newtonsoft.Json;
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -182,8 +182,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         internal void AssignTask(string emailAssignee, string email)
         {
             if(assignee == null)
-            {
-                //taskDAO.Assignee = emailAssignee; included in the below 
+            { 
                 Assignee = emailAssignee;
             }
             else if (!Assignee.Equals(email))
@@ -192,7 +191,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             else 
             {
-                //taskDAO.Assignee = emailAssignee; included in the below 
                 Assignee = emailAssignee; 
             }
         }
