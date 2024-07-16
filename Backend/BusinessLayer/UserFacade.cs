@@ -25,7 +25,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         }
 
 
-        // Loading all users from the DB
         internal void LoadUsers()
         {
             if (loadUsers)

@@ -55,15 +55,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in");
             }
-            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName); // new, to allow members access
-            /*
-            List<BoardBl> boards = boardFacade.boardList(email);
-            if ( !boards.Any() )
-            {
-                throw new Exception("user have no boards");
-            }
-            BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
-            */
+            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName); 
             if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
@@ -103,15 +95,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user must be logged in in order to add task");
             }
-            BoardBl boardToBeAdded = boardFacade.findBoard(boardName); // new, to allow members access
-            //List<BoardBl> boards = boardFacade.boardList(email);
-            /* DOESNT ALLOW MEMBERS TO ADD TASK MAYBE NOT NESSECERY
-            if( !boards.Any() )
-            {
-                throw new Exception("user have no boards");
-            }
-            */
-            //BoardBl boardToBeAdded = boards.Find(board => board.Name.Equals(boardName));
+            BoardBl boardToBeAdded = boardFacade.findBoard(boardName); 
             if (boardToBeAdded == null)
             {
                 throw new Exception("no board with this name, a board must be created first");
@@ -154,15 +138,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in");
             }
-            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName); // new, to allow members access
-            /*
-            List<BoardBl> boards = boardFacade.boardList(email);
-            if ( !boards.Any() )
-            {
-                throw new Exception("user have no boards");
-            }
-            BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
-            */
+            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName);
             if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
@@ -204,15 +180,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in ");
             }
-            BoardBl boardTaskBeAdvance = boardFacade.findBoard(boardName); // new, to allow members access
-            /*
-            List<BoardBl> boards = boardFacade.boardList(email);
-            if ( !boards.Any() )
-            {
-                throw new ArgumentException("user dont have any boards");
-            }
-            BoardBl boardTaskBeAdvance = boards.Find(board => board.Name.Equals(boardName));
-            */
+            BoardBl boardTaskBeAdvance = boardFacade.findBoard(boardName); 
             if (boardTaskBeAdvance == null)
             {
                 throw new Exception($" board '{boardName} does not exist'");
@@ -257,15 +225,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user is not logged in");
             }
-            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName); // new, to allow members access
-            /*
-            List<BoardBl> boards = boardFacade.boardList(email);
-            if ( !boards.Any() )
-            {
-                throw new Exception("user have no boards");
-            }
-            BoardBl boardTaskIsEdit = boards.Find(board => board.Name.Equals(boardName));
-            */
+            BoardBl boardTaskIsEdit = boardFacade.findBoard(boardName); 
             if (boardTaskIsEdit == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");
@@ -298,15 +258,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new ArgumentException("cant assign a task to null or empty email");
             }
-            BoardBl boardTaskIsAssingee = boardFacade.findBoard(boardName); // new, to allow members access
-            /*
-            List<BoardBl> boards = boardFacade.boardList(email);
-            if (!boards.Any())
-            {
-                throw new Exception("user have no boards");
-            }
-            BoardBl boardTaskIsAssingee = boards.Find(board => board.Name.Equals(boardName));
-            */
+            BoardBl boardTaskIsAssingee = boardFacade.findBoard(boardName); 
             if (boardTaskIsAssingee == null)
             {
                 throw new Exception($"board '{boardName}' does not exist ");

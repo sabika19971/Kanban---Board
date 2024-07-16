@@ -23,12 +23,12 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
         //  --------- getters & setters --------------
         internal long BoardId { get;  set; }
-        internal string Email { get; set; } // we dont use the setter
+        internal string Email { get; set; } 
         internal int Status { get;  set; } // 0 - for member, 1 - for owner
 
         internal UserBoardssStatusDAO(string email,long id, int status)
         {
-            controller = new UserBoardController(); // inisialized the controller                                                                
+            controller = new UserBoardController();                                                               
             this.Email = email;
             this.BoardId = id;
             this.Status = status;   
@@ -36,8 +36,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
         internal UserBoardssStatusDAO(string email, long id)
         {
-             controller = new UserBoardController(); // inisialized the controller
-
+             controller = new UserBoardController(); 
             this.Email = email;
             this.BoardId = id;
         }
@@ -78,10 +77,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         internal void changeOwner(string currentOwnerEmail, string newOwnerEmail)
         {
             controller.UpdateOwnership(BoardId, currentOwnerEmail, newOwnerEmail);        
-            /*
-            controller.Delete(newOwnerEmail, BoardId);
-            controller.Update(BoardId,currentOwnerEmail, EmailColumnName, newOwnerEmail);
-            */
             Email = newOwnerEmail;
         }
     }

@@ -11,7 +11,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
     {
         //  --------- name of fields ------------------//
         internal int Id { get;} // 0 - "beckLog" 1 -"inProgress" 2- "done"
-        internal long BoardId {  get;} // FK, PK.
+        internal long BoardId {  get;} 
         private int maxTasks;
         internal int MaxTasks
         {
@@ -25,7 +25,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 maxTasks = value;
             }
         } 
-        // the num of tasks can be added to a column.
 
         private int currTask;
         internal int CurrTask { get => currTask;
@@ -39,8 +38,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             }
         } 
 
-
-        // curr task in the column. ---- maybe need to delete
         // ----------- name of columns ----------------// 
         internal string idColumnName = "Id";
         internal string boardIdColumnName = "BoardId";
@@ -55,14 +52,25 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         private ColumnController columnController { get; set; }
         internal ColumnDAO(int id, long boardId, int maxTasks, int currTask)
         {
-            // setting the controller 
             this.columnController = new ColumnController();
-
             this.Id = id;
             this.BoardId = boardId; 
             this.MaxTasks = maxTasks;   
             this.CurrTask = currTask;
         
+        }
+
+
+        // Constructor for loading purposes only
+        internal ColumnDAO(int id, long boardId)
+        {
+            this.columnController = new ColumnController();
+            ColumnDAO temp = columnController.Select(id, boardId);
+            this.Id = temp.Id;
+            this.BoardId = temp.BoardId;
+            this.MaxTasks = temp.MaxTasks;
+            this.CurrTask = temp.CurrTask;
+            isPersistent = true;
         }
 
         /// <summary>
@@ -80,7 +88,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         {
             if (!isPersistent) 
             {
-                throw new Exception("cant delete an argument that is not in the db");
+                throw new Exception("Cant delete a column that is not in the db");
             }
             columnController.Delete(Id,BoardId);
 

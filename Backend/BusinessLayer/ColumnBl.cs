@@ -21,9 +21,8 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         private int maxTasks;
         private int currTask;
         private ColumnDAO columnDAO;
-        private long boardId; // new for pk 
-        private ColumnController columnController = new ColumnController(); // new
-        private TaskController taskController = new TaskController(); //new
+        private long boardId;  
+        private TaskController taskController = new TaskController();
         
 
         internal ColumnBl(int id, long boardId)
@@ -37,10 +36,9 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             maxTasks = -1;
         }
 
-        internal ColumnBl(int id, long boardId, bool indicateLoad) // DIDNT MANAGE TO CHAIN CONSTRUCTORS WITH THE ONE BELOW
+        internal ColumnBl(int id, long boardId, bool indicateLoad) 
         {
-            this.columnDAO = columnController.Select(id, boardId);
-            columnDAO.isPersistent = true;
+            this.columnDAO = new ColumnDAO(id, boardId);
             this.id = columnDAO.Id;
             this.boardId = columnDAO.BoardId;
             this.maxTasks = columnDAO.MaxTasks;
@@ -52,22 +50,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 tasks.Add(new TaskBl(taskDAO));
             }
 
-        }
-
-        internal ColumnBl(ColumnDAO column)
-        {
-            this.columnDAO = column;
-            columnDAO.isPersistent = true;
-            this.id = column.Id;
-            this.boardId = column.BoardId;
-            this.maxTasks = column.MaxTasks;
-            this.currTask = column.CurrTask;
-            this.tasks = new List<TaskBl>();
-            List<TaskDAO> taskDAOs = taskController.SelectTasks(this.boardId,this.id);
-            foreach (var taskDAO in taskDAOs)
-            {
-                tasks.Add(new TaskBl(taskDAO));
-            }
         }
 
         internal int Id
@@ -153,19 +135,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                 throw new Exception("there is no task to remove");
             }
         }
-
-        /* to remove
-        public override string ToString()
-        {
-            string s = "";
-            foreach (var task in tasks)
-            {
-                s = s + task.Id + ",";
-
-            }
-            return s;
-        }
-        */
 
         internal void leaveBoard(string email)
         {

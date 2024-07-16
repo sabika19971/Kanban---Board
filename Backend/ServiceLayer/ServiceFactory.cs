@@ -44,7 +44,6 @@ public class ServiceFactory
         {
             uf.LoadUsers();
             bf.LoadBoards();
-            bf.getHighestId();
             string response = JsonSerializer.Serialize(new Response(null,null));
             Log.Info("The system has loaded the DATA");
             return response;

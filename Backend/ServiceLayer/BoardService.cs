@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EllipticCurve.Utils;
-using IntroSE.Kanban.Backend.BusinessLayer; // get an access to the classes inside BusinessLayer Folder.
+using IntroSE.Kanban.Backend.BusinessLayer; 
 using IntroSE.Kanban.Backend.ServiceLayer;
 using log4net;
 using log4net.Config;
@@ -226,6 +226,14 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
 
 
 
+
+
+
+
+
+
+
+
         /// <summary>
         /// This method returns a list of IDs of all user's boards.
         /// </summary>
@@ -299,7 +307,7 @@ namespace IntroSE.Kanban.Backend.ServiceLayer
         }
 
 
-                /// <summary>
+        /// <summary>
         /// This method returns a board's name
         /// </summary>
         /// <param name="boardId">The board's ID</param>

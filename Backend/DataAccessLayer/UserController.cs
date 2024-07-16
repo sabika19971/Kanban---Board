@@ -11,9 +11,9 @@ using IntroSE.Kanban.Backend.BusinessLayer;
 
 namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
-    internal class UserController                       // FUNCTIONS SHOULD BE INTERNAL IN ALL CONTROLLERS
+    internal class UserController                      
     {
-        private readonly string _connectionString; // where is the DB
+        private readonly string _connectionString; 
         private readonly string _tableName;
         private const string TableName = "Users";
         private string dbFileName = "kanban.db";
@@ -29,27 +29,26 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         internal bool Insert(UserDAO user) 
         {
             int result = -1;
-            using (var connection = new SQLiteConnection(this._connectionString)) // using the connection for the following scope
+            using (var connection = new SQLiteConnection(this._connectionString)) 
             {
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
-                    SQLiteCommand command = new SQLiteCommand(null, connection); // on which connection the command will run
-                    string insert = $"INSERT INTO {TableName} ({user.EmailColumnName},{user.PasswordColumnName}) Values (@emailVal,@passwordVal)"; // the @ is a place holders to avoid SQL injection                   
-                    SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email); // inserting parameters to the place holders
-                    SQLiteParameter passwordParam = new SQLiteParameter(@"passwordVal", user.Password); // inserting parameters to the place holders
-                    command.CommandText = insert; // assigning the command 
-                    command.Parameters.Add(emailParam); // update inside the command
-                    command.Parameters.Add(passwordParam); // update inside the command
+                    connection.Open(); 
+                    SQLiteCommand command = new SQLiteCommand(null, connection); 
+                    string insert = $"INSERT INTO {TableName} ({user.EmailColumnName},{user.PasswordColumnName}) Values (@emailVal,@passwordVal)";                  
+                    SQLiteParameter emailParam = new SQLiteParameter(@"emailVal", user.Email); 
+                    SQLiteParameter passwordParam = new SQLiteParameter(@"passwordVal", user.Password); 
+                    command.CommandText = insert; 
+                    command.Parameters.Add(emailParam); 
+                    command.Parameters.Add(passwordParam); 
 
                     result = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                   throw new Exception(" Insertion to the DB has failed"); // will be handeled in the service layer
-                }
-                Console.WriteLine(result);              
-                return result > 0; // return true if the command affected 1 or more rows in the DB
+                   throw new Exception("User insertion to the DB has failed"); 
+                }             
+                return result > 0; 
             }           
         }
 
@@ -72,7 +71,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" failed to update email");
+                    throw new Exception("Failed to update user int the DB");
                 }
             }
             return res > 0;
@@ -90,15 +89,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 command.Parameters.AddWithValue("@Email", email);
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
+                    connection.Open(); 
                     res = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB");
+                    throw new Exception("Failed to delete a user from the DB");
                 }             
             }
-            Console.WriteLine(res);
             return res > 0;
         }
 
@@ -111,19 +109,18 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 command.CommandText = $"DELETE from {TableName};";         
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
+                    connection.Open(); 
                     res = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB");
+                    throw new Exception("Failed to delete users from the DB");
                 }
             }
-            Console.WriteLine(res);
             return res > 0;
         }
 
-        internal UserDAO Select(string email)  // Dictionary<string,string> if we want many filters
+        internal UserDAO Select(string email)  
         {
             using (var connection = new SQLiteConnection(this._connectionString))
             {
@@ -133,9 +130,9 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"  
+                    connection.Open(); 
                     dataReader = command.ExecuteReader();
-                    if (dataReader.Read()) // indicates if there is a line to read or not
+                    if (dataReader.Read()) 
                     {
                         return ConvertReaderToObject(dataReader);
                     }
@@ -159,9 +156,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             }
         } 
 
-
-
-        internal List<UserDAO> SelectAllUsers() // will be used for LoadUsers
+        internal List<UserDAO> SelectAllUsers() 
         {
             List<UserDAO> users = new List<UserDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -171,7 +166,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"  
+                    connection.Open();  
                     dataReader = command.ExecuteReader();
 
                     while(dataReader.Read())
