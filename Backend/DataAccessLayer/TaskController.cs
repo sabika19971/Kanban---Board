@@ -15,7 +15,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class TaskController
     {
-        private readonly string _connectionString; // where is the DB
+        private readonly string _connectionString; 
         private readonly string _tableName;
         private const string TableName = "Tasks";
         private string dbFileName = "kanban.db";
@@ -37,11 +37,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 {
                     connection.Open();
                     string insert = $"INSERT INTO {TableName} ({task.idColumnName}, {task.BoardIdColumnName}, {task.ColumnOrdinalColumnName}, {task.TitleColumnName}, {task.DescriptionColumnName}, {task.CreationTimeColumnName}, {task.DueDateColumnName}, {task.AssigneeColumnName}) VALUES (@idTaskVal, @boardIdVal, @columnOrdinalVal, @titleVal, @descriptionVal, @creationTimeVal, @dueDateVal, @assigneeVal)";
-                    /*
-                    $"INSERT INTO {TableName} ({task.idColumnName}, {task.BoardIdColumnName}, {task.ColumnOrdinalColumnName}, {task.TitleColumnName}, " +
-                    $"{task.DescriptionColumnName}, {task.CreationTimeColumnName}, {task.DueDateColumnName}, {task.AssigneeColumnName}) " +
-                    $"VALUES (@idTaskVal, @boardIdVal, @columnOrdinalVal, @titleVal, @descriptionVal, @creationTimeVal, @dueDateVal, @assigneeVal)";
-                    */
                     using (var command = new SQLiteCommand(insert, connection))
                     {
                         command.Parameters.AddWithValue("@boardIdVal", task.BoardId);
@@ -61,14 +56,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Insertion to the DB has failed", ex);
+                    throw new Exception("Task insertion to the DB has failed");
                 }
                 return result > 0;
             }
         }
 
 
-        // update for description or title
+
         internal bool Update(int taskId,long boardId, string column, string newValue)
         {
             int res = -1;
@@ -89,7 +84,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" failed to update email");
+                    throw new Exception("Failed to update task in the DB");
                 }
             }
             return res > 0;
@@ -114,7 +109,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" failed to update email");
+                    throw new Exception("Failed to update column ordinal of a task in the DB");
                 }
             }
             return res > 0;
@@ -132,15 +127,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 command.Parameters.AddWithValue("@boardId", boardId);
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
+                    connection.Open(); 
                     res = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB");
+                    throw new Exception("Failed to delete a task from the DB");
                 }
             }
-            Console.WriteLine(res);
             return res > 0;
         }
 
@@ -153,73 +147,19 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 command.CommandText = $"DELETE from {TableName} ;";
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
+                    connection.Open(); 
                     res = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB");
+                    throw new Exception("Failed to delete tasks from the DB");
                 }
             }
-            Console.WriteLine(res);
             return res > 0;
         }
 
 
-        internal TaskDAO SelectFilters(Dictionary<string, string> filters)
-        {
-            using (var connection = new SQLiteConnection(this._connectionString))
-            {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
-
-                // Constructing the WHERE clause dynamically based on the provided filters
-                StringBuilder queryBuilder = new StringBuilder($"SELECT * FROM {TableName} WHERE ");
-
-                // Add each filter condition to the WHERE clause
-                int index = 0;
-                foreach (var filter in filters)
-                {
-                    string paramName = $"@Param{index}";
-                    queryBuilder.Append($"{filter.Key} = {paramName} AND ");
-                    command.Parameters.AddWithValue(paramName, filter.Value);
-                    index++;
-                }
-
-                // Remove the last " AND " from the query
-                queryBuilder.Remove(queryBuilder.Length - 5, 5); // Remove the last " AND "
-
-                command.CommandText = queryBuilder.ToString();
-
-                SQLiteDataReader dataReader = null;
-                try
-                {
-                    connection.Open(); // Open the connection
-                    dataReader = command.ExecuteReader();
-
-                    if (dataReader.Read()) // Check if there is a row to read
-                    {
-                        return ConvertReaderToObject(dataReader); // Convert dataReader to UserDAO object
-                    }
-                    else
-                    {
-                        return null; // No matching user found
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Failed to load user from the DB", ex);
-                }
-                finally
-                {
-                    if (dataReader != null)
-                    {
-                        dataReader.Close(); // Close the data reader
-                    }
-                }
-            }
-        }
-
-        internal List<TaskDAO> SelectTasks(long boardId, int columnOrdinal)  // Dictionary<string,string> if we want many filters
+        internal List<TaskDAO> SelectTasks(long boardId, int columnOrdinal)  
         {
             List<TaskDAO> tasks = new List<TaskDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -231,7 +171,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"  
+                    connection.Open();  
                     dataReader = command.ExecuteReader();
 
                     while (dataReader.Read())
@@ -256,7 +196,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         }
 
 
-        internal List<TaskDAO> SelectAllTasks() // will be used for LoadUsers
+        internal List<TaskDAO> SelectAllTasks() 
         {
             List<TaskDAO> tasks = new List<TaskDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -266,7 +206,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"  
+                    connection.Open();   
                     dataReader = command.ExecuteReader();
 
                     while (dataReader.Read())
@@ -276,7 +216,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load users from the DB");
+                    throw new Exception("Failed to load tasks from the DB");
                 }
                 finally
                 {
@@ -301,7 +241,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                     CommandText = $"update {TableName} set [{column}]=@Val where Id=@taskId AND BoardId=@BoardId"
                 };
 
-                string isoDateTime = newValue.ToString("yyyy-MM-dd HH:mm:ss"); // converting an object to primitive value in irder ti enter it ti the database 
+                string isoDateTime = newValue.ToString("yyyy-MM-dd HH:mm:ss"); 
                 command.Parameters.AddWithValue("@taskId", taskId);
                 command.Parameters.AddWithValue("@Val", isoDateTime);
                 command.Parameters.AddWithValue("@BoardId", boardId);
@@ -312,7 +252,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" failed to update task dueDate");
+                    throw new Exception("Failed to update task dueDate");
                 }
             }
             return res > 0;

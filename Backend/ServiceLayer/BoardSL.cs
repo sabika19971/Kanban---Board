@@ -14,7 +14,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
     {
         public string Name{ get; }
         private ColumnSL[] columns;
-        private int id; // 
+        private int id; 
 
         internal BoardSL(BoardBl boardbl, int id)
         {
@@ -22,7 +22,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             columns[0] = new ColumnSL(boardbl.getColumns(0));
             columns[1] = new ColumnSL(boardbl.getColumns(1));
             columns[2] = new ColumnSL(boardbl.getColumns(2));
-            this.id = id; // 
+            this.id = id; 
         }
 
         public ColumnSL getColumns(int i)

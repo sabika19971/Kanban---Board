@@ -14,7 +14,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class ColumnController
     {
-        private readonly string _connectionString; // where is the DB
+        private readonly string _connectionString; 
         private readonly string _tableName;
         private const string TableName = "Columns";
         private string dbFileName = "kanban.db";
@@ -30,31 +30,30 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         internal bool Insert(ColumnDAO col)
         {
             int result = -1;
-            using (var connection = new SQLiteConnection(this._connectionString)) // using the connection for the following scope
+            using (var connection = new SQLiteConnection(this._connectionString)) 
             {
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
-                    SQLiteCommand command = new SQLiteCommand(null, connection); // on which connection the command will run
+                    connection.Open(); 
+                    SQLiteCommand command = new SQLiteCommand(null, connection); 
                     string insert = $"INSERT INTO {TableName} ({col.idColumnName},{col.boardIdColumnName},{col.maxTasksColumnName},{col.currTaskColumnName}) Values (@id,@boardId,@maxTasks,@currTask)"; // the @ is a place holders to avoid SQL injection                   
-                    SQLiteParameter id = new SQLiteParameter(@"id", col.Id); // inserting parameters to the place holders
-                    SQLiteParameter boardIdParam = new SQLiteParameter(@"boardId", col.BoardId); // inserting parameters to the place holders
-                    SQLiteParameter maxTasksParam = new SQLiteParameter(@"maxTasks", col.MaxTasks); // inserting parameters to the place holders
-                    SQLiteParameter currTaskParam = new SQLiteParameter(@"currTask", col.CurrTask); // inserting parameters to the place holders
-                    command.CommandText = insert; // assigning the command 
-                    command.Parameters.Add(id); // update inside the command
-                    command.Parameters.Add(boardIdParam); // update inside the command
-                    command.Parameters.Add(maxTasksParam); // update inside the command
-                    command.Parameters.Add(currTaskParam); // update inside the command
+                    SQLiteParameter id = new SQLiteParameter(@"id", col.Id); 
+                    SQLiteParameter boardIdParam = new SQLiteParameter(@"boardId", col.BoardId); 
+                    SQLiteParameter maxTasksParam = new SQLiteParameter(@"maxTasks", col.MaxTasks); 
+                    SQLiteParameter currTaskParam = new SQLiteParameter(@"currTask", col.CurrTask); 
+                    command.CommandText = insert;  
+                    command.Parameters.Add(id); 
+                    command.Parameters.Add(boardIdParam); 
+                    command.Parameters.Add(maxTasksParam); 
+                    command.Parameters.Add(currTaskParam); 
 
                     result = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" Insertion to the DB has failed"); // will be handeled in the service layer
+                    throw new Exception("Column insertion to the DB has failed"); 
                 }
-                Console.WriteLine(result);
-                return result > 0; // return true if the command affected 1 or more rows in the DB
+                return result > 0; 
             }
         }
 
@@ -78,7 +77,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" Failed to update a Cloumn field");
+                    throw new Exception("Failed to update a Cloumn int he DB");
                 }
             }
             return res > 0;
@@ -97,15 +96,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 command.Parameters.AddWithValue("@Id", Id);
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
+                    connection.Open(); 
                     res = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB");
+                    throw new Exception("Failed to delete a column from the DB");
                 }
             }
-            Console.WriteLine(res);
             return res > 0;
         }
 
@@ -119,15 +117,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
+                    connection.Open(); 
                     res = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB");
+                    throw new Exception("Failed to delete columns from the DB");
                 }
             }
-            Console.WriteLine(res);
             return res > 0;
         }
 
@@ -143,9 +140,9 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"  
+                    connection.Open(); 
                     dataReader = command.ExecuteReader();
-                    if (dataReader.Read()) // indicates if there is a line to read or not
+                    if (dataReader.Read()) 
                     {
                         return ConvertReaderToObject(dataReader);
                     }
@@ -157,7 +154,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load column from the DB");
+                    throw new Exception("Failed to load a column from the DB");
                 }
                 finally
                 {
@@ -169,62 +166,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             }
         }
 
-        internal ColumnDAO SelectFeatures(Dictionary<string, string> filters)
-        {
-            using (var connection = new SQLiteConnection(this._connectionString))
-            {
-                SQLiteCommand command = new SQLiteCommand(null, connection);
-
-                // Constructing the WHERE clause dynamically based on the provided filters
-                StringBuilder queryBuilder = new StringBuilder($"SELECT * FROM {TableName} WHERE ");
-
-                // Add each filter condition to the WHERE clause
-                int index = 0;
-                foreach (var filter in filters)
-                {
-                    string paramName = $"@Param{index}";
-                    queryBuilder.Append($"{filter.Key} = {paramName} AND ");
-                    command.Parameters.AddWithValue(paramName, filter.Value);
-                    index++;
-                }
-
-                // Remove the last " AND " from the query
-                queryBuilder.Remove(queryBuilder.Length - 5, 5); // Remove the last " AND "
-
-                command.CommandText = queryBuilder.ToString();
-
-                SQLiteDataReader dataReader = null;
-                try
-                {
-                    connection.Open(); // Open the connection
-                    dataReader = command.ExecuteReader();
-
-                    if (dataReader.Read()) // Check if there is a row to read
-                    {
-                        return ConvertReaderToObject(dataReader); // Convert dataReader to UserDAO object
-                    }
-                    else
-                    {
-                        return null; // No matching user found
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Failed to load user from the DB", ex);
-                }
-                finally
-                {
-                    if (dataReader != null)
-                    {
-                        dataReader.Close(); // Close the data reader
-                    }
-                }
-            }
-        }
-
-
-
-        internal List<ColumnDAO> SelectAllColumns() // will be used for LoadColumns
+        internal List<ColumnDAO> SelectAllColumns() 
         {
             List<ColumnDAO> columns = new List<ColumnDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -234,7 +176,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"  
+                    connection.Open(); 
                     dataReader = command.ExecuteReader();
 
                     while (dataReader.Read())
@@ -244,7 +186,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load users from the DB");
+                    throw new Exception("Failed to load columns from the DB");
                 }
                 finally
                 {
@@ -257,7 +199,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 return columns;
             }
         }
-
 
         private ColumnDAO ConvertReaderToObject(SQLiteDataReader reader)
         {

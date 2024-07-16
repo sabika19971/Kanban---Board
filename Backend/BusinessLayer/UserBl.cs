@@ -36,7 +36,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 if (aut.isValidPassword(value))
                 {
-                    userDAO.Password = value; // updating the DB
+                    userDAO.Password = value; 
                     userPassword = value;
                 }
                 else

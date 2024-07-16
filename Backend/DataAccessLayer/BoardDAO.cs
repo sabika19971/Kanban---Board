@@ -33,7 +33,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         internal string OwnerColumnName = "Owner";
 
         // ---------- field for insert method ----------//
-        internal bool isPersisted = false; // maybe provate after load boards
+        internal bool isPersisted = false; 
 
         // ----------- the controller ------------------// 
         private BoardController BoardController;
@@ -48,7 +48,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 
         internal void persist()
         {
-            if (!isPersisted) { // WILL BE REMOVED AFTER LOAD BOARDS 
+            if (!isPersisted) {  
                 BoardController.Insert(this);
                 isPersisted = true;
             }
@@ -58,7 +58,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         {
             if (!isPersisted) 
             {
-                throw new Exception("cant delete a board that is not in the DB");
+                throw new Exception("Cant delete a board that is not in the DB");
 
             }
             return BoardController.Delete(Id, Name);

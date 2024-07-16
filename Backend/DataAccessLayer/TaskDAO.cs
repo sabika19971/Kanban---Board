@@ -130,7 +130,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         {
             if (!isPersistent)
             {
-                throw new Exception("cant delet a task that is not in the db");
+                throw new Exception("Cant delete a task that is not in the db");
             }
             taskController.Delete(Id, BoardId);
 

@@ -26,29 +26,22 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             boards = new Dictionary<string, List<BoardBl>>();
             this.boardController = new BoardController();
             this.aut = aut;
-            //LoadBoards(); LOAD ONLY FROM GRADINGSERVICE
-            //getHighestId(); ASSENTIAL
         }
 
         internal void LoadBoards()
         {
             List<BoardDAO> boardDAOs = boardController.SelectAllBoards();
-            //UserBoardController userBoardController = new UserBoardController();
-            //List<UserBoardssStatusDAO> connections = userBoardController.SelectAllConnections();
             foreach (var boardDAO in boardDAOs)
             {
                 if ( !this.boards.ContainsKey(boardDAO.Owner))
                 {
-                    resetBoards(boardDAO.Owner); // WILL NEED TO BE CHANGED IF WE LOAD A USER WHEN HE IS ALREADY ON THE RAM
+                    resetBoards(boardDAO.Owner); 
                 }
                 BoardBl boardToLoad = new BoardBl(boardDAO);
-                //foreach(var connection in connections)
-                //{
-                //    if (connection.)
-                //}
                 this.boards[boardDAO.Owner].Add(boardToLoad);
                 Console.WriteLine("loaded " + boardDAO.Name + " used by user " + boardDAO.Owner + " from the DB");
             }
+            getHighestId();
             loadBoards = true;
         }
 
@@ -124,7 +117,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             idGen++;
             return idGen;
         }
-        internal void getHighestId() // this function is for set the board idGen when uploading the boards from DB 
+        internal void getHighestId() // this function is to adjust the board idGen when uploading the boards from DB 
         {
             long maxId = 0;
             foreach (var user in boards.Values)
@@ -222,17 +215,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             }
             email = email.ToLower();
             List<TaskBl> result = new List<TaskBl>();
-            /* changed implementation to allow members to see their tasks too
-            if ( !boards.ContainsKey(email) )
-            {
-                throw new InvalidOperationException("cant show tasks for a user that is not registered in the system");
-            }
-            */
             if ( !aut.isOnline(email) )
             {
                 throw new Exception("user is not logged in");
             }
-            //List<BoardBl> boardsToCollectTasks = boards[email]; 
             foreach (var kvp in boards)
             {
                 foreach (var board in kvp.Value)
@@ -244,21 +230,10 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                     }
                 }
             }
-            /*
-            foreach (var boardToCollect in boardsToCollectTasks)
-            {
-                foreach (var task in boardToCollect.getColumns(1).Tasks())
-                {
-                    if (task.allowToEditTask(email))
-                    {
-                        result.Add(task);
-                    }
-                   
-                }
-            }
-            */
             return result;
         }
+
+
         /// <summary>
         /// This method gets the limit of a specific column.
         /// </summary>
@@ -266,7 +241,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
         /// <param name="boardName">The name of the board</param>
         /// <param name="columnOrdinal">The column ID. The first column is identified by 0, the ID increases by 1 for each column</param>
         /// <returns> int columLimit, unless an error occurs (see <see cref="GradingService"/>)</returns>
-
         internal int GetColumnLimit(string email, string boardName, int columnOrdinal)
         {
             if (string.IsNullOrEmpty(email))
@@ -424,12 +398,6 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
                     }
                 }
             }
-            /*
-            foreach (var board in boards[email])
-            {
-                ids.Add(board.getId());
-            } 
-            */
             return ids;
         }
 
@@ -501,8 +469,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             {
                 throw new Exception("user does not have a board in this name");
             }
-            boardToChangeOwner.changeOwner(currentOwnerEmail, newOwnerEmail); // changes the connecting table in the DB, updates members on RAM, and owner on bot RAM and DB
-            //boardToChangeOwner.Owner = newOwnerEmail; // changed owner of the board in RAM and DB
+            boardToChangeOwner.changeOwner(currentOwnerEmail, newOwnerEmail); // updates the DB and updates members / owner on RAM
             boards[currentOwnerEmail].Remove(boardToChangeOwner); // switching the board owner in boards Dict RAM
             boards[newOwnerEmail].Add(boardToChangeOwner); // switching the board owner in boards Dict RAM
         }

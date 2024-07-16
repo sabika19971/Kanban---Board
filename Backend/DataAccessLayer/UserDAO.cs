@@ -45,10 +45,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
             UserController.Insert(this);
             isPersistent = true;  
         }
-        //UserController.Delete(Email); delete check
-        //UserController.Update(Email,"Password","Kk1!"); update check
-
-
     }
 }
 

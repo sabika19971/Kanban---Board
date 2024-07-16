@@ -36,7 +36,7 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             this.id = id; 
             this.members = new List<string>();
             this.owner = email;
-            getHighestSumMax(); // maybe unnecessery
+            getHighestSumMax(); 
         }
 
         internal BoardBl(BoardDAO boardDAO)
@@ -50,10 +50,9 @@ namespace IntroSE.Kanban.Backend.BusinessLayer
             userBoardssStatusDAO.isPersistent = true;
             this.members = userBoardssStatusDAO.LoadMembers(); 
                    
-            columns[0] = new ColumnBl(0, this.id,true);         // to reduce coupling
-            columns[1] = new ColumnBl(1, this.id,true);         // to reduce coupling
-            columns[2] = new ColumnBl(2, this.id,true);         // to reduce coupling
-
+            columns[0] = new ColumnBl(0, this.id,true);         
+            columns[1] = new ColumnBl(1, this.id,true);         
+            columns[2] = new ColumnBl(2, this.id,true);        
             getHighestSumMax();
         }
 

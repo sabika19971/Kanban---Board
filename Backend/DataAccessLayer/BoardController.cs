@@ -12,7 +12,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
 {
     internal class BoardController
     {
-        private readonly string _connectionString; // where is the DB
+        private readonly string _connectionString; 
         private readonly string _tableName;
         private const string TableName = "Boards";
         private string dbFileName = "kanban.db";
@@ -29,29 +29,28 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
         internal bool Insert(BoardDAO board)
         {
             int result = -1;
-            using (var connection = new SQLiteConnection(this._connectionString)) // using the connection for the following scope
+            using (var connection = new SQLiteConnection(this._connectionString)) 
             {
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
-                    SQLiteCommand command = new SQLiteCommand(null, connection); // on which connection the command will run
+                    connection.Open(); 
+                    SQLiteCommand command = new SQLiteCommand(null, connection); 
                     string insert = $"INSERT INTO {TableName} ({board.IdColumnName},{board.BoardColumnName},{board.OwnerColumnName}) Values (@ID,@name,@owner)"; // the @ is a place holders to avoid SQL injection                   
-                    SQLiteParameter idParam = new SQLiteParameter(@"ID", board.Id); // inserting parameters to the place holders
-                    SQLiteParameter NameParam = new SQLiteParameter(@"name", board.Name); // inserting parameters to the place holders
-                    SQLiteParameter ownerParam = new SQLiteParameter(@"owner", board.Owner); // inserting parameters to the place holders
-                    command.CommandText = insert; // assigning the command 
-                    command.Parameters.Add(idParam); // update inside the command
-                    command.Parameters.Add(NameParam); // update inside the command
-                    command.Parameters.Add(ownerParam); // update inside the command
+                    SQLiteParameter idParam = new SQLiteParameter(@"ID", board.Id);
+                    SQLiteParameter NameParam = new SQLiteParameter(@"name", board.Name); 
+                    SQLiteParameter ownerParam = new SQLiteParameter(@"owner", board.Owner); 
+                    command.CommandText = insert; 
+                    command.Parameters.Add(idParam); 
+                    command.Parameters.Add(NameParam); 
+                    command.Parameters.Add(ownerParam); 
 
                     result = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" Insertion to the DB has failed"); // will be handeled in the service layer
+                    throw new Exception("Board insertion to the DB has failed"); 
                 }
-                Console.WriteLine(result);
-                return result > 0; // return true if the command affected 1 or more rows in the DB
+                return result > 0; 
             }
         }
 
@@ -74,12 +73,11 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(" failed to update email");
+                    throw new Exception("Failed to update a board in the DB");
                 }
             }
             return res > 0;
         }
-
 
 
         internal bool Delete(long Id, string name)
@@ -95,17 +93,17 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 command.Parameters.AddWithValue("@name", name);
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
+                    connection.Open(); 
                     res = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to Delete board from the DB");
+                    throw new Exception("Failed to Delete a board from the DB");
                 }
             }
-            Console.WriteLine(res);
             return res > 0;
         }
+
 
         internal bool DeleteAllBoards()
         {
@@ -117,15 +115,14 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 command.CommandText = $"DELETE from {TableName};";
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"
+                    connection.Open(); 
                     res = command.ExecuteNonQuery();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to Delete board from the DB");
+                    throw new Exception("Failed to Delete boards from the DB");
                 }
             }
-            Console.WriteLine(res);
             return res > 0;
         }
 
@@ -157,34 +154,34 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // Open the connection
+                    connection.Open(); 
                     dataReader = command.ExecuteReader();
 
-                    if (dataReader.Read()) // Check if there is a row to read
+                    if (dataReader.Read()) 
                     {
-                        return ConvertReaderToObject(dataReader); // Convert dataReader to UserDAO object
+                        return ConvertReaderToObject(dataReader); 
                     }
                     else
                     {
-                        return null; // No matching user found
+                        return null; 
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load user from the DB", ex);
+                    throw new Exception("Failed to load a board from the DB");
                 }
                 finally
                 {
                     if (dataReader != null)
                     {
-                        dataReader.Close(); // Close the data reader
+                        dataReader.Close(); 
                     }
                 }
             }
         }
 
 
-        internal List<BoardDAO> SelectAllBoards() // will be used for LoadUsers
+        internal List<BoardDAO> SelectAllBoards() 
         {
             List<BoardDAO> boards = new List<BoardDAO>();
             using (var connection = new SQLiteConnection(this._connectionString))
@@ -194,7 +191,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 SQLiteDataReader dataReader = null;
                 try
                 {
-                    connection.Open(); // nessecery even though we use "using"  
+                    connection.Open();  
                     dataReader = command.ExecuteReader();
 
                     while (dataReader.Read())
@@ -204,7 +201,7 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Failed to load users from the DB");
+                    throw new Exception("Failed to load boards from the DB");
                 }
                 finally
                 {
@@ -217,7 +214,6 @@ namespace IntroSE.Kanban.Backend.DataAccessLayer
                 return boards;
             }
         }
-
 
         private BoardDAO ConvertReaderToObject(SQLiteDataReader reader)
         {
